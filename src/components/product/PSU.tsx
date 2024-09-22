@@ -78,6 +78,7 @@ function PSU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "psuWattage",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setPsuWattage,
         value: psuWattage,

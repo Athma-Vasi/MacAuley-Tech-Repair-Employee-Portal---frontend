@@ -19,7 +19,11 @@ import {
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
-import { COLORS_SWATCHES } from "../../constants/data";
+import {
+  COLORS_SWATCHES,
+  INPUT_MAX_WIDTH,
+  INPUT_MIN_WIDTH,
+} from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
 import type {
@@ -230,15 +234,15 @@ function AccessibleTextAreaInput<
     valueBuffer,
   });
 
-  // console.group(`AccessibleTextAreaInput: ${name}`);
-  // console.log("name:", name);
-  // console.log("stepperPages:", stepperPages);
-  // console.log("validationFunctionsTable:", validationFunctionsTable);
-  // console.log("fullValidation:", full);
-  // console.log("valueBuffer:", valueBuffer);
-  // console.log("isValueBufferValid:", isValueBufferValid);
-  // console.log("validationTexts:", validationTexts);
-  // console.groupEnd();
+  console.group(`AccessibleTextAreaInput: ${name}`);
+  console.log("name:", name);
+  console.log("stepperPages:", stepperPages);
+  console.log("validationFunctionsTable:", validationFunctionsTable);
+  console.log("fullValidation:", full);
+  console.log("valueBuffer:", valueBuffer);
+  console.log("isValueBufferValid:", isValueBufferValid);
+  console.log("validationTexts:", validationTexts);
+  console.groupEnd();
 
   const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({
@@ -251,7 +255,11 @@ function AccessibleTextAreaInput<
     });
 
   return (
-    <Container w="100%" key={`${name}-${uniqueId ?? ""}`}>
+    <Container
+      key={`${name}-${uniqueId ?? ""}`}
+      style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
+      w="100%"
+    >
       <Popover
         opened={isPopoverOpened}
         position="bottom"

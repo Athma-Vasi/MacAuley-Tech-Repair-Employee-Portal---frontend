@@ -51,6 +51,14 @@ const useStyles = createStyles((
                     : theme.colors.gray[1],
             },
         },
+
+        container: {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            width: "100%",
+        },
     };
 
     return styleObject;

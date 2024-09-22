@@ -42,6 +42,7 @@ function GPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "gpuBoostClock",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setGpuBoostClock,
         value: gpuBoostClock,
@@ -54,6 +55,7 @@ function GPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "gpuChipset",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setGpuChipset,
         value: gpuChipset,
@@ -66,6 +68,7 @@ function GPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "gpuCoreClock",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setGpuCoreClock,
         value: gpuCoreClock,
@@ -78,6 +81,7 @@ function GPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "gpuMemoryCapacity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setGpuMemoryCapacity,
         value: gpuMemoryCapacity,
@@ -102,6 +106,7 @@ function GPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "gpuTdp",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setGpuTdp,
         value: gpuTdp,

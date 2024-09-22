@@ -195,7 +195,6 @@ function AccessibleButton({ attributes, uniqueId }: AccessibleButtonProps) {
 
   return (
     <Container
-      w={100}
       key={`${name}-${index?.toString() ?? ""}-${uniqueId ?? ""}`}
     >
       {isTooltip && enabledScreenreaderText?.length

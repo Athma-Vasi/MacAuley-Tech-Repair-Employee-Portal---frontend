@@ -40,6 +40,7 @@ function Speaker({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "speakerColor",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setSpeakerColor,
         value: speakerColor,
@@ -52,6 +53,7 @@ function Speaker({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "speakerFrequencyResponse",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setSpeakerFrequencyResponse,
         value: speakerFrequencyResponse,
@@ -76,6 +78,7 @@ function Speaker({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "speakerTotalWattage",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setSpeakerTotalWattage,
         value: speakerTotalWattage,

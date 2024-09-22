@@ -50,6 +50,7 @@ function Webcam({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "webcamColor",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setWebcamColor,
         value: webcamColor,

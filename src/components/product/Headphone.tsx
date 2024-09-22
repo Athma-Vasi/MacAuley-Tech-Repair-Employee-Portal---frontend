@@ -42,6 +42,7 @@ function Headphone({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "headphoneColor",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setHeadphoneColor,
         value: headphoneColor,
@@ -54,6 +55,7 @@ function Headphone({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "headphoneDriver",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setHeadphoneDriver,
         value: headphoneDriver,
@@ -66,6 +68,7 @@ function Headphone({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "headphoneFrequencyResponse",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setHeadphoneFrequencyResponse,
         value: headphoneFrequencyResponse,
@@ -78,6 +81,7 @@ function Headphone({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "headphoneImpedance",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setHeadphoneImpedance,
         value: headphoneImpedance,

@@ -1,4 +1,4 @@
-import { Flex, Grid, Group, Highlight, Text } from "@mantine/core";
+import { Flex, Grid, Group, Highlight, Space, Text } from "@mantine/core";
 import { TbCheck, TbExclamationCircle, TbInfoCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -90,7 +90,7 @@ function createAccessibleValueValidationTextElements({
       id={`${name}-invalid`}
       style={{
         display: isPopoverOpened && valueBuffer && !isValueBufferValid
-          ? "block"
+          ? "inline-block"
           : "none",
       }}
       w="100%"
@@ -189,13 +189,14 @@ function createAccessibleCheckboxSelectionsTextElements({
 
   const selectedTextElement = (
     <Text
+      aria-live="polite"
+      color={darkSchemeGray}
       id={`${name}-selected`}
       style={{ display: checked ? "block" : "none" }}
-      color={darkSchemeGray}
-      w="100%"
-      aria-live="polite"
     >
       {isIcons ? selectedIcon : null} {selectedText}
+
+      <Space h="xs" />
     </Text>
   );
 
@@ -207,11 +208,10 @@ function createAccessibleCheckboxSelectionsTextElements({
 
   const deselectedTextElement = (
     <Text
+      aria-live="polite"
+      color={theme === "default" ? darkSchemeGray : grayColorShade}
       id={`${name}-deselected`}
       style={{ display: !checked ? "block" : "none" }}
-      color={theme === "default" ? darkSchemeGray : grayColorShade}
-      w="100%"
-      aria-live="polite"
     >
       {isIcons ? deselectedIcon : null} {deselectedText}
     </Text>

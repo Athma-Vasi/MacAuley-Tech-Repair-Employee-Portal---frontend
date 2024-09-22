@@ -233,8 +233,9 @@ function AccessibleTextInput<
 
   return (
     <Container
-      style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
       key={`${name}-${value}-${uniqueId}`}
+      style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
+      w="100%"
     >
       <Popover
         opened={isPopoverOpened}

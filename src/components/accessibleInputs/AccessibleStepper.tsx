@@ -215,7 +215,7 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
   );
 
   return (
-    <div className={classes.wrapper}>
+    <div className={classes.container}>
       <Stack>
         {title ? <Title order={4}>{title}</Title> : null}
         {stepper}

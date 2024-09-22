@@ -44,6 +44,7 @@ function Display({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "displayAspectRatio",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setDisplayAspectRatio,
         value: displayAspectRatio,
@@ -68,6 +69,7 @@ function Display({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "displayRefreshRate",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setDisplayRefreshRate,
         value: displayRefreshRate,
@@ -80,6 +82,7 @@ function Display({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "displayResolutionHorizontal",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setDisplayResolutionHorizontal,
         value: displayResolutionHorizontal,
@@ -92,6 +95,7 @@ function Display({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "displayResolutionVertical",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setDisplayResolutionVertical,
         value: displayResolutionVertical,
@@ -104,6 +108,7 @@ function Display({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "displayResponseTime",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setDisplayResponseTime,
         value: displayResponseTime,
@@ -116,6 +121,7 @@ function Display({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "displaySize",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setDisplaySize,
         value: displaySize,

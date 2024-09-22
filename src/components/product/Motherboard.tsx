@@ -58,6 +58,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardChipset",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardChipset,
         value: motherboardChipset,
@@ -82,6 +83,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardM2Slots",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardM2Slots,
         value: motherboardM2Slots,
@@ -94,6 +96,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardMemoryMaxCapacity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardMemoryMaxCapacity,
         value: motherboardMemoryMaxCapacity,
@@ -118,6 +121,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardMemorySlots",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardMemorySlots,
         value: motherboardMemorySlots,
@@ -142,6 +146,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardPcie3Slots",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardPcie3Slots,
         value: motherboardPcie3Slots,
@@ -154,6 +159,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardPcie4Slots",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardPcie4Slots,
         value: motherboardPcie4Slots,
@@ -166,6 +172,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardPcie5Slots",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardPcie5Slots,
         value: motherboardPcie5Slots,
@@ -178,6 +185,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardSataPorts",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardSataPorts,
         value: motherboardSataPorts,
@@ -190,6 +198,7 @@ function Motherboard({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "motherboardSocket",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMotherboardSocket,
         value: motherboardSocket,

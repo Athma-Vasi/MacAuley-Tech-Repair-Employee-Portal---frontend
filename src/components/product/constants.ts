@@ -70,13 +70,15 @@ function createProductStepperPages(): StepperPage[] {
   const accessoryFieldName1: StepperChild = {
     inputType: "text",
     name: "Additional Field Name 1",
-    validationKey: "textAreaInput",
+    validationKey: "objectKey",
+    isRequired: false,
   };
 
   const accessoryFieldValue1: StepperChild = {
     inputType: "text",
     name: "Additional Field Value 1",
     validationKey: "textAreaInput",
+    isRequired: false,
   };
 
   const additionalComments: StepperChild = {

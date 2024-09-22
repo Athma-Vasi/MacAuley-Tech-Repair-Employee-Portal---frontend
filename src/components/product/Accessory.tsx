@@ -36,6 +36,7 @@ function Accessory({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "accessoryColor",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setAccessoryColor,
         value: accessoryColor,
@@ -60,6 +61,7 @@ function Accessory({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "accessoryType",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setAccessoryType,
         value: accessoryType,

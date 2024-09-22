@@ -37,12 +37,18 @@ type AccessibleSelectInputProps<
   Payload extends string = string,
 > = {
   attributes: AccessibleSelectInputAttributes<ValidValueAction, Payload>;
+  uniqueId?: string;
 };
 
 function AccessibleSelectInput<
   ValidValueAction extends string = string,
   Payload extends string = string,
->({ attributes }: AccessibleSelectInputProps<ValidValueAction, Payload>) {
+>(
+  { attributes, uniqueId }: AccessibleSelectInputProps<
+    ValidValueAction,
+    Payload
+  >,
+) {
   const {
     data,
     describedBy = "",
@@ -64,10 +70,12 @@ function AccessibleSelectInput<
 
   return (
     <Container
+      key={`container-${name}-${uniqueId}`}
       style={{
         minWidth: INPUT_MIN_WIDTH,
         maxWidth: INPUT_MAX_WIDTH,
       }}
+      w="100%"
     >
       <NativeSelect
         aria-describedby={describedBy}

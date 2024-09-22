@@ -36,6 +36,7 @@ function Case({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "caseColor",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setCaseColor,
         value: caseColor,

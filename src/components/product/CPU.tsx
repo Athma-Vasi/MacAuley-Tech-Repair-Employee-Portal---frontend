@@ -50,6 +50,7 @@ function CPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "cpuCores",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setCpuCores,
         value: cpuCores,
@@ -62,6 +63,7 @@ function CPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "cpuFrequency",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setCpuFrequency,
         value: cpuFrequency,
@@ -74,6 +76,7 @@ function CPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "cpuL1CacheCapacity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setCpuL1CacheCapacity,
         value: cpuL1CacheCapacity,
@@ -98,6 +101,7 @@ function CPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "cpuL2CacheCapacity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setCpuL2CacheCapacity,
         value: cpuL2CacheCapacity,
@@ -122,6 +126,7 @@ function CPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "cpuL3CacheCapacity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setCpuL3CacheCapacity,
         value: cpuL3CacheCapacity,
@@ -146,6 +151,7 @@ function CPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "cpuSocket",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setCpuSocket,
         value: cpuSocket,
@@ -158,6 +164,7 @@ function CPU({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "cpuWattage",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setCpuWattage,
         value: cpuWattage,

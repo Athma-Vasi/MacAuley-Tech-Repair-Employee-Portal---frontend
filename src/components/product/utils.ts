@@ -104,110 +104,93 @@ function createPagesForStepper(
 }
 
 function returnCreateProductPageElements(props: {
-  accessoryPage: JSX.Element;
-  casePage: JSX.Element;
-  cpuPage: JSX.Element;
+  Accessory: JSX.Element;
+  "Computer Case": JSX.Element;
+  "Central Processing Unit (CPU)": JSX.Element;
   desktopComponents: Array<ProductCategory>;
-  displayPage: JSX.Element;
+  Display: JSX.Element;
   firstPage: JSX.Element;
-  gpuPage: JSX.Element;
-  headphonePage: JSX.Element;
-  keyboardPage: JSX.Element;
-  microphonePage: JSX.Element;
-  motherboardPage: JSX.Element;
-  mousePage: JSX.Element;
+  "Graphics Processing Unit (GPU)": JSX.Element;
+  Headphone: JSX.Element;
+  Keyboard: JSX.Element;
+  Microphone: JSX.Element;
+  Motherboard: JSX.Element;
+  Mouse: JSX.Element;
   productCategory: ProductCategory;
   productCategoryPage: JSX.Element;
-  psuPage: JSX.Element;
-  ramPage: JSX.Element;
-  speakerPage: JSX.Element;
-  storagePage: JSX.Element;
-  webcamPage: JSX.Element;
+  "Power Supply Unit (PSU)": JSX.Element;
+  "Memory (RAM)": JSX.Element;
+  Speaker: JSX.Element;
+  Storage: JSX.Element;
+  Webcam: JSX.Element;
 }) {
   const {
-    accessoryPage,
-    casePage,
-    cpuPage,
-    desktopComponents = props.desktopComponents.map((component) =>
-      component.toLowerCase()
-    ),
-    displayPage,
     firstPage,
-    gpuPage,
-    headphonePage,
-    keyboardPage,
-    microphonePage,
-    motherboardPage,
-    mousePage,
+    desktopComponents,
     productCategory,
     productCategoryPage,
-    psuPage,
-    ramPage,
-    speakerPage,
-    storagePage,
-    webcamPage,
   } = props;
 
   const firstTwoPages = [firstPage, productCategoryPage];
 
   if (productCategory === "Accessory") {
-    return [...firstTwoPages, accessoryPage];
+    return [...firstTwoPages, props.Accessory];
   }
 
   if (productCategory === "Computer Case") {
-    return [...firstTwoPages, casePage];
+    return [...firstTwoPages, props["Computer Case"]];
   }
 
   if (productCategory === "Central Processing Unit (CPU)") {
-    return [...firstTwoPages, cpuPage];
+    return [...firstTwoPages, props["Central Processing Unit (CPU)"]];
   }
 
   if (productCategory === "Display") {
-    return [...firstTwoPages, displayPage];
+    return [...firstTwoPages, props.Display];
   }
 
   if (productCategory === "Graphics Processing Unit (GPU)") {
-    return [...firstTwoPages, gpuPage];
+    return [...firstTwoPages, props["Graphics Processing Unit (GPU)"]];
   }
 
   if (productCategory === "Headphone") {
-    return [...firstTwoPages, headphonePage];
+    return [...firstTwoPages, props.Headphone];
   }
 
   if (productCategory === "Keyboard") {
-    return [...firstTwoPages, keyboardPage];
+    return [...firstTwoPages, props.Keyboard];
   }
 
   if (productCategory === "Microphone") {
-    return [...firstTwoPages, microphonePage];
+    return [...firstTwoPages, props.Microphone];
   }
 
   if (productCategory === "Motherboard") {
-    return [...firstTwoPages, motherboardPage];
+    return [...firstTwoPages, props.Motherboard];
   }
 
   if (productCategory === "Mouse") {
-    return [...firstTwoPages, mousePage];
+    return [...firstTwoPages, props.Mouse];
   }
 
   if (productCategory === "Power Supply Unit (PSU)") {
-    return [...firstTwoPages, psuPage];
+    return [...firstTwoPages, props["Power Supply Unit (PSU)"]];
   }
 
   if (productCategory === "Memory (RAM)") {
-    return [...firstTwoPages, ramPage];
+    return [...firstTwoPages, props["Memory (RAM)"]];
   }
 
   if (productCategory === "Speaker") {
-    return [...firstTwoPages, speakerPage];
+    return [...firstTwoPages, props.Speaker];
   }
 
   if (productCategory === "Storage") {
-    return [...firstTwoPages, storagePage];
+    return [...firstTwoPages, props.Storage];
   }
 
   if (productCategory === "Webcam") {
-    return [...firstTwoPages, webcamPage];
+    return [...firstTwoPages, props.Webcam];
   }
 
   // desktop computer
@@ -217,15 +200,11 @@ function returnCreateProductPageElements(props: {
     ),
   ) as Record<string, JSX.Element>;
 
-  console.group("returnCreateProductPageElements");
-  console.log("nonJSXExcluded", nonJSXExcluded);
-  console.groupEnd();
-
   const desktopComputerPages = [
     ...firstTwoPages,
     ...Object.entries(nonJSXExcluded).reduce<Array<JSX.Element>>(
       (acc, [key, value]) => {
-        if (!desktopComponents.includes(key.toLowerCase() as ProductCategory)) {
+        if (!desktopComponents.includes(key as ProductCategory)) {
           acc.push(value);
         }
 

@@ -48,6 +48,7 @@ function Microphone({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "microphoneColor",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMicrophoneColor,
         value: microphoneColor,
@@ -60,6 +61,7 @@ function Microphone({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "microphoneFrequencyResponse",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMicrophoneFrequencyResponse,
         value: microphoneFrequencyResponse,

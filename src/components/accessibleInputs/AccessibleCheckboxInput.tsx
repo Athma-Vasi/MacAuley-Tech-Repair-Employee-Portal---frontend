@@ -1,6 +1,13 @@
-import { Checkbox, type MantineSize, Text } from "@mantine/core";
+import {
+  Checkbox,
+  Container,
+  type MantineSize,
+  Stack,
+  Text,
+} from "@mantine/core";
 import type { ChangeEvent, ReactNode, RefObject } from "react";
 
+import { INPUT_MAX_WIDTH, INPUT_MIN_WIDTH } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import type {
   CheckboxRadioSelectData,
@@ -46,6 +53,7 @@ type AccessibleCheckboxInputSingleProps<
     ValidValueAction,
     InvalidValueAction
   >;
+  uniqueId?: string;
 };
 
 function AccessibleCheckboxInputSingle<
@@ -53,6 +61,7 @@ function AccessibleCheckboxInputSingle<
   InvalidValueAction extends string = string,
 >({
   attributes,
+  uniqueId,
 }: AccessibleCheckboxInputSingleProps<ValidValueAction, InvalidValueAction>) {
   const {
     checked,
@@ -90,43 +99,53 @@ function AccessibleCheckboxInputSingle<
     });
 
   return (
-    <Checkbox
-      aria-describedby={checked
-        // id of selectedTextElement
-        ? `${name}-selected`
-        // id of deselectedTextElement
-        : `${name}-deselected`}
-      aria-label={name}
-      aria-required={required}
-      checked={checked}
-      description={checked ? selectedTextElement : deselectedTextElement}
-      disabled={disabled}
-      key={key}
-      label={label}
-      name={name}
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        parentDispatch({
-          action: validValueAction,
-          payload: event.currentTarget.checked,
-        });
-
-        parentDispatch({
-          action: invalidValueAction,
-          payload: {
-            page,
-            kind: checked ? "add" : "delete",
-          },
-        });
-
-        if (onChange) {
-          onChange(event);
-        }
+    <Container
+      key={`container-${name}-${uniqueId}`}
+      style={{
+        minWidth: INPUT_MIN_WIDTH,
+        maxWidth: INPUT_MAX_WIDTH,
       }}
-      ref={ref}
-      required={required}
-      size={size}
-      value={value}
-    />
+      w="100%"
+    >
+      <Checkbox
+        aria-describedby={checked
+          // id of selectedTextElement
+          ? `${name}-selected`
+          // id of deselectedTextElement
+          : `${name}-deselected`}
+        aria-label={name}
+        aria-required={required}
+        checked={checked}
+        description={checked ? selectedTextElement : deselectedTextElement}
+        disabled={disabled}
+        key={key}
+        label={label}
+        name={name}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+          parentDispatch({
+            action: validValueAction,
+            payload: event.currentTarget.checked,
+          });
+
+          parentDispatch({
+            action: invalidValueAction,
+            payload: {
+              page,
+              kind: checked ? "add" : "delete",
+            },
+          });
+
+          if (onChange) {
+            onChange(event);
+          }
+        }}
+        ref={ref}
+        required={required}
+        size={size}
+        style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
+        value={value}
+      />
+    </Container>
   );
 }
 
@@ -160,13 +179,17 @@ type AccessibleCheckboxInputGroupProps<
   Payload extends string = string,
 > = {
   attributes: AccessibleCheckboxInputGroupAttributes<ValidValueAction, Payload>;
+  uniqueId?: string;
 };
 
 function AccessibleCheckboxInputGroup<
   ValidValueAction extends string = string,
   Payload extends string = string,
 >(
-  { attributes }: AccessibleCheckboxInputGroupProps<ValidValueAction, Payload>,
+  { attributes, uniqueId }: AccessibleCheckboxInputGroupProps<
+    ValidValueAction,
+    Payload
+  >,
 ) {
   const {
     disabledValuesSet = new Set(),
@@ -198,44 +221,55 @@ function AccessibleCheckboxInputGroup<
     });
 
   return (
-    <Checkbox.Group
-      aria-describedby={value.length > 0
-        // id of selectedTextElement
-        ? `${name}-selected`
-        // id of deselectedTextElement
-        : `${name}-deselected`}
-      aria-label={name}
-      aria-required={required}
-      description={value.length > 0
-        ? selectedTextElement
-        : deselectedTextElement}
-      key={key}
-      label={label}
-      onChange={(value: Payload[]) => {
-        parentDispatch({
-          action: validValueAction,
-          payload: value,
-        });
-
-        onChange?.(value);
+    <Container
+      key={`container-${name}-${uniqueId}`}
+      style={{
+        minWidth: INPUT_MIN_WIDTH,
+        maxWidth: INPUT_MAX_WIDTH,
       }}
-      ref={ref}
-      required={required}
-      size={size}
-      value={value}
-      withAsterisk={withAsterisk}
+      w="100%"
     >
-      {inputData?.map(({ value, label }, idx) => (
-        <Checkbox
-          disabled={disabledValuesSet.has(value) ||
-            disabledValuesSet.has(label)}
-          key={`${value}-${idx.toString()}`}
-          label={<Text>{label}</Text>}
-          name={value}
-          value={value}
-        />
-      ))}
-    </Checkbox.Group>
+      <Checkbox.Group
+        aria-describedby={value.length > 0
+          // id of selectedTextElement
+          ? `${name}-selected`
+          // id of deselectedTextElement
+          : `${name}-deselected`}
+        aria-label={name}
+        aria-required={required}
+        description={value.length > 0
+          ? selectedTextElement
+          : deselectedTextElement}
+        key={key}
+        label={label}
+        onChange={(value: Payload[]) => {
+          parentDispatch({
+            action: validValueAction,
+            payload: value,
+          });
+
+          onChange?.(value);
+        }}
+        ref={ref}
+        required={required}
+        size={size}
+        value={value}
+        withAsterisk={withAsterisk}
+      >
+        <Stack>
+          {inputData?.map(({ value, label }, idx) => (
+            <Checkbox
+              disabled={disabledValuesSet.has(value) ||
+                disabledValuesSet.has(label)}
+              key={`${value}-${idx.toString()}`}
+              label={<Text>{label}</Text>}
+              name={value}
+              value={value}
+            />
+          ))}
+        </Stack>
+      </Checkbox.Group>
+    </Container>
   );
 }
 

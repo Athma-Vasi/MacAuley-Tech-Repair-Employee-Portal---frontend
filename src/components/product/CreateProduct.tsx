@@ -1,6 +1,5 @@
-import { Container, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useReducer } from "react";
-import { logState } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleCheckboxInputGroup } from "../accessibleInputs/AccessibleCheckboxInput";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
@@ -495,25 +494,25 @@ function CreateProduct() {
   );
 
   const pageElements = returnCreateProductPageElements({
-    accessoryPage,
-    casePage,
-    cpuPage,
+    Accessory: accessoryPage,
+    "Computer Case": casePage,
+    "Central Processing Unit (CPU)": cpuPage,
     desktopComponents,
-    displayPage,
+    Display: displayPage,
     firstPage,
-    gpuPage,
-    headphonePage,
-    keyboardPage,
-    microphonePage,
-    motherboardPage,
-    mousePage,
+    "Graphics Processing Unit (GPU)": gpuPage,
+    Headphone: headphonePage,
+    Keyboard: keyboardPage,
+    Microphone: microphonePage,
+    Motherboard: motherboardPage,
+    Mouse: mousePage,
     productCategory,
     productCategoryPage,
-    psuPage,
-    ramPage,
-    speakerPage,
-    storagePage,
-    webcamPage,
+    "Power Supply Unit (PSU)": psuPage,
+    "Memory (RAM)": ramPage,
+    Speaker: speakerPage,
+    Storage: storagePage,
+    Webcam: webcamPage,
   });
 
   const stepper = (
@@ -536,12 +535,7 @@ function CreateProduct() {
     />
   );
 
-  logState({
-    state: createProductState,
-    groupLabel: "Create Product State",
-  });
-
-  return <Container w={700}>{stepper}</Container>;
+  return stepper;
 }
 
 export default CreateProduct;

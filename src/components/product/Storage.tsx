@@ -54,6 +54,7 @@ function Storage({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "storageCacheCapacity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setStorageCacheCapacity,
         value: storageCacheCapacity,
@@ -78,6 +79,7 @@ function Storage({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "storageCapacity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setStorageCapacity,
         value: storageCapacity,

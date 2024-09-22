@@ -5,9 +5,9 @@ import type {
 } from "../../types";
 import type { ProductCategory } from "../dashboard/types";
 import type { CreateProductAction } from "./actions";
+import { PRODUCT_CATEGORY_PAGE_TABLE } from "./constants";
 import type {
   AdditionalFieldsDelete,
-  AdditionalFieldsFormDataPayload,
   AdditionalFieldsInsert,
   AdditionalFieldsPayload,
   AdditionalFieldsSlideDown,
@@ -106,10 +106,10 @@ const createProductReducersMap = new Map<
 
   // page 2
   [createProductAction.addStepperChild, addStepperChild_createProductReducer],
-  // [
-  //   createProductAction.modifyAdditionalFieldsMap,
-  //   modifyAdditionalFieldsMap_createProductReducer,
-  // ],
+  [
+    createProductAction.modifyAdditionalFieldsMap,
+    modifyAdditionalFieldsMap_createProductReducer,
+  ],
   // [
   //   createProductAction.setAdditionalFieldsFormDataMap,
   //   setAdditionalFieldsFormDataMap_createProductReducer,
@@ -610,6 +610,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
 ): CreateProductState {
   const { operation, productCategory } = dispatch
     .payload as AdditionalFieldsPayload;
+  const stepperPages = structuredClone(state.stepperPages);
   const clonedAdditionalFieldsMap = new Map(state.additionalFieldsMap);
   const additionalFields = structuredClone(
     clonedAdditionalFieldsMap.get(productCategory),
@@ -632,9 +633,27 @@ function modifyAdditionalFieldsMap_createProductReducer(
         additionalFields,
       );
 
+      const additionalFieldName: StepperChild = {
+        inputType: "text",
+        name: `Additional Field Name ${additionalFields.length + 1}`,
+        validationKey: "objectKey",
+      };
+
+      const additionalFieldValue: StepperChild = {
+        inputType: "text",
+        name: `Additional Field Value ${additionalFields.length + 1}`,
+        validationKey: "textAreaInput",
+      };
+
+      stepperPages[PRODUCT_CATEGORY_PAGE_TABLE[productCategory]].children.push(
+        additionalFieldName,
+        additionalFieldValue,
+      );
+
       return {
         ...state,
         additionalFieldsMap,
+        stepperPages,
       };
     }
 

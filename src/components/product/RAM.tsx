@@ -46,6 +46,7 @@ function RAM({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "ramColor",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setRamColor,
         value: ramColor,
@@ -58,6 +59,7 @@ function RAM({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "ramDataRate",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setRamDataRate,
         value: ramDataRate,
@@ -70,6 +72,7 @@ function RAM({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "ramModulesCapacity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setRamModulesCapacity,
         value: ramModulesCapacity,
@@ -94,6 +97,7 @@ function RAM({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "ramModulesQuantity",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setRamModulesQuantity,
         value: ramModulesQuantity,
@@ -106,6 +110,7 @@ function RAM({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "ramTiming",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setRamTiming,
         value: ramTiming,
@@ -130,6 +135,7 @@ function RAM({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "ramVoltage",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setRamVoltage,
         value: ramVoltage,

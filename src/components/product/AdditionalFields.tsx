@@ -1,5 +1,6 @@
 import { Group, Stack } from "@mantine/core";
 
+import { INPUT_MAX_WIDTH, INPUT_MIN_WIDTH } from "../../constants/data";
 import type { StepperChild, StepperPage } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
@@ -49,7 +50,7 @@ function AdditionalFields({
           const additionalFieldName: StepperChild = {
             inputType: "text",
             name: `Additional Field Name ${additionalFields.length + 1}`,
-            validationKey: "textAreaInput",
+            validationKey: "objectKey",
           };
 
           parentDispatch({
@@ -232,7 +233,11 @@ function AdditionalFields({
     );
 
     return (
-      <Stack key={`${productCategory}-${index.toString()}`}>
+      <Stack
+        key={`${productCategory}-${index.toString()}`}
+        style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
+        w="100%"
+      >
         <Group>
           {fieldNameTextAreaInput}
           {fieldValueTextAreaInput}

@@ -643,7 +643,7 @@ const CHECKBOX_SWITCH_DATA: CheckboxRadioSelectData = [
   { value: "false", label: "No" },
 ];
 
-const INPUT_MIN_WIDTH = 350;
+const INPUT_MIN_WIDTH = 325;
 const INPUT_MAX_WIDTH = 410;
 
 export {

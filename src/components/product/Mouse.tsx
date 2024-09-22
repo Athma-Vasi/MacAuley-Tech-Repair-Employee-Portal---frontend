@@ -40,6 +40,7 @@ function Mouse({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "mouseButtons",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMouseButtons,
         value: mouseButtons,
@@ -52,6 +53,7 @@ function Mouse({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "mouseColor",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMouseColor,
         value: mouseColor,
@@ -64,6 +66,7 @@ function Mouse({
       attributes={{
         invalidValueAction: parentAction.setPageInError,
         name: "mouseDpi",
+        parentDispatch,
         stepperPages,
         validValueAction: parentAction.setMouseDpi,
         value: mouseDpi,
