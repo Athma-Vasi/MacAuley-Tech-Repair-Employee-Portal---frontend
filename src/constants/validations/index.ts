@@ -702,13 +702,15 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      // [
-      //   /^(?![0-9])[^"'\s\\]$/,
-      //   "Must not start with a digit or contain quotes, spaces, or backslashes.",
-      // ],
-      [/^(?![0-9])/, "Must not start with a digit."],
-      [/[^"'\s\\]/, "Must not contain quotes, spaces, or backslashes."],
-      [/^.{1,75}$/, "Must be between 1 and 75 characters length."],
+      [/^\d/, "Must not start with a digit."],
+      [/["']/, "Must not contain quotes."],
+      [/[ ]/, "Must not contain spaces."],
+      [/\\/, "Must not contain backslashes."],
+      [
+        // /^.{0,0}$|^.{76,}$/,
+        /^.{76,}$/,
+        "Must be between 1 and 75 characters length.",
+      ],
     ],
   },
 

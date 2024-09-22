@@ -766,21 +766,29 @@ function returnValidationTexts({
       const validation = validationFunctionsTable[validationKey ?? "allowAll"];
       const { partials } = validation;
 
-      // console.group("returnValidationTexts");
-      // console.log("inputName", inputName);
-      // console.log("validationKey", validationKey);
-      // console.log("validation", validation);
-      // console.groupEnd();
+      console.group("returnValidationTexts");
+      console.log("inputName", inputName);
+      console.log("validationKey", validationKey);
+      console.log("validation", validation);
+      console.groupEnd();
 
       const partialInvalidText = partials.length
         ? partials
-          .map(([regexOrFunc, errorMessage]) =>
-            typeof regexOrFunc === "function"
-              ? regexOrFunc(valueBuffer) ? "" : errorMessage
-              : regexOrFunc.test(valueBuffer)
-              ? ""
-              : errorMessage
-          )
+          .map(([regexOrFunc, errorMessage]) => {
+            if (typeof regexOrFunc === "function") {
+              return regexOrFunc(valueBuffer) ? errorMessage : "";
+            }
+
+            console.log("regexOrFunc", regexOrFunc);
+            console.log("valueBuffer", valueBuffer);
+            console.log(
+              "regexOrFunc.test(valueBuffer)",
+              regexOrFunc.test(valueBuffer),
+            );
+            console.log("errorMessage", errorMessage);
+
+            return regexOrFunc.test(valueBuffer) ? errorMessage : "";
+          })
           .join(" ")
         : "";
 
@@ -794,6 +802,44 @@ function returnValidationTexts({
 
     return validationTextsAcc;
   }, initialValidationTexts);
+}
+
+function returnPartialValidations({
+  name,
+  stepperPages,
+  validationFunctionsTable,
+}: {
+  name: string;
+  stepperPages: StepperPage[];
+  validationFunctionsTable: ValidationFunctionsTable;
+}): { partials: Validation["partials"] } {
+  const initial = { partials: [] };
+
+  return stepperPages.reduce<{ partials: Validation["partials"] }>(
+    (regexAcc, page) => {
+      const { children, kind } = page;
+
+      if (kind && kind === "review") {
+        return regexAcc;
+      }
+
+      children.forEach((child) => {
+        const { name: inputName, validationKey } = child;
+
+        if (inputName !== name) {
+          return;
+        }
+
+        const validation =
+          validationFunctionsTable[validationKey ?? "allowAll"];
+        const { partials } = validation;
+        regexAcc.partials = partials;
+      });
+
+      return regexAcc;
+    },
+    initial,
+  );
 }
 
 function returnFullValidation({
@@ -920,5 +966,6 @@ export {
   createAccessibleValueValidationTextElements,
   returnFullValidation,
   returnHighlightedText,
+  returnPartialValidations,
   returnValidationTexts,
 };

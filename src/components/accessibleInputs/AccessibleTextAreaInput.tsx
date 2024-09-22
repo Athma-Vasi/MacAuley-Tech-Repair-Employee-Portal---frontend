@@ -39,7 +39,7 @@ import type {
 } from "../product/dispatch";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullValidation,
+  returnPartialValidations,
   returnValidationTexts,
 } from "./utils";
 
@@ -164,7 +164,7 @@ function AccessibleTextAreaInput<
     placeholder = "",
     productDispatchInfo,
     ref = null,
-    required = true,
+    required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
@@ -212,14 +212,26 @@ function AccessibleTextAreaInput<
     )
     : null;
 
-  const { full } = returnFullValidation({
+  // const { full } = returnFullValidation({
+  //   name,
+  //   stepperPages,
+  //   validationFunctionsTable,
+  // });
+  // const isValueBufferValid = typeof full === "function"
+  //   ? full(valueBuffer)
+  //   : full.test(valueBuffer);
+
+  const { partials } = returnPartialValidations({
     name,
     stepperPages,
     validationFunctionsTable,
   });
-  const isValueBufferValid = typeof full === "function"
-    ? full(valueBuffer)
-    : full.test(valueBuffer);
+
+  const isValueBufferValid = partials.every(([regexOrFunc, _validationText]) =>
+    typeof regexOrFunc === "function"
+      ? !regexOrFunc(valueBuffer)
+      : !regexOrFunc.test(valueBuffer)
+  );
 
   const leftIcon = isValueBufferValid
     ? (
@@ -238,7 +250,7 @@ function AccessibleTextAreaInput<
   console.log("name:", name);
   console.log("stepperPages:", stepperPages);
   console.log("validationFunctionsTable:", validationFunctionsTable);
-  console.log("fullValidation:", full);
+  console.log("partials:", partials);
   console.log("valueBuffer:", valueBuffer);
   console.log("isValueBufferValid:", isValueBufferValid);
   console.log("validationTexts:", validationTexts);
