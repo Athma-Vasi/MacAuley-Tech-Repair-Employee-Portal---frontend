@@ -103,7 +103,7 @@ function createPagesForStepper(
   }, []);
 }
 
-function returnCreateProductPageElements(props: {
+function returnCreateProductPageElements(input: {
   Accessory: JSX.Element;
   "Computer Case": JSX.Element;
   "Central Processing Unit (CPU)": JSX.Element;
@@ -113,13 +113,13 @@ function returnCreateProductPageElements(props: {
   "Graphics Processing Unit (GPU)": JSX.Element;
   Headphone: JSX.Element;
   Keyboard: JSX.Element;
+  "Memory (RAM)": JSX.Element;
   Microphone: JSX.Element;
   Motherboard: JSX.Element;
   Mouse: JSX.Element;
   productCategory: ProductCategory;
   productCategoryPage: JSX.Element;
   "Power Supply Unit (PSU)": JSX.Element;
-  "Memory (RAM)": JSX.Element;
   Speaker: JSX.Element;
   Storage: JSX.Element;
   Webcam: JSX.Element;
@@ -129,74 +129,75 @@ function returnCreateProductPageElements(props: {
     desktopComponents,
     productCategory,
     productCategoryPage,
-  } = props;
+  } = input;
 
   const firstTwoPages = [firstPage, productCategoryPage];
 
   if (productCategory === "Accessory") {
-    return [...firstTwoPages, props.Accessory];
+    return [...firstTwoPages, input.Accessory];
   }
 
   if (productCategory === "Computer Case") {
-    return [...firstTwoPages, props["Computer Case"]];
+    return [...firstTwoPages, input["Computer Case"]];
   }
 
   if (productCategory === "Central Processing Unit (CPU)") {
-    return [...firstTwoPages, props["Central Processing Unit (CPU)"]];
+    return [...firstTwoPages, input["Central Processing Unit (CPU)"]];
   }
 
   if (productCategory === "Display") {
-    return [...firstTwoPages, props.Display];
+    return [...firstTwoPages, input.Display];
   }
 
   if (productCategory === "Graphics Processing Unit (GPU)") {
-    return [...firstTwoPages, props["Graphics Processing Unit (GPU)"]];
+    return [...firstTwoPages, input["Graphics Processing Unit (GPU)"]];
   }
 
   if (productCategory === "Headphone") {
-    return [...firstTwoPages, props.Headphone];
+    return [...firstTwoPages, input.Headphone];
   }
 
   if (productCategory === "Keyboard") {
-    return [...firstTwoPages, props.Keyboard];
-  }
-
-  if (productCategory === "Microphone") {
-    return [...firstTwoPages, props.Microphone];
-  }
-
-  if (productCategory === "Motherboard") {
-    return [...firstTwoPages, props.Motherboard];
-  }
-
-  if (productCategory === "Mouse") {
-    return [...firstTwoPages, props.Mouse];
-  }
-
-  if (productCategory === "Power Supply Unit (PSU)") {
-    return [...firstTwoPages, props["Power Supply Unit (PSU)"]];
+    return [...firstTwoPages, input.Keyboard];
   }
 
   if (productCategory === "Memory (RAM)") {
-    return [...firstTwoPages, props["Memory (RAM)"]];
+    return [...firstTwoPages, input["Memory (RAM)"]];
+  }
+
+  if (productCategory === "Microphone") {
+    return [...firstTwoPages, input.Microphone];
+  }
+
+  if (productCategory === "Motherboard") {
+    return [...firstTwoPages, input.Motherboard];
+  }
+
+  if (productCategory === "Mouse") {
+    return [...firstTwoPages, input.Mouse];
+  }
+
+  if (productCategory === "Power Supply Unit (PSU)") {
+    return [...firstTwoPages, input["Power Supply Unit (PSU)"]];
   }
 
   if (productCategory === "Speaker") {
-    return [...firstTwoPages, props.Speaker];
+    return [...firstTwoPages, input.Speaker];
   }
 
   if (productCategory === "Storage") {
-    return [...firstTwoPages, props.Storage];
+    return [...firstTwoPages, input.Storage];
   }
 
   if (productCategory === "Webcam") {
-    return [...firstTwoPages, props.Webcam];
+    return [...firstTwoPages, input.Webcam];
   }
 
   // desktop computer
   const nonJSXExcluded = Object.fromEntries(
-    Object.entries(props).filter(([key]) =>
-      key !== "desktopComponents" && key !== "productCategory"
+    Object.entries(input).filter(([key]) =>
+      key !== "desktopComponents" && key !== "productCategory" &&
+      key !== "firstPage" && key !== "productCategoryPage"
     ),
   ) as Record<string, JSX.Element>;
 

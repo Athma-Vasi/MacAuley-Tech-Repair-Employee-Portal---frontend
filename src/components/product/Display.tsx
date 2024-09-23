@@ -43,6 +43,7 @@ function Display({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Aspect Ratio",
         name: "displayAspectRatio",
         parentDispatch,
         stepperPages,
@@ -56,6 +57,7 @@ function Display({
     <AccessibleSelectInput
       attributes={{
         data: DISPLAY_PANEL_TYPE_DATA,
+        label: "Panel Type",
         name: "displayPanelType",
         parentDispatch,
         validValueAction: parentAction.setDisplayPanelType,
@@ -68,6 +70,7 @@ function Display({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Refresh Rate (Hz)",
         name: "displayRefreshRate",
         parentDispatch,
         stepperPages,
@@ -81,6 +84,7 @@ function Display({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Resolution Horizontal (px)",
         name: "displayResolutionHorizontal",
         parentDispatch,
         stepperPages,
@@ -94,6 +98,7 @@ function Display({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Resolution Vertical (px)",
         name: "displayResolutionVertical",
         parentDispatch,
         stepperPages,
@@ -107,6 +112,7 @@ function Display({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Response Time (ms)",
         name: "displayResponseTime",
         parentDispatch,
         stepperPages,
@@ -120,6 +126,7 @@ function Display({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Diagonal Size (inches)",
         name: "displaySize",
         parentDispatch,
         stepperPages,

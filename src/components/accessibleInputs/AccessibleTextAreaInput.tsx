@@ -236,7 +236,7 @@ function AccessibleTextAreaInput<
   const leftIcon = icon ??
     (isValueBufferValid
       ? <TbCheck color={greenColorShade} size={18} />
-      : value.length === 0
+      : valueBuffer.length === 0
       ? null
       : <TbExclamationCircle color={redColorShade} size={18} />);
 

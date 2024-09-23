@@ -46,6 +46,7 @@ function Keyboard({
     <AccessibleSelectInput
       attributes={{
         data: KEYBOARD_BACKLIGHT_DATA,
+        label: "Backlight",
         name: "keyboardBacklight",
         parentDispatch,
         validValueAction: parentAction.setKeyboardBacklight,
@@ -58,6 +59,7 @@ function Keyboard({
     <AccessibleSelectInput
       attributes={{
         data: PERIPHERALS_INTERFACE_DATA,
+        label: "Interface",
         name: "keyboardInterface",
         parentDispatch,
         validValueAction: parentAction.setKeyboardInterface,
@@ -70,6 +72,7 @@ function Keyboard({
     <AccessibleSelectInput
       attributes={{
         data: KEYBOARD_LAYOUT_DATA,
+        label: "Layout",
         name: "keyboardLayout",
         parentDispatch,
         validValueAction: parentAction.setKeyboardLayout,
@@ -82,6 +85,7 @@ function Keyboard({
     <AccessibleSelectInput
       attributes={{
         data: KEYBOARD_SWITCH_DATA,
+        label: "Switch",
         name: "keyboardSwitch",
         parentDispatch,
         validValueAction: parentAction.setKeyboardSwitch,
@@ -103,10 +107,10 @@ function Keyboard({
 
   return (
     <Stack>
+      {keyboardSwitchSelectInput}
+      {keyboardLayoutSelectInput}
       {keyboardBacklightSelectInput}
       {keyboardInterfaceSelectInput}
-      {keyboardLayoutSelectInput}
-      {keyboardSwitchSelectInput}
       {additionalFieldsAndImage}
     </Stack>
   );

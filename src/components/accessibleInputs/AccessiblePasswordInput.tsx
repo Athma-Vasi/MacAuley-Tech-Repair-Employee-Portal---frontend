@@ -14,7 +14,7 @@ import {
   type RefObject,
   useState,
 } from "react";
-import { TbCheck } from "react-icons/tb";
+import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import {
   COLORS_SWATCHES,
@@ -133,7 +133,7 @@ function AccessiblePasswordInput<
   } = useGlobalState();
 
   const {
-    generalColors: { greenColorShade },
+    generalColors: { greenColorShade, redColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const { partials } = returnPartialValidations({
@@ -148,11 +148,12 @@ function AccessiblePasswordInput<
       : regexOrFunc.test(valueBuffer)
   );
 
-  const leftIcon = isValueBufferValid
-    ? (
-      icon ? icon : <TbCheck color={greenColorShade} size={18} />
-    )
-    : null;
+  const leftIcon = icon ??
+    (isValueBufferValid
+      ? <TbCheck color={greenColorShade} size={18} />
+      : valueBuffer.length === 0
+      ? null
+      : <TbExclamationCircle color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,

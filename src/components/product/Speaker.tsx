@@ -39,6 +39,7 @@ function Speaker({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Color",
         name: "speakerColor",
         parentDispatch,
         stepperPages,
@@ -52,6 +53,7 @@ function Speaker({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Frequency Response (Hz - kHz)",
         name: "speakerFrequencyResponse",
         parentDispatch,
         stepperPages,
@@ -65,6 +67,7 @@ function Speaker({
     <AccessibleSelectInput
       attributes={{
         data: SPEAKER_INTERFACE_DATA,
+        label: "Interface",
         name: "speakerInterface",
         parentDispatch,
         validValueAction: parentAction.setSpeakerInterface,
@@ -77,6 +80,7 @@ function Speaker({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Total Wattage (W)",
         name: "speakerTotalWattage",
         parentDispatch,
         stepperPages,
@@ -90,6 +94,7 @@ function Speaker({
     <AccessibleSelectInput
       attributes={{
         data: SPEAKER_TYPE_DATA,
+        label: "Type",
         name: "speakerType",
         parentDispatch,
         validValueAction: parentAction.setSpeakerType,
@@ -111,11 +116,11 @@ function Speaker({
 
   return (
     <Stack>
-      {speakerColorTextInput}
       {speakerFrequencyResponseTextInput}
       {speakerInterfaceSelectInput}
       {speakerTotalWattageTextInput}
       {speakerTypeSelectInput}
+      {speakerColorTextInput}
       {additionalFieldsAndImage}
     </Stack>
   );

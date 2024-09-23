@@ -41,6 +41,7 @@ function Headphone({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Color",
         name: "headphoneColor",
         parentDispatch,
         stepperPages,
@@ -54,6 +55,7 @@ function Headphone({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Driver (mm)",
         name: "headphoneDriver",
         parentDispatch,
         stepperPages,
@@ -67,6 +69,7 @@ function Headphone({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Frequency Response (Hz - kHz)",
         name: "headphoneFrequencyResponse",
         parentDispatch,
         stepperPages,
@@ -80,6 +83,7 @@ function Headphone({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Impedance (ohms)",
         name: "headphoneImpedance",
         parentDispatch,
         stepperPages,
@@ -93,6 +97,7 @@ function Headphone({
     <AccessibleSelectInput
       attributes={{
         data: HEADPHONE_INTERFACE_DATA,
+        label: "Interface",
         name: "headphoneInterface",
         parentDispatch,
         validValueAction: parentAction.setHeadphoneInterface,
@@ -105,6 +110,7 @@ function Headphone({
     <AccessibleSelectInput
       attributes={{
         data: HEADPHONE_TYPE_DATA,
+        label: "Type",
         name: "headphoneType",
         parentDispatch,
         validValueAction: parentAction.setHeadphoneType,

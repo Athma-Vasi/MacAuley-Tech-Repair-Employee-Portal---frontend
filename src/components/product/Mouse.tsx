@@ -39,6 +39,7 @@ function Mouse({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Buttons",
         name: "mouseButtons",
         parentDispatch,
         stepperPages,
@@ -52,6 +53,7 @@ function Mouse({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Color",
         name: "mouseColor",
         parentDispatch,
         stepperPages,
@@ -65,6 +67,7 @@ function Mouse({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Dots Per Inch (DPI)",
         name: "mouseDpi",
         parentDispatch,
         stepperPages,
@@ -78,6 +81,7 @@ function Mouse({
     <AccessibleSelectInput
       attributes={{
         data: PERIPHERALS_INTERFACE_DATA,
+        label: "Interface",
         name: "mouseInterface",
         parentDispatch,
         validValueAction: parentAction.setMouseInterface,
@@ -90,6 +94,7 @@ function Mouse({
     <AccessibleSelectInput
       attributes={{
         data: MOUSE_SENSOR_DATA,
+        label: "Sensor",
         name: "mouseSensor",
         parentDispatch,
         validValueAction: parentAction.setMouseSensor,

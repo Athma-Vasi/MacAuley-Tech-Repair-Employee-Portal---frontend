@@ -53,6 +53,7 @@ function Storage({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Cache Capacity",
         name: "storageCacheCapacity",
         parentDispatch,
         stepperPages,
@@ -66,6 +67,7 @@ function Storage({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_UNIT_DATA,
+        label: "Cache Capacity Unit",
         name: "storageCacheCapacityUnit",
         parentDispatch,
         validValueAction: parentAction.setStorageCacheCapacityUnit,
@@ -78,6 +80,7 @@ function Storage({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Capacity",
         name: "storageCapacity",
         parentDispatch,
         stepperPages,
@@ -91,6 +94,7 @@ function Storage({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_UNIT_DATA,
+        label: "Capacity Unit",
         name: "storageCapacityUnit",
         parentDispatch,
         validValueAction: parentAction.setStorageCapacityUnit,
@@ -103,6 +107,7 @@ function Storage({
     <AccessibleSelectInput
       attributes={{
         data: STORAGE_FORM_FACTOR_DATA,
+        label: "Form Factor",
         name: "storageFormFactor",
         parentDispatch,
         validValueAction: parentAction.setStorageFormFactor,
@@ -115,6 +120,7 @@ function Storage({
     <AccessibleSelectInput
       attributes={{
         data: STORAGE_INTERFACE_DATA,
+        label: "Interface",
         name: "storageInterface",
         parentDispatch,
         validValueAction: parentAction.setStorageInterface,
@@ -127,6 +133,7 @@ function Storage({
     <AccessibleSelectInput
       attributes={{
         data: STORAGE_TYPE_DATA,
+        label: "Type",
         name: "storageType",
         parentDispatch,
         validValueAction: parentAction.setStorageType,

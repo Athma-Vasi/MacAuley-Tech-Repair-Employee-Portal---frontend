@@ -181,7 +181,7 @@ function AdditionalFields({
           disabledScreenreaderText: `Additional field ${
             index + 1
           } is already at the bottom`,
-          enabledScreenreaderText: "Slide additional field down",
+          enabledScreenreaderText: `Slide additional field ${index + 1} down`,
           index,
           kind: "down",
           setIconAsLabel: true,
@@ -210,7 +210,7 @@ function AdditionalFields({
           disabledScreenreaderText: `Additional field ${
             index + 1
           } is already at the top`,
-          enabledScreenreaderText: "Slide additional field up",
+          enabledScreenreaderText: `Slide additional field ${index + 1} up`,
           index,
           kind: "up",
           setIconAsLabel: true,

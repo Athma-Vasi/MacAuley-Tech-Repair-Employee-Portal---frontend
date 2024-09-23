@@ -41,6 +41,7 @@ function PSU({
     <AccessibleSelectInput
       attributes={{
         data: PSU_EFFICIENCY_RATING_DATA,
+        label: "Efficiency Rating",
         name: "psuEfficiency",
         parentDispatch,
         validValueAction: parentAction.setPsuEfficiency,
@@ -53,6 +54,7 @@ function PSU({
     <AccessibleSelectInput
       attributes={{
         data: PSU_FORM_FACTOR_DATA,
+        label: "Form Factor",
         name: "psuFormFactor",
         parentDispatch,
         validValueAction: parentAction.setPsuFormFactor,
@@ -65,6 +67,7 @@ function PSU({
     <AccessibleSelectInput
       attributes={{
         data: PSU_MODULARITY_DATA,
+        label: "Modularity",
         name: "psuModularity",
         parentDispatch,
         validValueAction: parentAction.setPsuModularity,
@@ -77,6 +80,7 @@ function PSU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Wattage (W)",
         name: "psuWattage",
         parentDispatch,
         stepperPages,

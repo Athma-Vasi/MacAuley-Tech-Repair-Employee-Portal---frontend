@@ -94,18 +94,18 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
   colorVariant: [
     [
-      /^[a-zA-Z0-9#()%,.\s-]+$/,
-      "Must contain only valid hexadecimal, rgb(), rgba(), hsl() or hsla(). Ex: #e0e0e0 or rgb(224, 224, 224) or hsla(0, 0%, 88%, 0.5)",
+      /^[a-zA-Z0-9#\s-]+$/,
+      "Must be in hexadecimal string notation (e.g. #ff000044) or a valid color name (e.g. violet).",
     ],
-    [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
+    [/^.{2,9}$/, "Must be between 2 and 9 characters length."],
   ],
 
   cpuFrequency: [
     [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
-    [/^[0-9]{1}(\.[0-9]{1,2})?$/, "Must contain only numbers."],
-    [/^.{1,4}$/, "Must be between 1 and 4 characters length."],
+    [/^[0-9]{1}(\.[0-9]{1,3})?$/, "Must contain only numbers."],
+    [/^.{1,5}$/, "Must be between 1 and 5 characters length."],
     [
-      /^[0-9]{1}(\.[0-9]{1,2})?$/,
+      /^[0-9]{1}(\.[0-9]{1,3})?$/,
       "Must contain only numbers with an optional decimal point.",
     ],
   ],
@@ -199,17 +199,16 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   ],
 
   dimensions: [
-    [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
-    [/^(?!^0*\.?0*$)/, "Must not be empty or consist entirely of zeroes."],
-    [/^[0-9]{1,3}(\.[0-9]{1,2})?$/, "Must contain only numbers."],
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [/^.{1,6}$/, "Must be between 1 and 6 characters length."],
     [
-      /^[0-9]{1,3}(\.[0-9]{1,2})?$/,
+      /^([0-9][.]?)+$/,
       "Must contain only numbers with an optional decimal point.",
     ],
   ],
 
   displayAspectRatio: [
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [
       /^[0-9]{1,2}:[0-9]{1,2}$/,
       "Must be a valid display aspect ratio in the format 00:00.",
@@ -240,6 +239,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   filterValue: [],
 
   frequencyResponse: [
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [
       /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/,
       "Must be a valid speaker frequency response in the format 00Hz-00kHz with optional single spaces.",
@@ -263,21 +263,25 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   ],
 
   largeInteger: [
-    [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [/^[0-9]+$/, "Must contain only numbers."],
     [/^.{1,6}$/, "Must be between 1 and 6 characters length."],
   ],
 
   mediumInteger: [
-    [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [/^[0-9]+$/, "Must contain only numbers."],
     [/^.{1,4}$/, "Must be between 1 and 4 characters length."],
   ],
 
   money: [
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [/^(?=.*[0-9])/, "Must contain at least one number."],
+    [
+      /^([0-9][.]?)+$/,
+      "Must contain only numbers and an optional decimal point.",
+    ],
     [/^.{1,9}$/, "Must be between 1 and 9 characters length."],
-    [/^[0-9]*\\.?[0-9]+$/, "Must contain only numbers and decimal point."],
   ],
 
   name: [
@@ -309,6 +313,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   ],
 
   phoneNumber: [
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [/\d+$/, "Must contain only numbers."],
     [/^.{10,15}$/, "Must be between 10 and 15 characters length."],
   ],
@@ -321,7 +326,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   ],
 
   postalCodeUS: [
-    // [/^\d{5}$/, "Must be a valid US zip code of five digits."],
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [
       /^\d{5}(?:[-]\d{4})?$/,
       "Must be a valid US zip code of the ZIP+4 format with five digits or five digits plus a hyphen, and four additional digits.",
@@ -332,6 +337,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   privacyConsent: [[/^(true)$/, "Must consent to share details."]],
 
   ramTiming: [
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [
       /^[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}$/,
       "Must be a valid RAM timing in the format 00-00-00-00.",
@@ -344,9 +350,12 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
       /^[0-9]{1}[.]{1}[0-9]{1,3}$/,
       "Must only contain numbers and a period in the format 0.0 - 0.000.",
     ],
+    [
+      /^([0-9][.]?)+$/,
+      "Must contain only numbers and an optional decimal point.",
+    ],
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [/^.{1,5}$/, "Must be 3 to 5 characters length."],
-    [/^[0-9]+[.]?[0-9]+?$/, "Must contain only numbers and a period."],
-    [/^[0-9]+[.][0-9]+$/, "Must not be empty or have zero value."],
   ],
 
   search: [
@@ -360,7 +369,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   searchValue: [],
 
   smallInteger: [
-    [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [/^[0-9]+$/, "Must contain only numbers."],
     [/^.{1,2}$/, "Must be between 1 and 2 characters length."],
   ],
@@ -390,11 +399,12 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   ],
 
   timeRailway: [
-    [/^.{4,5}$/i, "Must be between 4 and 5 characters long."],
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [
       /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
       "Must be a valid time in 24-hour format.",
     ],
+    [/^.{4,5}$/i, "Must be between 4 and 5 characters long."],
   ],
 
   url: [
@@ -438,14 +448,16 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
       /^[a-zA-Z0-9-_.]+$/,
       "Can only contain alphanumeric characters, hyphens, underscores, and periods.",
     ],
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     // [/^(?!.*[-]).*$/, "Cannot end with a hyphen."],
     // [/^(?!.*[_]).*$/, "Cannot end with an underscore."],
     // [/^(?!.*[.]).*$/, "Cannot end with a period."],
   ],
 
   weight: [
+    [/^(?!^0*\.?0*$)/, "Must not consist entirely of zeroes."],
     [
-      /^[0-9]{1,3}(\.[0-9]{1,2})?$/,
+      /^([0-9][.]?)+$/,
       "Must contain only numbers with an optional decimal point.",
     ],
     [/^.{1,6}$/, "Must be between 1 and 6 characters length."],

@@ -49,6 +49,7 @@ function Webcam({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Color",
         name: "webcamColor",
         parentDispatch,
         stepperPages,
@@ -62,6 +63,7 @@ function Webcam({
     <AccessibleSelectInput
       attributes={{
         data: WEBCAM_FRAME_RATE_DATA,
+        label: "Frame Rate",
         name: "webcamFrameRate",
         parentDispatch,
         validValueAction: parentAction.setWebcamFrameRate,
@@ -74,6 +76,7 @@ function Webcam({
     <AccessibleSelectInput
       attributes={{
         data: WEBCAM_INTERFACE_DATA,
+        label: "Interface",
         name: "webcamInterface",
         parentDispatch,
         validValueAction: parentAction.setWebcamInterface,
@@ -86,6 +89,7 @@ function Webcam({
     <AccessibleSelectInput
       attributes={{
         data: WEBCAM_MICROPHONE_DATA,
+        label: "Microphone",
         name: "webcamMicrophone",
         parentDispatch,
         validValueAction: parentAction.setWebcamMicrophone,
@@ -98,6 +102,7 @@ function Webcam({
     <AccessibleSelectInput
       attributes={{
         data: WEBCAM_RESOLUTION_DATA,
+        label: "Resolution",
         name: "webcamResolution",
         parentDispatch,
         validValueAction: parentAction.setWebcamResolution,
@@ -119,11 +124,11 @@ function Webcam({
 
   return (
     <Stack>
-      {webcamColorTextInput}
+      {webcamResolutionSelectInput}
       {webcamFrameRateSelectInput}
       {webcamInterfaceSelectInput}
       {webcamMicrophoneSelectInput}
-      {webcamResolutionSelectInput}
+      {webcamColorTextInput}
       {additionalFieldsAndImage}
     </Stack>
   );

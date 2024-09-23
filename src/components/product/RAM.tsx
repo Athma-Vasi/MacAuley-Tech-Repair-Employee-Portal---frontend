@@ -45,6 +45,7 @@ function RAM({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Color",
         name: "ramColor",
         parentDispatch,
         stepperPages,
@@ -58,6 +59,7 @@ function RAM({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Data Rate (MT/s)",
         name: "ramDataRate",
         parentDispatch,
         stepperPages,
@@ -71,6 +73,7 @@ function RAM({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Modules Capacity",
         name: "ramModulesCapacity",
         parentDispatch,
         stepperPages,
@@ -84,6 +87,7 @@ function RAM({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_UNIT_DATA,
+        label: "Capacity Unit",
         name: "ramModulesCapacityUnit",
         parentDispatch,
         validValueAction: parentAction.setRamModulesCapacityUnit,
@@ -96,6 +100,7 @@ function RAM({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Modules Quantity",
         name: "ramModulesQuantity",
         parentDispatch,
         stepperPages,
@@ -109,6 +114,7 @@ function RAM({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Timing (CL)",
         name: "ramTiming",
         parentDispatch,
         stepperPages,
@@ -122,6 +128,7 @@ function RAM({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_TYPE_DATA,
+        label: "Type",
         name: "ramType",
         parentDispatch,
         validValueAction: parentAction.setRamType,
@@ -134,6 +141,7 @@ function RAM({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Voltage (V)",
         name: "ramVoltage",
         parentDispatch,
         stepperPages,
@@ -156,12 +164,12 @@ function RAM({
 
   return (
     <Stack>
-      {ramColorTextInput}
       {ramDataRateTextInput}
       {ramModulesCapacityTextInput}
       {ramModulesCapacityUnitSelectInput}
       {ramModulesQuantityTextInput}
       {ramTimingTextInput}
+      {ramColorTextInput}
       {ramTypeSelectInput}
       {ramVoltageTextInput}
       {additionalFieldsAndImage}

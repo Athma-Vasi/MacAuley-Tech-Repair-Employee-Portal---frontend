@@ -41,6 +41,7 @@ function GPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Boost Clock (MHz)",
         name: "gpuBoostClock",
         parentDispatch,
         stepperPages,
@@ -54,6 +55,7 @@ function GPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Chipset",
         name: "gpuChipset",
         parentDispatch,
         stepperPages,
@@ -67,6 +69,7 @@ function GPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Core Clock (MHz)",
         name: "gpuCoreClock",
         parentDispatch,
         stepperPages,
@@ -80,6 +83,7 @@ function GPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Memory Capacity",
         name: "gpuMemoryCapacity",
         parentDispatch,
         stepperPages,
@@ -93,6 +97,7 @@ function GPU({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_UNIT_DATA,
+        label: "Memory Unit",
         name: "gpuMemoryCapacityUnit",
         parentDispatch,
         validValueAction: parentAction.setGpuMemoryCapacityUnit,
@@ -105,6 +110,7 @@ function GPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "TDP (W)",
         name: "gpuTdp",
         parentDispatch,
         stepperPages,
@@ -127,8 +133,8 @@ function GPU({
 
   return (
     <Stack>
-      {gpuBoostClockTextInput}
       {gpuChipsetTextInput}
+      {gpuBoostClockTextInput}
       {gpuCoreClockTextInput}
       {gpuMemoryCapacityTextInput}
       {gpuMemoryCapacityUnitSelectInput}

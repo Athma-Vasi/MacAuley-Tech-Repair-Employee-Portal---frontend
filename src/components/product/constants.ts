@@ -120,7 +120,7 @@ function createProductStepperPages(): StepperPage[] {
   const cpuCores: StepperChild = {
     inputType: "number",
     name: "cpuCores",
-    validationKey: "smallInteger",
+    validationKey: "mediumInteger",
   };
 
   const cpuFrequency: StepperChild = {
@@ -246,13 +246,13 @@ function createProductStepperPages(): StepperPage[] {
   const displayResolutionHorizontal: StepperChild = {
     inputType: "text",
     name: "displayResolutionHorizontal",
-    validationKey: "smallInteger",
+    validationKey: "mediumInteger",
   };
 
   const displayResolutionVertical: StepperChild = {
     inputType: "text",
     name: "displayResolutionVertical",
-    validationKey: "smallInteger",
+    validationKey: "mediumInteger",
   };
 
   const displayResponseTime: StepperChild = {
@@ -300,7 +300,7 @@ function createProductStepperPages(): StepperPage[] {
   const gpuTdp: StepperChild = {
     inputType: "text",
     name: "gpuTdp",
-    validationKey: "smallInteger",
+    validationKey: "mediumInteger",
   };
 
   const headphoneColor: StepperChild = {
@@ -420,7 +420,7 @@ function createProductStepperPages(): StepperPage[] {
   const motherboardMemoryMaxCapacity: StepperChild = {
     inputType: "number",
     name: "motherboardMemoryMaxCapacity",
-    validationKey: "smallInteger",
+    validationKey: "mediumInteger",
   };
 
   const motherboardMemoryMaxCapacityUnit: StepperChild = {
@@ -822,22 +822,6 @@ function createProductStepperPages(): StepperPage[] {
     },
 
     {
-      children: [psuWattage, psuFormFactor, psuEfficiency, psuModularity],
-      description: "Power Supply Unit (PSU)",
-    },
-
-    {
-      children: [
-        speakerType,
-        speakerTotalWattage,
-        speakerInterface,
-        speakerFrequencyResponse,
-        speakerColor,
-      ],
-      description: "Speaker",
-    },
-
-    {
       children: [
         microphoneType,
         microphonePolarPattern,
@@ -846,17 +830,6 @@ function createProductStepperPages(): StepperPage[] {
         microphoneColor,
       ],
       description: "Microphone",
-    },
-
-    {
-      children: [
-        mouseButtons,
-        mouseDpi,
-        mouseSensor,
-        mouseInterface,
-        mouseColor,
-      ],
-      description: "Mouse",
     },
 
     {
@@ -875,6 +848,33 @@ function createProductStepperPages(): StepperPage[] {
         motherboardSataPorts,
       ],
       description: "Motherboard",
+    },
+
+    {
+      children: [
+        mouseButtons,
+        mouseDpi,
+        mouseSensor,
+        mouseInterface,
+        mouseColor,
+      ],
+      description: "Mouse",
+    },
+
+    {
+      children: [psuWattage, psuFormFactor, psuEfficiency, psuModularity],
+      description: "Power Supply Unit (PSU)",
+    },
+
+    {
+      children: [
+        speakerType,
+        speakerTotalWattage,
+        speakerInterface,
+        speakerFrequencyResponse,
+        speakerColor,
+      ],
+      description: "Speaker",
     },
 
     {

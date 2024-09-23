@@ -47,6 +47,7 @@ function Microphone({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Color",
         name: "microphoneColor",
         parentDispatch,
         stepperPages,
@@ -60,6 +61,7 @@ function Microphone({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Frequency Response (Hz - kHz)",
         name: "microphoneFrequencyResponse",
         parentDispatch,
         stepperPages,
@@ -73,6 +75,7 @@ function Microphone({
     <AccessibleSelectInput
       attributes={{
         data: MICROPHONE_INTERFACE_DATA,
+        label: "Interface",
         name: "microphoneInterface",
         parentDispatch,
         validValueAction: parentAction.setMicrophoneInterface,
@@ -85,6 +88,7 @@ function Microphone({
     <AccessibleSelectInput
       attributes={{
         data: MICROPHONE_POLAR_PATTERN_DATA,
+        label: "Polar Pattern",
         name: "microphonePolarPattern",
         parentDispatch,
         validValueAction: parentAction.setMicrophonePolarPattern,
@@ -97,6 +101,7 @@ function Microphone({
     <AccessibleSelectInput
       attributes={{
         data: MICROPHONE_TYPE_DATA,
+        label: "Type",
         name: "microphoneType",
         parentDispatch,
         validValueAction: parentAction.setMicrophoneType,

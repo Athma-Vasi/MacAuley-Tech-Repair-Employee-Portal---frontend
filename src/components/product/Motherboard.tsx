@@ -57,6 +57,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Chipset",
         name: "motherboardChipset",
         parentDispatch,
         stepperPages,
@@ -70,6 +71,7 @@ function Motherboard({
     <AccessibleSelectInput
       attributes={{
         data: MOTHERBOARD_FORM_FACTOR_DATA,
+        label: "Form Factor",
         name: "motherboardFormFactor",
         parentDispatch,
         validValueAction: parentAction.setMotherboardFormFactor,
@@ -82,6 +84,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "M.2 Slots",
         name: "motherboardM2Slots",
         parentDispatch,
         stepperPages,
@@ -95,6 +98,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Memory Max Capacity",
         name: "motherboardMemoryMaxCapacity",
         parentDispatch,
         stepperPages,
@@ -108,6 +112,7 @@ function Motherboard({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_UNIT_DATA,
+        label: "Memory Max Capacity Unit",
         name: "motherboardMemoryMaxCapacityUnit",
         parentDispatch,
         validValueAction: parentAction.setMotherboardMemoryMaxCapacityUnit,
@@ -120,6 +125,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Memory Slots",
         name: "motherboardMemorySlots",
         parentDispatch,
         stepperPages,
@@ -133,6 +139,7 @@ function Motherboard({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_TYPE_DATA,
+        label: "Memory Type",
         name: "motherboardMemoryType",
         parentDispatch,
         validValueAction: parentAction.setMotherboardMemoryType,
@@ -145,6 +152,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "PCIe 3.0 Slots",
         name: "motherboardPcie3Slots",
         parentDispatch,
         stepperPages,
@@ -158,6 +166,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "PCIe 4.0 Slots",
         name: "motherboardPcie4Slots",
         parentDispatch,
         stepperPages,
@@ -171,6 +180,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "PCIe 5.0 Slots",
         name: "motherboardPcie5Slots",
         parentDispatch,
         stepperPages,
@@ -184,6 +194,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "SATA Ports",
         name: "motherboardSataPorts",
         parentDispatch,
         stepperPages,
@@ -197,6 +208,7 @@ function Motherboard({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Socket",
         name: "motherboardSocket",
         parentDispatch,
         stepperPages,
@@ -221,6 +233,7 @@ function Motherboard({
     <Stack>
       {motherboardChipsetTextInput}
       {motherBoardFormFactorSelectInput}
+      {motherboardSocketTextInput}
       {motherboardM2SlotsTextInput}
       {motherboardMemoryMaxCapacityTextInput}
       {motherboardMemoryMaxCapacityUnitSelectInput}
@@ -230,7 +243,6 @@ function Motherboard({
       {motherboardPcie4SlotsTextInput}
       {motherboardPcie5SlotsTextInput}
       {motherboardSataPortsTextInput}
-      {motherboardSocketTextInput}
       {additionalFieldsAndImage}
     </Stack>
   );

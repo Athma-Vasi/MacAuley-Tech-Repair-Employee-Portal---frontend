@@ -503,13 +503,13 @@ function CreateProduct() {
     "Graphics Processing Unit (GPU)": gpuPage,
     Headphone: headphonePage,
     Keyboard: keyboardPage,
+    "Memory (RAM)": ramPage,
     Microphone: microphonePage,
     Motherboard: motherboardPage,
     Mouse: mousePage,
     productCategory,
     productCategoryPage,
     "Power Supply Unit (PSU)": psuPage,
-    "Memory (RAM)": ramPage,
     Speaker: speakerPage,
     Storage: storagePage,
     Webcam: webcamPage,
@@ -520,9 +520,7 @@ function CreateProduct() {
       attributes={{
         componentState: createProductState,
         invalidValueAction: createProductAction.setPageInError,
-        pageElements: productCategory === "Desktop Computer"
-          ? pageElements.slice(0, -2)
-          : pageElements,
+        pageElements,
         parentDispatch: createProductDispatch,
         stepperPages: createPagesForStepper({
           desktopComponents,
