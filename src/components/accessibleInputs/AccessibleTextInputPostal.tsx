@@ -15,7 +15,7 @@ import {
   type ReactNode,
   useState,
 } from "react";
-import { TbCheck, TbExclamationCircle, TbRefresh } from "react-icons/tb";
+import { TbCheck, TbRefresh, TbX } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
@@ -161,7 +161,7 @@ function AccessibleTextInputPostal<
       ? <TbCheck color={greenColorShade} size={18} />
       : valueBuffer.length === 0
       ? null
-      : <TbExclamationCircle color={redColorShade} size={18} />);
+      : <TbX color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,

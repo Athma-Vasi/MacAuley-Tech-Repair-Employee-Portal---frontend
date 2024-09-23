@@ -18,7 +18,7 @@ import {
   type RefObject,
   useState,
 } from "react";
-import { TbCheck, TbExclamationCircle, TbRefresh } from "react-icons/tb";
+import { TbCheck, TbRefresh, TbX } from "react-icons/tb";
 
 import { Trie } from "../../../classes/trie";
 import { COLORS_SWATCHES } from "../../../constants/data";
@@ -194,7 +194,7 @@ function AccessibleSearchInput<
       ? <TbCheck color={greenColorShade} size={18} />
       : value.length === 0
       ? null
-      : <TbExclamationCircle color={redColorShade} size={18} />);
+      : <TbX color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,

@@ -18,7 +18,7 @@ import {
   createRepairTicketAction,
 } from "./actions";
 import {
-  CREATE_REPAIR_NOTE_ROLE_PATHS,
+  CREATE_REPAIR_TICKET_ROLE_PATHS,
   returnCreateRepairNoteStepperPages,
 } from "./constants";
 import { createRepairTicketReducer } from "./reducers";
@@ -116,7 +116,7 @@ function CreateRepairTicket() {
         loadingMessage: "Searching for customer ...",
         openSubmitFormModal,
         parentDispatch: createRepairTicketDispatch,
-        roleResourceRoutePaths: CREATE_REPAIR_NOTE_ROLE_PATHS,
+        roleResourceRoutePaths: CREATE_REPAIR_TICKET_ROLE_PATHS,
         roles,
         setIsLoadingAction: createRepairTicketAction.setIsLoading,
         setLoadingMessageAction: createRepairTicketAction.setLoadingMessage,
@@ -169,7 +169,7 @@ function CreateRepairTicket() {
         isSubmittingAction: createRepairTicketAction.setIsSubmitting,
         isSuccessfulAction: createRepairTicketAction.setIsSuccessful,
         openSubmitFormModal,
-        roleResourceRoutePaths: CREATE_REPAIR_NOTE_ROLE_PATHS,
+        roleResourceRoutePaths: CREATE_REPAIR_TICKET_ROLE_PATHS,
         roles,
         schema: repairTicketSchema,
         triggerFormSubmitAction:

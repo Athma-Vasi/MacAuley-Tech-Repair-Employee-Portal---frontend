@@ -10,10 +10,10 @@ import type { PartsNeeded, RepairStatus, RequiredRepairs } from "../types";
 
 const CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION = 4;
 
-const CREATE_REPAIR_NOTE_ROLE_PATHS: RoleResourceRoutePaths = {
-  manager: "repair-note",
-  admin: "repair-note",
-  employee: "repair-note/user",
+const CREATE_REPAIR_TICKET_ROLE_PATHS: RoleResourceRoutePaths = {
+  manager: "repair-ticket",
+  admin: "repair-ticket",
+  employee: "repair-ticket/user",
 };
 
 function returnCreateRepairNoteStepperPages() {
@@ -105,6 +105,10 @@ function returnCreateRepairNoteStepperPages() {
 
   const stepperPages: StepperPage[] = [
     {
+      children: [],
+      description: "Customer",
+    },
+    {
       children: [
         partNameTextChild,
         partSerialIdTextChild,
@@ -126,7 +130,7 @@ function returnCreateRepairNoteStepperPages() {
         estimatedCompletionDateDateChild,
         repairPrioritySelectChild,
       ],
-      description: "Repair Information",
+      description: "Repair Details",
     },
     {
       children: [],
@@ -300,7 +304,7 @@ const REPAIR_CATEGORIES_DATA: CheckboxRadioSelectData<RepairCategory> = [
 
 export {
   CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
-  CREATE_REPAIR_NOTE_ROLE_PATHS,
+  CREATE_REPAIR_TICKET_ROLE_PATHS,
   PARTS_NEEDED_DATA,
   REPAIR_CATEGORIES_DATA,
   REPAIR_STATUS_DATA,

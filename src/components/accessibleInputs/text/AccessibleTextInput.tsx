@@ -18,7 +18,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { TbCheck, TbExclamationCircle, TbRefresh } from "react-icons/tb";
+import { TbCheck, TbRefresh, TbX } from "react-icons/tb";
 
 import {
   COLORS_SWATCHES,
@@ -199,15 +199,6 @@ function AccessibleTextInput<
     )
     : null;
 
-  // const { full } = returnFullValidation({
-  //   name,
-  //   stepperPages,
-  //   validationFunctionsTable,
-  // });
-  // const isValueBufferValid = typeof full === "function"
-  //   ? full(valueBuffer)
-  //   : full.test(valueBuffer);
-
   const { partials } = returnPartialValidations({
     name,
     stepperPages,
@@ -225,7 +216,7 @@ function AccessibleTextInput<
       ? <TbCheck color={greenColorShade} size={18} />
       : valueBuffer.length === 0
       ? null
-      : <TbExclamationCircle color={redColorShade} size={18} />);
+      : <TbX color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,
