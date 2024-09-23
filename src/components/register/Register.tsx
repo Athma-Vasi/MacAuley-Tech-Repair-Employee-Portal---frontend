@@ -1,8 +1,13 @@
-import { Stack, Text } from "@mantine/core";
+import { Flex, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { logState } from "../../utils";
+import { useDisclosure } from "@mantine/hooks";
+import { Link } from "react-router-dom";
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import type { UserSchema } from "../../types";
+import { fetchRequestPOSTSafe, logState, returnThemeColors } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
 import { useStyles } from "../styles";
@@ -10,7 +15,6 @@ import { RegisterAdditional } from "./RegisterAdditional";
 import { RegisterAddress } from "./RegisterAddress";
 import { RegisterAuthentication } from "./RegisterAuthentication";
 import { RegisterPersonal } from "./RegisterPersonal";
-import { RegisterProfilePicture } from "./RegisterProfilePicture";
 import { registerAction } from "./actions";
 import { returnRegisterperPages } from "./constants";
 import { registerReducer } from "./reducers";
@@ -44,7 +48,7 @@ function Register() {
     postalCode,
     preferredName,
     preferredPronouns,
-    profilePictureFormData,
+    profilePictureUrl,
     province,
     startDate,
     state,
@@ -53,9 +57,21 @@ function Register() {
     username,
   } = registerState;
 
+  const {
+    globalState: { width, themeObject },
+  } = useGlobalState();
+
   const { showBoundary } = useErrorBoundary();
 
   const { classes } = useStyles({});
+
+  const [
+    openedSubmitFormModal,
+    {
+      open: openSubmitFormModal,
+      close: closeSubmitFormModal,
+    },
+  ] = useDisclosure(false);
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
@@ -68,69 +84,72 @@ function Register() {
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
 
-    if (triggerFormSubmit) {
-      // const userSchema: UserSchema = {
-      //   active: true,
-      //   address: country === "Canada"
-      //     ? {
-      //       addressLine,
-      //       city,
-      //       country,
-      //       postalCode,
-      //       province,
-      //     }
-      //     : {
-      //       addressLine,
-      //       city,
-      //       country,
-      //       postalCode,
-      //       state,
-      //     },
-      //   completedSurveys: [],
-      //   contactNumber,
-      //   dateOfBirth,
-      //   department,
-      //   email,
-      //   emergencyContact: {
-      //     contactNumber: emergencyContactNumber,
-      //     fullName: emergencyContactName,
-      //   },
-      //   firstName,
-      //   isPrefersReducedMotion: false,
-      //   jobPosition,
-      //   lastName,
-      //   middleName,
-      //   password,
-      //   preferredName,
-      //   preferredPronouns,
-      //   profilePictureFormData: profilePictureFormData ?? [new FormData()],
-      //   roles: ["Employee"],
-      //   startDate,
-      //   storeLocation,
-      //   username,
-      // };
+    async function submitRegisterForm() {
+      const userSchema: UserSchema = {
+        active: true,
+        address: country === "Canada"
+          ? {
+            addressLine,
+            city,
+            country,
+            postalCode,
+            province,
+          }
+          : {
+            addressLine,
+            city,
+            country,
+            postalCode,
+            state,
+          },
+        completedSurveys: [],
+        contactNumber,
+        dateOfBirth,
+        department,
+        email,
+        emergencyContact: {
+          contactNumber: emergencyContactNumber,
+          fullName: emergencyContactName,
+        },
+        firstName,
+        isPrefersReducedMotion: false,
+        jobPosition,
+        lastName,
+        middleName,
+        password,
+        preferredName,
+        preferredPronouns,
+        profilePictureUrl,
+        roles: ["Employee"],
+        startDate,
+        storeLocation,
+        username,
+      };
 
-      // formSubmitPOST({
-      //   dispatch: registerDispatch,
-      //   fetchAbortController,
-      //   fetchInterceptor,
-      //   isComponentMounted,
-      //   isSubmittingAction: registerAction.setIsSubmitting,
-      //   isSuccessfulAction: registerAction.setIsSuccessful,
-      //   preFetchAbortController,
-      //   roleResourceRoutePaths: REGISTER_ROLE_ROUTE_PATHS,
-      //   schema: userSchema,
-      //   schemaName: "userSchema",
-      //   sessionId: "",
-      //   showBoundary,
-      //   userId: "",
-      //   username,
-      //   userRole: "manager",
-      // });
+      const registerResult = await fetchRequestPOSTSafe({
+        closeSubmitFormModal,
+        dispatch: registerDispatch,
+        fetchAbortController,
+        isComponentMounted,
+        isSubmittingAction: registerAction.setIsSubmitting,
+        isSuccessfulAction: registerAction.setIsSuccessful,
+        openSubmitFormModal,
+        roles: ["Employee"],
+        schema: userSchema,
+        triggerFormSubmitAction: registerAction.setTriggerFormSubmit,
+      });
+
+      if (registerResult.err) {
+        showBoundary(registerResult.val.data);
+      }
+    }
+
+    if (triggerFormSubmit) {
+      submitRegisterForm();
     }
 
     return () => {
-      isComponentMountedRef.current = false;
+      isComponentMounted = false;
       fetchAbortController?.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -180,15 +199,7 @@ function Register() {
       parentDispatch={registerDispatch}
       preferredName={preferredName}
       preferredPronouns={preferredPronouns}
-      stepperPages={registerStepperPages}
-    />
-  );
-
-  const profilePicturePage = (
-    <RegisterProfilePicture
-      parentAction={registerAction}
-      parentDispatch={registerDispatch}
-      profilePictureFormData={profilePictureFormData}
+      profilePictureUrl={profilePictureUrl}
       stepperPages={registerStepperPages}
     />
   );
@@ -248,7 +259,6 @@ function Register() {
         pageElements: [
           authenticationPage,
           personalPage,
-          profilePicturePage,
           addressPage,
           additionalPage,
         ],
@@ -265,7 +275,24 @@ function Register() {
     groupLabel: "Register State",
   });
 
-  return <div>{stepper}</div>;
+  const {
+    generalColors: { themeColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
+  const linkToLogin = (
+    <Flex align="center" justify="center" columnGap="sm">
+      <Text color="dark">Already have an account?</Text>
+      <Text>
+        <Link to="/" style={{ color: themeColorShade }}>
+          Login!
+        </Link>
+      </Text>
+    </Flex>
+  );
+  return <Stack>{stepper}{linkToLogin}</Stack>;
 }
 
 export default Register;

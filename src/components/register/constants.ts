@@ -130,9 +130,10 @@ function returnRegisterperPages(country: Country): StepperPage[] {
     selectInputData: PREFERRED_PRONOUNS_DATA,
   };
 
-  const profilePictureFormData: StepperChild = {
-    inputType: "file",
-    name: "profilePictureFormData",
+  const profilePictureUrl: StepperChild = {
+    inputType: "text",
+    name: "profilePictureUrl",
+    validationKey: "url",
   };
 
   const province: StepperChild = {
@@ -179,13 +180,9 @@ function returnRegisterperPages(country: Country): StepperPage[] {
         preferredName,
         preferredPronouns,
         dateOfBirth,
+        profilePictureUrl,
       ],
       description: "Personal information",
-    },
-
-    {
-      children: [profilePictureFormData],
-      description: "Profile Picture",
     },
 
     {

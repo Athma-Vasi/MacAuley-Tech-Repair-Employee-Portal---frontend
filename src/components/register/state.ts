@@ -1,4 +1,4 @@
-import { RegisterState } from "./types";
+import type { RegisterState } from "./types";
 
 const initialRegisterState: RegisterState = {
   addressLine: "",
@@ -22,7 +22,7 @@ const initialRegisterState: RegisterState = {
   postalCode: "",
   preferredName: "",
   preferredPronouns: "Prefer not to say",
-  profilePictureFormData: void 0,
+  profilePictureUrl: "",
   province: "Alberta",
   startDate: "",
   state: "Alabama",

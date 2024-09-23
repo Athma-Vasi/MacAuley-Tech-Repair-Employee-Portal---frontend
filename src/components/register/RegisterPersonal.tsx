@@ -1,10 +1,10 @@
 import { Stack } from "@mantine/core";
 
-import { PreferredPronouns, StepperPage } from "../../types";
+import type { PreferredPronouns, StepperPage } from "../../types";
 import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { RegisterAction } from "./actions";
+import type { RegisterAction } from "./actions";
 import { PREFERRED_PRONOUNS_DATA } from "./constants";
 
 type RegisterPersonalProps = {
@@ -16,6 +16,7 @@ type RegisterPersonalProps = {
   parentDispatch: any;
   preferredName: string;
   preferredPronouns: PreferredPronouns;
+  profilePictureUrl: string;
   stepperPages: StepperPage[];
 };
 
@@ -28,6 +29,7 @@ function RegisterPersonal({
   parentDispatch,
   preferredName,
   preferredPronouns,
+  profilePictureUrl,
   stepperPages,
 }: RegisterPersonalProps) {
   const dateOfBirthTextInput = (
@@ -103,13 +105,30 @@ function RegisterPersonal({
   );
 
   const preferredPronounsSelectInput = (
-    <AccessibleSelectInput<RegisterAction["setPreferredPronouns"], PreferredPronouns>
+    <AccessibleSelectInput<
+      RegisterAction["setPreferredPronouns"],
+      PreferredPronouns
+    >
       attributes={{
         data: PREFERRED_PRONOUNS_DATA,
         name: "preferredPronouns",
         parentDispatch,
         validValueAction: parentAction.setPreferredPronouns,
         value: preferredPronouns,
+      }}
+    />
+  );
+
+  const profilePictureUrlTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "profilePictureUrl",
+        page: 1,
+        parentDispatch,
+        validValueAction: parentAction.setProfilePictureUrl,
+        value: profilePictureUrl,
       }}
     />
   );
@@ -122,6 +141,7 @@ function RegisterPersonal({
       {middleNameTextInput}
       {preferredNameTextInput}
       {preferredPronounsSelectInput}
+      {profilePictureUrlTextInput}
     </Stack>
   );
 }

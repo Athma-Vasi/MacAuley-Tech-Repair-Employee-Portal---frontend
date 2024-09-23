@@ -20,7 +20,7 @@ type RegisterAction = {
   setPostalCode: "setPostalCode";
   setPreferredName: "setPreferredName";
   setPreferredPronouns: "setPreferredPronouns";
-  setProfilePictureFormData: "setProfilePictureFormData";
+  setProfilePictureUrl: "setProfilePictureUrl";
   setProvince: "setProvince";
   setStartDate: "setStartDate";
   setState: "setState";
@@ -51,7 +51,7 @@ const registerAction: RegisterAction = {
   setPostalCode: "setPostalCode",
   setPreferredName: "setPreferredName",
   setPreferredPronouns: "setPreferredPronouns",
-  setProfilePictureFormData: "setProfilePictureFormData",
+  setProfilePictureUrl: "setProfilePictureUrl",
   setProvince: "setProvince",
   setStartDate: "setStartDate",
   setState: "setState",

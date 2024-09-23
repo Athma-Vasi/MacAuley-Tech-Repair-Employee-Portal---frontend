@@ -45,7 +45,7 @@ function Login() {
 
   const { authDispatch } = useAuth();
   const {
-    globalState: { width, themeObject },
+    globalState: { themeObject },
   } = useGlobalState();
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -204,7 +204,6 @@ function Login() {
 
   const {
     generalColors: { themeColorShade },
-    appThemeColors: { backgroundColor },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,

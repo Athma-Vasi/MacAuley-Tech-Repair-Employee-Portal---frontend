@@ -1,4 +1,4 @@
-import {
+import type {
   Country,
   Department,
   JobPosition,
@@ -10,7 +10,7 @@ import {
   StatesUS,
   StoreLocation,
 } from "../../types";
-import { RegisterAction } from "./actions";
+import type { RegisterAction } from "./actions";
 
 type RegisterState = {
   addressLine: string;
@@ -34,7 +34,7 @@ type RegisterState = {
   postalCode: PostalCode;
   preferredName: string;
   preferredPronouns: PreferredPronouns;
-  profilePictureFormData: FormData | undefined;
+  profilePictureUrl: string;
   province: Province;
   startDate: string;
   state: StatesUS;
@@ -45,116 +45,116 @@ type RegisterState = {
 
 type RegisterDispatch =
   | {
-      action: RegisterAction["setAddressLine"];
-      payload: string;
-    }
+    action: RegisterAction["setAddressLine"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setCity"];
-      payload: string;
-    }
+    action: RegisterAction["setCity"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setConfirmPassword"];
-      payload: string;
-    }
+    action: RegisterAction["setConfirmPassword"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setContactNumber"];
-      payload: PhoneNumber;
-    }
+    action: RegisterAction["setContactNumber"];
+    payload: PhoneNumber;
+  }
   | {
-      action: RegisterAction["setCountry"];
-      payload: Country;
-    }
+    action: RegisterAction["setCountry"];
+    payload: Country;
+  }
   | {
-      action: RegisterAction["setDateOfBirth"];
-      payload: string;
-    }
+    action: RegisterAction["setDateOfBirth"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setDepartment"];
-      payload: Department;
-    }
+    action: RegisterAction["setDepartment"];
+    payload: Department;
+  }
   | {
-      action: RegisterAction["setEmail"];
-      payload: string;
-    }
+    action: RegisterAction["setEmail"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setEmergencyContactName"];
-      payload: string;
-    }
+    action: RegisterAction["setEmergencyContactName"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setEmergencyContactNumber"];
-      payload: PhoneNumber | string;
-    }
+    action: RegisterAction["setEmergencyContactNumber"];
+    payload: PhoneNumber | string;
+  }
   | {
-      action: RegisterAction["setFirstName"];
-      payload: string;
-    }
+    action: RegisterAction["setFirstName"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setIsSubmitting"];
-      payload: boolean;
-    }
+    action: RegisterAction["setIsSubmitting"];
+    payload: boolean;
+  }
   | {
-      action: RegisterAction["setIsSuccessful"];
-      payload: boolean;
-    }
+    action: RegisterAction["setIsSuccessful"];
+    payload: boolean;
+  }
   | {
-      action: RegisterAction["setJobPosition"];
-      payload: JobPosition;
-    }
+    action: RegisterAction["setJobPosition"];
+    payload: JobPosition;
+  }
   | {
-      action: RegisterAction["setLastName"];
-      payload: string;
-    }
+    action: RegisterAction["setLastName"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setMiddleName"];
-      payload: string;
-    }
+    action: RegisterAction["setMiddleName"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setPageInError"];
-      payload: SetPageInErrorPayload;
-    }
+    action: RegisterAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  }
   | {
-      action: RegisterAction["setPassword"];
-      payload: string;
-    }
+    action: RegisterAction["setPassword"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setPostalCode"];
-      payload: PostalCode;
-    }
+    action: RegisterAction["setPostalCode"];
+    payload: PostalCode;
+  }
   | {
-      action: RegisterAction["setPreferredName"];
-      payload: string;
-    }
+    action: RegisterAction["setPreferredName"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setPreferredPronouns"];
-      payload: PreferredPronouns;
-    }
+    action: RegisterAction["setPreferredPronouns"];
+    payload: PreferredPronouns;
+  }
   | {
-      action: RegisterAction["setProfilePictureFormData"];
-      payload: FormData;
-    }
+    action: RegisterAction["setProfilePictureUrl"];
+    payload: FormData;
+  }
   | {
-      action: RegisterAction["setProvince"];
-      payload: Province;
-    }
+    action: RegisterAction["setProvince"];
+    payload: Province;
+  }
   | {
-      action: RegisterAction["setStartDate"];
-      payload: string;
-    }
+    action: RegisterAction["setStartDate"];
+    payload: string;
+  }
   | {
-      action: RegisterAction["setState"];
-      payload: StatesUS;
-    }
+    action: RegisterAction["setState"];
+    payload: StatesUS;
+  }
   | {
-      action: RegisterAction["setStoreLocation"];
-      payload: StoreLocation;
-    }
+    action: RegisterAction["setStoreLocation"];
+    payload: StoreLocation;
+  }
   | {
-      action: RegisterAction["setTriggerFormSubmit"];
-      payload: boolean;
-    }
+    action: RegisterAction["setTriggerFormSubmit"];
+    payload: boolean;
+  }
   | {
-      action: RegisterAction["setUsername"];
-      payload: string;
-    };
+    action: RegisterAction["setUsername"];
+    payload: string;
+  };
 
 export type { RegisterAction, RegisterDispatch, RegisterState };
