@@ -1,12 +1,7 @@
 type CreateRepairTicketAction = {
-    setClearSearchInputs: "setClearSearchInputs";
-    setCurrentSearchObject: "setCurrentSearchObject";
-    setCurrentSearchResultPage: "setCurrentSearchResultPage";
-    setCustomerId: "setCustomerId";
-    setCustomerSearchResults: "setCustomerSearchResults";
-    setDeleteSearchObjectField: "setDeleteSearchObjectField";
-    setSearchOperator: "setSearchOperator";
+    setCustomerSearchField: "setCustomerSearchField";
     setSelectedCustomer: "setSelectedCustomer";
+    setSelectedFieldData: "setSelectedFieldData";
 
     setPartName: "setPartName";
     setPartSerialId: "setPartSerialId";
@@ -24,26 +19,16 @@ type CreateRepairTicketAction = {
     setEstimatedCompletionDate: "setEstimatedCompletionDate";
     setRepairPriority: "setRepairPriority";
 
-    setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit";
     setTriggerRepairFormSubmit: "setTriggerRepairFormSubmit";
     setPageInError: "setPageInError";
     setIsSubmitting: "setIsSubmitting";
     setIsSuccessful: "setIsSuccessful";
-    setIsLoading: "setIsLoading";
-    setTotalDocuments: "setTotalDocuments";
-    setTotalPages: "setTotalPages";
-    setLoadingMessage: "setLoadingMessage";
 };
 
 const createRepairTicketAction: CreateRepairTicketAction = {
-    setClearSearchInputs: "setClearSearchInputs",
-    setCurrentSearchObject: "setCurrentSearchObject",
-    setCurrentSearchResultPage: "setCurrentSearchResultPage",
-    setCustomerId: "setCustomerId",
-    setCustomerSearchResults: "setCustomerSearchResults",
-    setDeleteSearchObjectField: "setDeleteSearchObjectField",
-    setSearchOperator: "setSearchOperator",
+    setCustomerSearchField: "setCustomerSearchField",
     setSelectedCustomer: "setSelectedCustomer",
+    setSelectedFieldData: "setSelectedFieldData",
 
     setPartName: "setPartName",
     setPartSerialId: "setPartSerialId",
@@ -61,15 +46,10 @@ const createRepairTicketAction: CreateRepairTicketAction = {
     setEstimatedCompletionDate: "setEstimatedCompletionDate",
     setRepairPriority: "setRepairPriority",
 
-    setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit",
     setTriggerRepairFormSubmit: "setTriggerRepairFormSubmit",
     setPageInError: "setPageInError",
     setIsSubmitting: "setIsSubmitting",
     setIsSuccessful: "setIsSuccessful",
-    setIsLoading: "setIsLoading",
-    setTotalDocuments: "setTotalDocuments",
-    setTotalPages: "setTotalPages",
-    setLoadingMessage: "setLoadingMessage",
 };
 
 export { createRepairTicketAction };

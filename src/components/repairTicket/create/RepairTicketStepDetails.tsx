@@ -1,10 +1,12 @@
 import { Stack } from "@mantine/core";
 import { CURRENCY_DATA, URGENCY_DATA } from "../../../constants/data";
 import type { Currency, StepperPage, Urgency } from "../../../types";
-import { AccessibleCheckboxInputGroup } from "../../accessibleInputs/AccessibleCheckboxInput";
+import {
+  AccessibleCheckboxInputGroup,
+  AccessibleCheckboxInputSingle,
+} from "../../accessibleInputs/AccessibleCheckboxInput";
 import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
-import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import type { PartsNeeded, RequiredRepairs } from "../types";
@@ -78,16 +80,16 @@ function RepairTicketStepDetails({
   );
 
   const partUnderWarrantyCheckboxInput = (
-    <AccessibleSwitchInput
+    <AccessibleCheckboxInputSingle
       attributes={{
         checked: partUnderWarranty,
+        deselectedDescription: "No is selected. Part is not under warranty",
         invalidValueAction: createRepairTicketAction.setPageInError,
         name: "partUnderWarranty",
-        offLabel: "Part is not under warranty",
-        onLabel: "Part is under warranty",
         parentDispatch: createRepairTicketDispatch,
+        selectedDescription: "Yes is selected. Part is under warranty",
         validValueAction: createRepairTicketAction.setPartUnderWarranty,
-        value: partUnderWarranty,
+        value: partUnderWarranty ? "Yes" : "No",
       }}
     />
   );
@@ -457,7 +459,7 @@ function RepairTicketStepDetail(parentState: RepairTicketStepDetailsProps) {
       withAsterisk: true,
     };
 
-  const partUnderWarrantyCheckboxInputCreatorInfo:
+  const partUnderWarrantySwitchInputCreatorInfo:
     AccessibleCheckboxSingleInputCreatorInfo = {
       checked: partUnderWarranty,
       description: {
@@ -598,7 +600,7 @@ function RepairTicketStepDetail(parentState: RepairTicketStepDetailsProps) {
 
   const [createdPartUnderWarrantyCheckboxInput] =
     returnAccessibleCheckboxSingleInputElements([
-      partUnderWarrantyCheckboxInputCreatorInfo,
+      partUnderWarrantySwitchInputCreatorInfo,
     ]);
 
   const [

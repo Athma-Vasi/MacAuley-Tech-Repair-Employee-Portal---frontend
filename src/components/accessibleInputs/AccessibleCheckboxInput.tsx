@@ -21,10 +21,12 @@ type AccessibleCheckboxInputSingleAttributes<
   InvalidValueAction extends string = string,
 > = {
   checked: boolean;
+  deselectedDescription?: string;
   disabled?: boolean;
   invalidValueAction: InvalidValueAction;
   key?: string;
   label?: ReactNode;
+  name: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   parentDispatch: React.Dispatch<
     | {
@@ -38,7 +40,7 @@ type AccessibleCheckboxInputSingleAttributes<
   >;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
-  name: string;
+  selectedDescription?: string;
   size?: MantineSize;
   /** stepper page location of input. default 0 */ page?: number;
   validValueAction: ValidValueAction;
@@ -65,6 +67,7 @@ function AccessibleCheckboxInputSingle<
 }: AccessibleCheckboxInputSingleProps<ValidValueAction, InvalidValueAction>) {
   const {
     checked,
+    deselectedDescription,
     disabled = false,
     invalidValueAction,
     onChange,
@@ -72,6 +75,7 @@ function AccessibleCheckboxInputSingle<
     parentDispatch,
     ref = null,
     required = false,
+    selectedDescription,
     size = "sm",
     page = 0,
     validValueAction,
@@ -92,8 +96,10 @@ function AccessibleCheckboxInputSingle<
   const { selectedTextElement, deselectedTextElement } =
     createAccessibleCheckboxSelectionsTextElements({
       checked,
+      deselectedDescription,
       kind: "single",
       name,
+      selectedDescription,
       themeObject,
       value,
     });

@@ -145,9 +145,11 @@ function createAccessibleValueValidationTextElements({
 
 type CreateAccessibleCheckboxSelectionsTextElements = {
   checked: boolean;
+  deselectedDescription?: string;
   isIcons?: boolean;
   kind: "single" | "group";
   name: string;
+  selectedDescription?: string;
   theme?: "muted" | "default";
   themeObject: ThemeObject;
   value: string | string[];
@@ -155,9 +157,11 @@ type CreateAccessibleCheckboxSelectionsTextElements = {
 
 function createAccessibleCheckboxSelectionsTextElements({
   checked,
+  deselectedDescription,
   isIcons = false,
   kind,
   name,
+  selectedDescription,
   theme = "default",
   themeObject,
   value,
@@ -185,9 +189,10 @@ function createAccessibleCheckboxSelectionsTextElements({
     ? capitalizeJoinWithAnd(value)
     : value;
 
-  const selectedText = kind === "single"
-    ? `${value} selected.`
-    : `${stringifiedValue} ${value.length > 1 ? "are" : "is"} selected.`;
+  const selectedText = selectedDescription ??
+    (kind === "single"
+      ? `${value} selected.`
+      : `${stringifiedValue} ${value.length > 1 ? "are" : "is"} selected.`);
 
   const selectedTextElement = (
     <Text
@@ -206,7 +211,7 @@ function createAccessibleCheckboxSelectionsTextElements({
     ? <TbInfoCircle color={redColorShade} />
     : null;
 
-  const deselectedText = "No selection made.";
+  const deselectedText = deselectedDescription ?? "No selection made.";
 
   const deselectedTextElement = (
     <Text
@@ -508,39 +513,29 @@ function createAccessibleSwitchOnOffTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const switchOnIcon = theme === "default"
-    ? <TbCheck color={greenColorShade} />
-    : null;
-
   const switchOnText = switchOnDescription ?? `${name} is on.`;
 
   const switchOnTextElement = (
     <Text
       id={`${name}-on`}
-      // style={{ display: checked ? "block" : "none" }}
       color={grayColorShade}
       w="100%"
       aria-live="polite"
     >
-      {switchOnIcon} {switchOnText}
+      {switchOnText}
     </Text>
   );
-
-  const switchOffIcon = theme === "default"
-    ? <TbInfoCircle color={redColorShade} />
-    : null;
 
   const switchOffText = switchOffDescription ?? `${name} is off.`;
 
   const switchOffTextElement = (
     <Text
       id={`${name}-off`}
-      // style={{ display: !checked ? "block" : "none" }}
       color={theme === "default" ? redColorShade : grayColorShade}
       w="100%"
       aria-live="polite"
     >
-      {switchOffIcon} {switchOffText}
+      {switchOffText}
     </Text>
   );
 

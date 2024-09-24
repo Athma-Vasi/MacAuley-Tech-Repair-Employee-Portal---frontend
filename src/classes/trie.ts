@@ -24,6 +24,7 @@ class Trie {
     if (!this.#children.has(char)) {
       this.#children.set(char, new Trie());
     }
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     return this.#children.get(char)!;
   }
 
@@ -55,11 +56,10 @@ class Trie {
 
     const subTrie = this.hasChar(word[0]);
     if (subTrie !== undefined) {
-      return subTrie.addWord(word.slice(1));
-    } else {
-      const newSubTrie = this.addChar(word[0]);
-      return newSubTrie.addWord(word.slice(1));
+      subTrie.addWord(word.slice(1));
     }
+    const newSubTrie = this.addChar(word[0]);
+    newSubTrie.addWord(word.slice(1));
   }
 
   /** autocomplete words with given prefix */

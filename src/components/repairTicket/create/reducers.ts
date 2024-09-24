@@ -1,4 +1,3 @@
-import { PROPERTY_DESCRIPTOR } from "../../../constants/data";
 import type { Currency, SetPageInErrorPayload, Urgency } from "../../../types";
 import type { CustomerDocument } from "../../customer/types";
 import type { RepairCategory } from "../../dashboard/types";
@@ -11,7 +10,7 @@ import { initialCreateRepairTicketState } from "./state";
 import type {
     CreateRepairTicketDispatch,
     CreateRepairTicketState,
-    CustomerSearchOperator,
+    CustomerSearchField,
 } from "./types";
 
 function createRepairTicketReducer(
@@ -30,32 +29,12 @@ const createRepairTicketReducersMap = new Map<
     ) => CreateRepairTicketState
 >([
     [
-        createRepairTicketAction.setClearSearchInputs,
-        createRepairTicketReducer_setClearSearchInputs,
+        createRepairTicketAction.setCustomerSearchField,
+        createRepairTicketReducer_setCustomerSearchField,
     ],
     [
-        createRepairTicketAction.setCurrentSearchObject,
-        createRepairTicketReducer_setCurrentSearchObject,
-    ],
-    [
-        createRepairTicketAction.setCurrentSearchResultPage,
-        createRepairTicketReducer_setCurrentSearchResultPage,
-    ],
-    [
-        createRepairTicketAction.setCustomerId,
-        createRepairTicketReducer_setCustomerId,
-    ],
-    [
-        createRepairTicketAction.setCustomerSearchResults,
-        createRepairTicketReducer_setCustomerSearchResults,
-    ],
-    [
-        createRepairTicketAction.setDeleteSearchObjectField,
-        createRepairTicketReducer_setDeleteSearchObjectField,
-    ],
-    [
-        createRepairTicketAction.setSearchOperator,
-        createRepairTicketReducer_setSearchOperator,
+        createRepairTicketAction.setSelectedFieldData,
+        createRepairTicketReducer_setSelectedFieldData,
     ],
     [
         createRepairTicketAction.setSelectedCustomer,
@@ -118,10 +97,6 @@ const createRepairTicketReducersMap = new Map<
         createRepairTicketReducer_setRepairPriority,
     ],
     [
-        createRepairTicketAction.setTriggerCustomerSearchSubmit,
-        createRepairTicketReducer_settriggerCustomerSearchSubmit,
-    ],
-    [
         createRepairTicketAction.setTriggerRepairFormSubmit,
         createRepairTicketReducer_setTriggerRepairFormSubmit,
     ],
@@ -137,22 +112,6 @@ const createRepairTicketReducersMap = new Map<
         createRepairTicketAction.setIsSuccessful,
         createRepairTicketReducer_setIsSuccessful,
     ],
-    [
-        createRepairTicketAction.setIsLoading,
-        createRepairTicketReducer_setIsLoading,
-    ],
-    [
-        createRepairTicketAction.setTotalDocuments,
-        createRepairTicketReducer_setTotalDocuments,
-    ],
-    [
-        createRepairTicketAction.setTotalPages,
-        createRepairTicketReducer_setTotalPages,
-    ],
-    [
-        createRepairTicketAction.setLoadingMessage,
-        createRepairTicketReducer_setLoadingMessage,
-    ],
 ]);
 
 function createRepairTicketReducer_setClearSearchInputs(
@@ -162,76 +121,23 @@ function createRepairTicketReducer_setClearSearchInputs(
     return initialCreateRepairTicketState;
 }
 
-function createRepairTicketReducer_setCurrentSearchObject(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    const searchObj = dispatch.payload as Record<string, unknown>;
-    return (
-        Object.entries(searchObj).reduce<CreateRepairTicketState>(
-            (acc, [key, value]) => {
-                Object.defineProperty(acc.currentSearchObject, key, {
-                    value,
-                    ...PROPERTY_DESCRIPTOR,
-                });
-
-                return acc;
-            },
-            structuredClone(state),
-        ) ?? state
-    );
-}
-
-function createRepairTicketReducer_setCurrentSearchResultPage(
+function createRepairTicketReducer_setCustomerSearchField(
     state: CreateRepairTicketState,
     dispatch: CreateRepairTicketDispatch,
 ): CreateRepairTicketState {
     return {
         ...state,
-        currentSearchResultPage: dispatch.payload as number,
+        customerSearchField: dispatch.payload as CustomerSearchField,
     };
 }
 
-function createRepairTicketReducer_setCustomerId(
+function createRepairTicketReducer_setSelectedFieldData(
     state: CreateRepairTicketState,
     dispatch: CreateRepairTicketDispatch,
 ): CreateRepairTicketState {
     return {
         ...state,
-        customerId: dispatch.payload as string,
-    };
-}
-
-function createRepairTicketReducer_setCustomerSearchResults(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        customerSearchResults: dispatch.payload as Omit<
-            CustomerDocument,
-            "password" | "paymentInformation"
-        >[],
-    };
-}
-
-function createRepairTicketReducer_setDeleteSearchObjectField(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        deleteSearchObjectField: dispatch.payload as string,
-    };
-}
-
-function createRepairTicketReducer_setSearchOperator(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        searchOperator: dispatch.payload as CustomerSearchOperator,
+        selectedFieldData: dispatch.payload as string[],
     };
 }
 
@@ -385,16 +291,6 @@ function createRepairTicketReducer_setRepairPriority(
     };
 }
 
-function createRepairTicketReducer_settriggerCustomerSearchSubmit(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        triggerCustomerSearchSubmit: dispatch.payload as boolean,
-    };
-}
-
 function createRepairTicketReducer_setTriggerRepairFormSubmit(
     state: CreateRepairTicketState,
     dispatch: CreateRepairTicketDispatch,
@@ -436,46 +332,6 @@ function createRepairTicketReducer_setIsSuccessful(
     return {
         ...state,
         isSuccessful: dispatch.payload as boolean,
-    };
-}
-
-function createRepairTicketReducer_setIsLoading(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        isLoading: dispatch.payload as boolean,
-    };
-}
-
-function createRepairTicketReducer_setTotalDocuments(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        totalDocuments: dispatch.payload as number,
-    };
-}
-
-function createRepairTicketReducer_setTotalPages(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        totalPages: dispatch.payload as number,
-    };
-}
-
-function createRepairTicketReducer_setLoadingMessage(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        loadingMessage: dispatch.payload as string,
     };
 }
 

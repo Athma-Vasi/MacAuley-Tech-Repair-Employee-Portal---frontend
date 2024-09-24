@@ -1,6 +1,7 @@
-import { Box, type MantineSize, Switch } from "@mantine/core";
+import { Box, Container, type MantineSize, Switch } from "@mantine/core";
 import type { ChangeEvent, ReactNode, RefObject } from "react";
 
+import { INPUT_MAX_WIDTH, INPUT_MIN_WIDTH } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import type { SetPageInErrorPayload } from "../../types";
 import { splitCamelCase } from "../../utils";
@@ -52,13 +53,14 @@ type AccessibleSwitchInputProps<
     ValidValueAction,
     InvalidValueAction
   >;
+  uniqueId?: string;
 };
 
 function AccessibleSwitchInput<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string,
 >(
-  { attributes }: AccessibleSwitchInputProps<
+  { attributes, uniqueId }: AccessibleSwitchInputProps<
     ValidValueAction,
     InvalidValueAction
   >,
@@ -102,7 +104,11 @@ function AccessibleSwitchInput<
     });
 
   return (
-    <Box>
+    <Container
+      key={`${name}-${value}-${uniqueId}`}
+      style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
+      w="100%"
+    >
       <Switch
         aria-label={name}
         aria-required={required}
@@ -169,7 +175,7 @@ function AccessibleSwitchInput<
         {switchOnTextElement}
         {switchOffTextElement}
       </Box>
-    </Box>
+    </Container>
   );
 }
 
