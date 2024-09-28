@@ -113,6 +113,7 @@ function returnCustomerStepperPages() {
   const postalCodeTextInputChild: StepperChild = {
     inputType: "text",
     name: "postalCode",
+    validationKey: "userDefinedValue",
   };
 
   const isActiveSelectChild: StepperChild = {

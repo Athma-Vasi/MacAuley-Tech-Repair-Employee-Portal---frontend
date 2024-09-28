@@ -396,14 +396,32 @@ function queryReducer_setGeneralSearchExclusionValue(
   state: QueryState,
   dispatch: QueryDispatch,
 ): QueryState {
-  return { ...state, generalSearchExclusionValue: dispatch.payload as string };
+  const generalSearchExclusionValue = dispatch.payload as string;
+  const queryString = createQueryString({
+    generalSearchCase: state.generalSearchCase,
+    generalSearchExclusionValue,
+    generalSearchInclusionValue: state.generalSearchInclusionValue,
+    projectionExclusionFields: state.projectionExclusionFields,
+    queryChains: state.queryChains,
+  });
+
+  return { ...state, generalSearchExclusionValue, queryString };
 }
 
 function queryReducer_setGeneralSearchInclusionValue(
   state: QueryState,
   dispatch: QueryDispatch,
 ): QueryState {
-  return { ...state, generalSearchInclusionValue: dispatch.payload as string };
+  const generalSearchInclusionValue = dispatch.payload as string;
+  const queryString = createQueryString({
+    generalSearchCase: state.generalSearchCase,
+    generalSearchExclusionValue: state.generalSearchExclusionValue,
+    generalSearchInclusionValue,
+    projectionExclusionFields: state.projectionExclusionFields,
+    queryChains: state.queryChains,
+  });
+
+  return { ...state, generalSearchInclusionValue, queryString };
 }
 
 function queryReducer_setIsError(
@@ -425,7 +443,16 @@ function queryReducer_setProjectionExclusionFields(
   state: QueryState,
   dispatch: QueryDispatch,
 ): QueryState {
-  return { ...state, projectionExclusionFields: dispatch.payload as string[] };
+  const projectionExclusionFields = dispatch.payload as string[];
+  const queryString = createQueryString({
+    generalSearchCase: state.generalSearchCase,
+    generalSearchExclusionValue: state.generalSearchExclusionValue,
+    generalSearchInclusionValue: state.generalSearchInclusionValue,
+    projectionExclusionFields,
+    queryChains: state.queryChains,
+  });
+
+  return { ...state, projectionExclusionFields, queryString };
 }
 
 function queryReducer_setSortDirection(

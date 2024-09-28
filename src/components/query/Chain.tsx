@@ -11,6 +11,7 @@ import {
 import {
   addCommaSeparator,
   capitalizeJoinWithAnd,
+  replaceLastCommaWithAnd,
   splitCamelCase,
 } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
@@ -267,16 +268,26 @@ function Chain(
     },
   );
 
+  const splitAndJoinedGeneralSearchInclusionValue = replaceLastCommaWithAnd(
+    addCommaSeparator(
+      generalSearchInclusionValue.split(" ").join(", "),
+    ),
+  );
+
+  const splitAndJoinedGeneralSearchExclusionValue = replaceLastCommaWithAnd(
+    addCommaSeparator(
+      generalSearchExclusionValue.split(" ").join(", "),
+    ),
+  );
+
   const generalSearchExclusionLink = generalSearchExclusionValue.length === 0
     ? null
     : (
       <Timeline.Item bullet={<TbLink />}>
         <Text>
-          {`${
-            addCommaSeparator(
-              generalSearchExclusionValue.split(" ").join(", "),
-            )
-          } are not present.`}
+          {`${splitAndJoinedGeneralSearchExclusionValue} ${
+            generalSearchExclusionValue.split(" ").length > 1 ? "are" : "is"
+          } not present.`}
         </Text>
       </Timeline.Item>
     );
@@ -286,13 +297,9 @@ function Chain(
     : (
       <Timeline.Item bullet={<TbLink />}>
         <Text>
-          {`${
-            addCommaSeparator(
-              generalSearchInclusionValue.split(" ").join(", "),
-            )
-          } are present ${
-            generalSearchExclusionValue.length === 0 ? "" : "and"
-          }`}
+          {`${splitAndJoinedGeneralSearchInclusionValue} ${
+            generalSearchInclusionValue.split(" ").length > 1 ? "are" : "is"
+          } present ${generalSearchExclusionValue.length === 0 ? "" : "and"}`}
         </Text>
       </Timeline.Item>
     );

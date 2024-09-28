@@ -234,14 +234,15 @@ function createQueryString({
               const mongoOperator =
                 comparisonOperatorsMongoTable.get(comparisonOperator) ??
                   "$in";
-              subAcc += `&[${field}][${mongoOperator}]=${value}`;
+              subAcc +=
+                `&$${logicalOperator}[${field}][${mongoOperator}]=${value}`;
 
               return subAcc;
             },
             "",
           );
 
-          acc += `&$${logicalOperator}${filterQueryString}`;
+          acc += filterQueryString;
         } else if (chainKind === "sort") {
           const sortQueryString = chains.reduce(
             (subAcc, [field, _comparisonOperator, sortDirection]) => {
