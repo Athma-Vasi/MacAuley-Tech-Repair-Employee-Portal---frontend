@@ -16,16 +16,20 @@ import { COLORS_SWATCHES } from "../../constants/data";
 import { authAction } from "../../context/authProvider";
 import { useGlobalState } from "../../hooks";
 import { useAuth } from "../../hooks/useAuth";
+import type { HttpServerResponse } from "../../types";
 import {
   decodeJWTSafe,
-  fetchRequestPOSTSafe,
+  fetchSafe,
   logState,
+  responseToJSONSafe,
   returnThemeColors,
 } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import type { CustomerDocument } from "../customer/types";
 import { NotificationModal } from "../notificationModal";
 import { useStyles } from "../styles";
 import { loginAction } from "./actions";
+import { LOGIN_URL } from "./constants";
 import { loginReducer } from "./reducers";
 import { initialLoginState } from "./state";
 
@@ -86,36 +90,88 @@ function Login() {
     async function loginFormSubmit() {
       const schema = { username, password };
 
-      const loginResult = await fetchRequestPOSTSafe({
-        closeSubmitFormModal,
-        customUrl: "http://localhost:5500/auth/login",
-        dispatch: loginDispatch,
-        fetchAbortController,
-        isComponentMounted,
-        isSubmittingAction: loginAction.setIsSubmitting,
-        isSuccessfulAction: loginAction.setIsSuccessful,
-        openSubmitFormModal,
-        roles: ["Employee"], // public route, no roles required
-        schema,
-        triggerFormSubmitAction: loginAction.setTriggerFormSubmit,
-      });
+      const url = LOGIN_URL;
 
-      if (loginResult.err) {
-        showBoundary(loginResult.val.data);
+      const requestInit: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ schema }),
+        signal: fetchAbortController.signal,
+      };
+
+      const responseResult = await fetchSafe(url, requestInit);
+
+      if (!isComponentMounted) {
         return;
       }
 
-      const safeBox = loginResult.safeUnwrap();
-      if (safeBox.kind === "error") {
-        showBoundary(new Error("Error logging in"));
+      if (responseResult.err) {
+        showBoundary(responseResult.val.data);
         return;
       }
 
-      const serverResponse = safeBox.data;
+      const responseUnwrapped = responseResult.safeUnwrap().data;
+
+      if (responseUnwrapped === undefined) {
+        showBoundary(new Error("No data returned from server"));
+        return;
+      }
+
+      const jsonResult = await responseToJSONSafe<
+        HttpServerResponse<CustomerDocument>
+      >(
+        responseUnwrapped,
+      );
+
+      if (!isComponentMounted) {
+        return;
+      }
+
+      if (jsonResult.err) {
+        showBoundary(jsonResult.val.data);
+        return;
+      }
+
+      const serverResponse = jsonResult.safeUnwrap().data;
+
       if (serverResponse === undefined) {
-        showBoundary(new Error("Network error"));
+        showBoundary(new Error("No data returned from server"));
         return;
       }
+
+      // const loginResult = await fetchRequestPOSTSafe({
+      //   closeSubmitFormModal,
+      //   customUrl: "http://localhost:5500/auth/login",
+      //   dispatch: loginDispatch,
+      //   fetchAbortController,
+      //   isComponentMounted,
+      //   isSubmittingAction: loginAction.setIsSubmitting,
+      //   isSuccessfulAction: loginAction.setIsSuccessful,
+      //   openSubmitFormModal,
+      //   roles: ["Employee"], // public route, no roles required
+      //   schema,
+      //   triggerFormSubmitAction: loginAction.setTriggerFormSubmit,
+      // });
+
+      // if (loginResult.err) {
+      //   showBoundary(loginResult.val.data);
+      //   return;
+      // }
+
+      // const safeBox = loginResult.safeUnwrap();
+
+      // if (safeBox.kind === "error") {
+      //   showBoundary(new Error("Error logging in"));
+      //   return;
+      // }
+
+      // const serverResponse = safeBox.data;
+      // if (serverResponse === undefined) {
+      //   showBoundary(new Error("Network error"));
+      //   return;
+      // }
 
       const { accessToken } = serverResponse;
 
@@ -142,6 +198,19 @@ function Login() {
       authDispatch({
         action: authAction.setUserDocument,
         payload: serverResponse.data[0],
+      });
+
+      loginDispatch({
+        action: loginAction.setIsSubmitting,
+        payload: false,
+      });
+      loginDispatch({
+        action: loginAction.setIsSuccessful,
+        payload: true,
+      });
+      loginDispatch({
+        action: loginAction.setTriggerFormSubmit,
+        payload: false,
       });
 
       navigate("/home");

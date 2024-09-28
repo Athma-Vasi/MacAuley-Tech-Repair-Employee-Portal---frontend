@@ -1,5 +1,6 @@
 type CreateRepairTicketAction = {
     setCustomerSearchField: "setCustomerSearchField";
+    setCustomerSearchKeyword: "setCustomerSearchKeyword";
     setSelectedCustomer: "setSelectedCustomer";
     setSelectedFieldData: "setSelectedFieldData";
 
@@ -19,14 +20,21 @@ type CreateRepairTicketAction = {
     setEstimatedCompletionDate: "setEstimatedCompletionDate";
     setRepairPriority: "setRepairPriority";
 
+    setQueryString: "setQueryString";
+    setCustomerSearchResults: "setCustomerSearchResults";
+    setTotalDocuments: "setTotalDocuments";
+    setTotalPages: "setTotalPages";
+    setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit";
     setTriggerRepairFormSubmit: "setTriggerRepairFormSubmit";
     setPageInError: "setPageInError";
     setIsSubmitting: "setIsSubmitting";
     setIsSuccessful: "setIsSuccessful";
+    setIsLoading: "setIsLoading";
 };
 
 const createRepairTicketAction: CreateRepairTicketAction = {
     setCustomerSearchField: "setCustomerSearchField",
+    setCustomerSearchKeyword: "setCustomerSearchKeyword",
     setSelectedCustomer: "setSelectedCustomer",
     setSelectedFieldData: "setSelectedFieldData",
 
@@ -46,10 +54,16 @@ const createRepairTicketAction: CreateRepairTicketAction = {
     setEstimatedCompletionDate: "setEstimatedCompletionDate",
     setRepairPriority: "setRepairPriority",
 
+    setQueryString: "setQueryString",
+    setCustomerSearchResults: "setCustomerSearchResults",
+    setTotalDocuments: "setTotalDocuments",
+    setTotalPages: "setTotalPages",
+    setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit",
     setTriggerRepairFormSubmit: "setTriggerRepairFormSubmit",
     setPageInError: "setPageInError",
     setIsSubmitting: "setIsSubmitting",
     setIsSuccessful: "setIsSuccessful",
+    setIsLoading: "setIsLoading",
 };
 
 export { createRepairTicketAction };

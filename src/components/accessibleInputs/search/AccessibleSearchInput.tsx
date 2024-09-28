@@ -16,12 +16,17 @@ import {
   type KeyboardEvent,
   type ReactNode,
   type RefObject,
+  useEffect,
   useState,
 } from "react";
 import { TbCheck, TbRefresh, TbX } from "react-icons/tb";
 
 import { Trie } from "../../../classes/trie";
-import { COLORS_SWATCHES } from "../../../constants/data";
+import {
+  COLORS_SWATCHES,
+  INPUT_MAX_WIDTH,
+  INPUT_MIN_WIDTH,
+} from "../../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../../constants/validations";
 import { useGlobalState } from "../../../hooks";
 import type {
@@ -76,6 +81,7 @@ type AccessibleSearchInputAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  trieResults: string[];
   validationFunctionsTable?: ValidationFunctionsTable;
   validValueAction: ValidValueAction;
   value: string;
@@ -127,6 +133,7 @@ function AccessibleSearchInput<
     rightSectionOnClick = () => {},
     size = "sm",
     stepperPages,
+    trieResults,
     validationFunctionsTable = VALIDATION_FUNCTIONS_TABLE,
     validValueAction,
     value,
@@ -140,7 +147,7 @@ function AccessibleSearchInput<
   );
 
   const [trie] = useState(() => Trie.buildTrie(data));
-  const [trieResults, setTrieResults] = useState<string[]>([]);
+  // const [trieResults, setTrieResults] = useState<string[]>([]);
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
@@ -192,7 +199,7 @@ function AccessibleSearchInput<
   const leftIcon = icon ??
     (isValueBufferValid
       ? <TbCheck color={greenColorShade} size={18} />
-      : value.length === 0
+      : valueBuffer.length === 0
       ? null
       : <TbX color={redColorShade} size={18} />);
 
@@ -212,6 +219,13 @@ function AccessibleSearchInput<
       validationTexts,
       valueBuffer,
     });
+
+  console.group("AccessibleSearchInput");
+  console.log("trie", trie);
+  console.log("trieResults", trieResults);
+  console.log("valueBuffer", valueBuffer);
+  console.log("isPopoverOpened", isPopoverOpened);
+  console.groupEnd();
 
   const dropdown = trieResults.length
     ? (
@@ -260,7 +274,11 @@ function AccessibleSearchInput<
     : <Text aria-live="polite">No results found</Text>;
 
   return (
-    <Container w={350}>
+    <Container
+      key={`${name}-${value}-${uniqueId ?? ""}`}
+      style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
+      w="100%"
+    >
       <Popover
         opened={isPopoverOpened}
         position="bottom"
@@ -310,7 +328,7 @@ function AccessibleSearchInput<
               } = event;
 
               setValueBuffer(value);
-              setTrieResults(trie.autoComplete(value));
+              // setTrieResults(() => trie.autoComplete(value));
               onChange?.(event);
             }}
             onFocus={() => {

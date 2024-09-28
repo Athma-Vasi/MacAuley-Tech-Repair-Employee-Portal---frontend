@@ -238,15 +238,15 @@ function AccessibleTextAreaInput<
     valueBuffer,
   });
 
-  console.group(`AccessibleTextAreaInput: ${name}`);
-  console.log("name:", name);
-  console.log("stepperPages:", stepperPages);
-  console.log("validationFunctionsTable:", validationFunctionsTable);
-  console.log("partials:", partials);
-  console.log("valueBuffer:", valueBuffer);
-  console.log("isValueBufferValid:", isValueBufferValid);
-  console.log("validationTexts:", validationTexts);
-  console.groupEnd();
+  // console.group(`AccessibleTextAreaInput: ${name}`);
+  // console.log("name:", name);
+  // console.log("stepperPages:", stepperPages);
+  // console.log("validationFunctionsTable:", validationFunctionsTable);
+  // console.log("partials:", partials);
+  // console.log("valueBuffer:", valueBuffer);
+  // console.log("isValueBufferValid:", isValueBufferValid);
+  // console.log("validationTexts:", validationTexts);
+  // console.groupEnd();
 
   const { invalidValueTextElement } =
     createAccessibleValueValidationTextElements({

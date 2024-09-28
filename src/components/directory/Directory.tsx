@@ -7,6 +7,7 @@ import {
   STORE_LOCATION_DATA,
 } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
+import type { CheckboxRadioSelectData } from "../../types";
 import { returnThemeColors } from "../../utils";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { D3Tree } from "../d3Tree/D3Tree";
@@ -20,7 +21,6 @@ import type {
   StoreLocationsWithDefaultKey,
 } from "./types";
 import { filterEmployees, returnIsStoreLocationDisabled } from "./utils";
-import type { CheckboxRadioSelectData } from "../../types";
 
 function Directory() {
   const [directoryState, directoryDispatch] = useReducer(
@@ -90,12 +90,15 @@ function Directory() {
     isStoreLocationDisabled,
     storeLocation,
   });
+
+  console.log(buildD3Tree(filteredEmployees, themeColorShade));
+
   const d3Tree = (
     <D3Tree data={buildD3Tree(filteredEmployees, themeColorShade)} />
   );
 
   return (
-    <Container w={700}>
+    <Container>
       {departmentSelectInput}
       {storeLocationSelectInput}
       {d3Tree}

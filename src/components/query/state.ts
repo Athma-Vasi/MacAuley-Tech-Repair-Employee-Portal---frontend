@@ -1,5 +1,5 @@
-import { CheckboxRadioSelectData } from "../../types";
-import {
+import type { CheckboxRadioSelectData } from "../../types";
+import type {
   FilterFieldsOperatorsValuesSetsMap,
   LogicalOperatorChainsSetsMap,
   QueryState,
@@ -7,7 +7,7 @@ import {
 } from "./types";
 
 function createInitialQueryState(
-  searchFieldSelectInputData: CheckboxRadioSelectData
+  searchFieldSelectInputData: CheckboxRadioSelectData,
 ): QueryState {
   const filterFieldsOperatorsValuesSetsMap = new Map([
     [
@@ -36,12 +36,12 @@ function createInitialQueryState(
 
   const initialQueryState: QueryState = {
     // date input type is guaranteed to exist (all schemas have createdAt & updatedAt)
-    filterField: "createdAt",
+    filterField: "username",
     filterFieldsOperatorsValuesSetsMap,
-    filterComparisonOperator: "equal to",
+    filterComparisonOperator: "in",
     filterComparisonOperatorSelectData: [],
     filterLogicalOperator: "and",
-    filterValue: new Date().toISOString().split("T")[0],
+    filterValue: "",
     generalSearchCase: "case-insensitive",
     generalSearchExclusionValue: "",
     generalSearchInclusionValue: "",
@@ -50,6 +50,7 @@ function createInitialQueryState(
     logicalOperatorChainsSetsMap,
     projectionExclusionFields: [],
     queryChains: { filter: new Map(), sort: new Map() },
+    queryString: "?",
     searchFieldsOperatorsValuesSetMap,
     sortDirection: "descending",
     sortField: "updatedAt",

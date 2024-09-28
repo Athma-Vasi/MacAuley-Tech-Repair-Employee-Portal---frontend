@@ -1,6 +1,6 @@
-import { SetPageInErrorPayload } from "../../types";
-import { QueryAction, queryAction } from "./actions";
-import {
+import type { SetPageInErrorPayload } from "../../types";
+import { type QueryAction, queryAction } from "./actions";
+import type {
   GeneralSearchCase,
   LogicalOperator,
   ModifyQueryChainPayload,
@@ -10,6 +10,7 @@ import {
   QueryState,
   SortDirection,
 } from "./types";
+import { createQueryString } from "./utils";
 
 function queryReducer(state: QueryState, dispatch: QueryDispatch): QueryState {
   const reducer = queryReducers.get(dispatch.action);
@@ -22,7 +23,10 @@ const queryReducers = new Map<
 >([
   [queryAction.modifyQueryChains, queryReducer_modifyQueryChains],
   [queryAction.setFilterField, queryReducer_setFilterField],
-  [queryAction.setFilterComparisonOperator, queryReducer_setFilterComparisonOperator],
+  [
+    queryAction.setFilterComparisonOperator,
+    queryReducer_setFilterComparisonOperator,
+  ],
   [queryAction.setFilterLogicalOperator, queryReducer_setFilterLogicalOperator],
   [
     queryAction.setFilterComparisonOperatorSelectData,
@@ -40,31 +44,41 @@ const queryReducers = new Map<
   [queryAction.setGeneralSearchCase, queryReducer_setGeneralSearchCase],
   [queryAction.setIsError, queryReducer_setIsError],
   [queryAction.setIsSearchDisabled, queryReducer_setIsSearchDisabled],
-  [queryAction.setProjectionExclusionFields, queryReducer_setProjectionExclusionFields],
+  [
+    queryAction.setProjectionExclusionFields,
+    queryReducer_setProjectionExclusionFields,
+  ],
   [queryAction.setSortDirection, queryReducer_setSortDirection],
   [queryAction.setSortField, queryReducer_setSortField],
 ]);
 
 function queryReducer_modifyQueryChains(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
-  const { index, logicalOperator, queryChainActions, queryLink, queryChainKind } =
-    dispatch.payload as ModifyQueryChainPayload;
+  const {
+    index,
+    logicalOperator,
+    queryChainActions,
+    queryLink,
+    queryChainKind,
+  } = dispatch.payload as ModifyQueryChainPayload;
   const [field, comparisonOperator, value] = queryLink;
 
   const logicalOperatorChainsSetsMap = structuredClone(
-    state.logicalOperatorChainsSetsMap
+    state.logicalOperatorChainsSetsMap,
   );
-  const logicalOperatorChainsSets = logicalOperatorChainsSetsMap.get(logicalOperator) ?? {
-    fieldsSet: new Set(),
-    comparisonOperatorsSet: new Set(),
-    valuesSet: new Set(),
-  };
-  const { comparisonOperatorsSet, fieldsSet, valuesSet } = logicalOperatorChainsSets;
+  const { comparisonOperatorsSet, fieldsSet, valuesSet } =
+    logicalOperatorChainsSetsMap.get(logicalOperator) ?? {
+      fieldsSet: new Set(),
+      comparisonOperatorsSet: new Set(),
+      valuesSet: new Set(),
+    };
 
   const logicalOperatorChainsMap = structuredClone(
-    queryChainKind === "filter" ? state.queryChains.filter : state.queryChains.sort
+    queryChainKind === "filter"
+      ? state.queryChains.filter
+      : state.queryChains.sort,
   );
   const chains = logicalOperatorChainsMap.get(logicalOperator) ?? [];
 
@@ -95,13 +109,24 @@ function queryReducer_modifyQueryChains(
 
       console.log("delete");
 
+      const newQueryChains = {
+        ...state.queryChains,
+        [queryChainKind]: logicalOperatorChainsMap,
+      };
+
+      const queryString = createQueryString({
+        generalSearchCase: state.generalSearchCase,
+        generalSearchExclusionValue: state.generalSearchExclusionValue,
+        generalSearchInclusionValue: state.generalSearchInclusionValue,
+        projectionExclusionFields: state.projectionExclusionFields,
+        queryChains: newQueryChains,
+      });
+
       return {
         ...state,
         logicalOperatorChainsSetsMap,
-        queryChains: {
-          ...state.queryChains,
-          [queryChainKind]: logicalOperatorChainsMap,
-        },
+        queryChains: newQueryChains,
+        queryString,
       };
     }
 
@@ -129,7 +154,7 @@ function queryReducer_modifyQueryChains(
       ) {
         const index = chains.findIndex(
           ([field_, comparisonOperator_, _]: [string, string, string]) =>
-            field_ === field && comparisonOperator_ === comparisonOperator
+            field_ === field && comparisonOperator_ === comparisonOperator,
         );
         chains.splice(index, 1, queryLink);
 
@@ -144,7 +169,7 @@ function queryReducer_modifyQueryChains(
       ) {
         const index = chains.findIndex(
           ([field_, _, value_]: [string, string, string]) =>
-            field_ === field && value_ === value
+            field_ === field && value_ === value,
         );
         chains.splice(index, 1, queryLink);
 
@@ -181,13 +206,24 @@ function queryReducer_modifyQueryChains(
         valuesSet,
       });
 
+      const newQueryChains = {
+        ...state.queryChains,
+        [queryChainKind]: logicalOperatorChainsMap,
+      };
+
+      const queryString = createQueryString({
+        generalSearchCase: state.generalSearchCase,
+        generalSearchExclusionValue: state.generalSearchExclusionValue,
+        generalSearchInclusionValue: state.generalSearchInclusionValue,
+        projectionExclusionFields: state.projectionExclusionFields,
+        queryChains: newQueryChains,
+      });
+
       return {
         ...state,
         logicalOperatorChainsSetsMap,
-        queryChains: {
-          ...state.queryChains,
-          [queryChainKind]: logicalOperatorChainsMap,
-        },
+        queryChains: newQueryChains,
+        queryString,
       };
     }
 
@@ -198,12 +234,23 @@ function queryReducer_modifyQueryChains(
       chains[index + 1] = currentLink;
       logicalOperatorChainsMap.set(logicalOperator, chains);
 
+      const newQueryChains = {
+        ...state.queryChains,
+        [queryChainKind]: logicalOperatorChainsMap,
+      };
+
+      const queryString = createQueryString({
+        generalSearchCase: state.generalSearchCase,
+        generalSearchExclusionValue: state.generalSearchExclusionValue,
+        generalSearchInclusionValue: state.generalSearchInclusionValue,
+        projectionExclusionFields: state.projectionExclusionFields,
+        queryChains: newQueryChains,
+      });
+
       return {
         ...state,
-        queryChains: {
-          ...state.queryChains,
-          [queryChainKind]: logicalOperatorChainsMap,
-        },
+        queryChains: newQueryChains,
+        queryString,
       };
     }
 
@@ -214,12 +261,23 @@ function queryReducer_modifyQueryChains(
       chains[index - 1] = currentLink;
       logicalOperatorChainsMap.set(logicalOperator, chains);
 
+      const newQueryChains = {
+        ...state.queryChains,
+        [queryChainKind]: logicalOperatorChainsMap,
+      };
+
+      const queryString = createQueryString({
+        generalSearchCase: state.generalSearchCase,
+        generalSearchExclusionValue: state.generalSearchExclusionValue,
+        generalSearchInclusionValue: state.generalSearchInclusionValue,
+        projectionExclusionFields: state.projectionExclusionFields,
+        queryChains: newQueryChains,
+      });
+
       return {
         ...state,
-        queryChains: {
-          ...state.queryChains,
-          [queryChainKind]: logicalOperatorChainsMap,
-        },
+        queryChains: newQueryChains,
+        queryString,
       };
     }
 
@@ -230,7 +288,7 @@ function queryReducer_modifyQueryChains(
 
 function queryReducer_setFilterField(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   const {
     fieldNamesOperatorsTypesMap,
@@ -238,31 +296,41 @@ function queryReducer_setFilterField(
     selectInputsDataMap,
     searchFieldSelectInputData,
   } = dispatch.payload as QueryFilterPayload;
-  const filterField = value;
-  const operatorTypes = fieldNamesOperatorsTypesMap.get(value);
-  const selectInputData = selectInputsDataMap.get(value);
 
   console.group("queryReducer_setFilterField");
-  console.log({
-    filterField,
-    operatorTypes,
-    selectInputData,
-    searchFieldSelectInputData,
-  });
+
+  const filterField = value;
+
+  console.log("filterField", filterField);
+
+  const operatorTypes = fieldNamesOperatorsTypesMap.get(value);
+
+  console.log("operatorTypes", operatorTypes);
+
+  const selectInputData = selectInputsDataMap.get(value);
+
+  console.log("selectInputData", selectInputData);
+
   console.groupEnd();
 
   if (operatorTypes === undefined) {
-    return { ...state, filterField, filterComparisonOperator: "in", filterValue: "" };
+    return {
+      ...state,
+      filterField,
+      filterComparisonOperator: "in",
+      filterValue: "",
+    };
   }
 
   if (selectInputData === undefined) {
     return {
       ...state,
       filterField,
-      filterComparisonOperator: operatorTypes.operators[0].label as QueryOperator,
+      filterComparisonOperator: operatorTypes.operators[0]
+        .label as QueryOperator,
       filterValue: searchFieldSelectInputData.map(({ value }) =>
-        value.includes(filterField)
-      )
+          value.includes(filterField)
+        )
         ? "" // text input initialized with empty string
         : new Date().toISOString().split("T")[0], // date input initialized with current date
     };
@@ -282,82 +350,94 @@ function queryReducer_setFilterField(
 
 function queryReducer_setFilterComparisonOperator(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
-  return { ...state, filterComparisonOperator: dispatch.payload as QueryOperator };
+  return {
+    ...state,
+    filterComparisonOperator: dispatch.payload as QueryOperator,
+  };
 }
 
 function queryReducer_setFilterLogicalOperator(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
-  return { ...state, filterLogicalOperator: dispatch.payload as LogicalOperator };
+  return {
+    ...state,
+    filterLogicalOperator: dispatch.payload as LogicalOperator,
+  };
 }
 
 function queryReducer_setFilterComparisonOperatorSelectData(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
-  return { ...state, filterComparisonOperatorSelectData: dispatch.payload as string[] };
+  return {
+    ...state,
+    filterComparisonOperatorSelectData: dispatch.payload as string[],
+  };
 }
 
 function queryReducer_setFilterValue(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   return { ...state, filterValue: dispatch.payload as string };
 }
 
 function queryReducer_setGeneralSearchCase(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   return { ...state, generalSearchCase: dispatch.payload as GeneralSearchCase };
 }
 
 function queryReducer_setGeneralSearchExclusionValue(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   return { ...state, generalSearchExclusionValue: dispatch.payload as string };
 }
 
 function queryReducer_setGeneralSearchInclusionValue(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   return { ...state, generalSearchInclusionValue: dispatch.payload as string };
 }
 
-function queryReducer_setIsError(state: QueryState, dispatch: QueryDispatch): QueryState {
+function queryReducer_setIsError(
+  state: QueryState,
+  dispatch: QueryDispatch,
+): QueryState {
   const { kind } = dispatch.payload as SetPageInErrorPayload;
   return { ...state, isError: kind === "add" };
 }
 
 function queryReducer_setIsSearchDisabled(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   return { ...state, isSearchDisabled: dispatch.payload as boolean };
 }
 
 function queryReducer_setProjectionExclusionFields(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   return { ...state, projectionExclusionFields: dispatch.payload as string[] };
 }
 
 function queryReducer_setSortDirection(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   return { ...state, sortDirection: dispatch.payload as SortDirection };
 }
 
 function queryReducer_setSortField(
   state: QueryState,
-  dispatch: QueryDispatch
+  dispatch: QueryDispatch,
 ): QueryState {
   return { ...state, sortField: dispatch.payload as string };
 }

@@ -39,33 +39,33 @@ function PortalLayout() {
   );
 
   return (
-    <div className={classes.wrapper}>
-      <AppShell
-        bg={backgroundColor}
-        padding={0}
-        navbarOffsetBreakpoint="sm"
-        navbar={<PortalNavbar openedNavbar={opened} />}
-        header={
-          <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
-        }
-        footer={<PortalFooter />}
-      >
-        {/* breadcrumbs always visible */}
-        {displayBreadcrumbs}
+    // <div className={classes.wrapper}>
+    <AppShell
+      bg={backgroundColor}
+      padding={0}
+      navbarOffsetBreakpoint="xs"
+      navbar={<PortalNavbar openedNavbar={opened} />}
+      header={
+        <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
+      }
+      footer={<PortalFooter />}
+    >
+      {/* breadcrumbs always visible */}
+      {displayBreadcrumbs}
 
-        <ScrollArea styles={() => scrollBarStyle} type="scroll">
-          <Flex
-            bg={backgroundColor}
-            direction="column"
-            h={width <= 991 ? height - (50 + 56 + 75) : height - (64 + 56 + 75)} //  vw < 991 ?  vh - (header height:50px + padding:56 + footer height:75px) : vh - (header height:64px + padding:56 + footer height:75px)
-            w="100%"
-          >
-            <Space h="xl" />
-            <Outlet />
-          </Flex>
-        </ScrollArea>
-      </AppShell>
-    </div>
+      <ScrollArea styles={() => scrollBarStyle} type="scroll">
+        <Flex
+          bg={backgroundColor}
+          direction="column"
+          h={width <= 991 ? height - (50 + 56 + 75) : height - (64 + 56 + 75)} //  vw < 991 ?  vh - (header height:50px + padding:56 + footer height:75px) : vh - (header height:64px + padding:56 + footer height:75px)
+          w="100%"
+        >
+          <Space h="xl" />
+          <Outlet />
+        </Flex>
+      </ScrollArea>
+    </AppShell>
+    // </div>
   );
 }
 

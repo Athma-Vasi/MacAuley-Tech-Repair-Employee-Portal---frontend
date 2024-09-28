@@ -1,11 +1,10 @@
-import {
+import type {
   CheckboxInputData,
   CheckboxRadioSelectData,
   SetPageInErrorPayload,
-  StepperPage,
 } from "../../types";
-import { QueryAction } from "./actions";
-import { OperatorsInputType } from "./utils";
+import type { QueryAction } from "./actions";
+import type { OperatorsInputType } from "./utils";
 
 type ComparisonOperator =
   | "equal to"
@@ -15,7 +14,13 @@ type ComparisonOperator =
   | "less than"
   | "not equal to";
 
-type FilterInputsType = "boolean" | "date" | "number" | "select" | "time";
+type FilterInputsType =
+  | "boolean"
+  | "date"
+  | "number"
+  | "select"
+  | "text"
+  | "time";
 
 type FilterFieldsOperatorsValuesSetsMap = Map<
   string,
@@ -37,7 +42,18 @@ type LogicalOperatorChainsSets = {
   valuesSet: Set<string>;
 };
 
-type LogicalOperatorChainsSetsMap = Map<LogicalOperator, LogicalOperatorChainsSets>;
+type LogicalOperatorChainsSetsMap = Map<
+  LogicalOperator,
+  LogicalOperatorChainsSets
+>;
+
+type MongoComparisonOperator =
+  | "$eq"
+  | "$gt"
+  | "$gte"
+  | "$lt"
+  | "$lte"
+  | "$ne";
 
 type QueryChain = Array<QueryLink>;
 
@@ -45,7 +61,7 @@ type QueryChainActions = "delete" | "insert" | "slideUp" | "slideDown";
 
 type QueryChainKind = "filter" | "sort";
 
-type QueryChains = Record<QueryChainKind, Map<LogicalOperator, QueryChain>>; // Map<logicalOperator, ...
+type QueryChains = Record<QueryChainKind, Map<LogicalOperator, QueryChain>>;
 
 type QueryLink = [string, QueryOperator, string]; // [field, comparisonOperator, value]
 
@@ -56,28 +72,6 @@ type SearchFieldsValuesSetMap = Map<string, Set<string>>;
 type SortDirection = "ascending" | "descending";
 
 type SortInputsType = "date" | "number" | "time";
-
-type QueryProps<
-  ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
-> = {
-  collectionName: string;
-  hideProjection?: boolean;
-  // invalidValueAction: InvalidValueAction;
-  // parentDispatch: React.Dispatch<
-  //   | {
-  //       action: ValidValueAction;
-  //       payload: string;
-  //     }
-  //   | {
-  //       action: InvalidValueAction;
-  //       payload: SetPageInErrorPayload;
-  //     }
-  // >;
-  /** only the children steppers objs are used */
-  stepperPages: StepperPage[];
-  // validValueAction: ValidValueAction;
-};
 
 type QueryState = {
   filterField: string;
@@ -94,6 +88,7 @@ type QueryState = {
   logicalOperatorChainsSetsMap: LogicalOperatorChainsSetsMap;
   projectionExclusionFields: string[];
   queryChains: QueryChains;
+  queryString: string;
   searchFieldsOperatorsValuesSetMap: SearchFieldsValuesSetMap;
   sortDirection: SortDirection;
   sortField: string;
@@ -122,61 +117,61 @@ type QueryFilterPayload = {
 
 type QueryDispatch =
   | {
-      action: QueryAction["modifyQueryChains"];
-      payload: ModifyQueryChainPayload;
-    }
+    action: QueryAction["modifyQueryChains"];
+    payload: ModifyQueryChainPayload;
+  }
   | {
-      action: QueryAction["setFilterField"];
-      payload: QueryFilterPayload;
-    }
+    action: QueryAction["setFilterField"];
+    payload: QueryFilterPayload;
+  }
   | {
-      action: QueryAction["setFilterComparisonOperator"];
-      payload: QueryOperator;
-    }
+    action: QueryAction["setFilterComparisonOperator"];
+    payload: QueryOperator;
+  }
   | {
-      action: QueryAction["setFilterComparisonOperatorSelectData"];
-      payload: string[];
-    }
+    action: QueryAction["setFilterComparisonOperatorSelectData"];
+    payload: string[];
+  }
   | {
-      action: QueryAction["setFilterLogicalOperator"];
-      payload: LogicalOperator;
-    }
+    action: QueryAction["setFilterLogicalOperator"];
+    payload: LogicalOperator;
+  }
   | {
-      action: QueryAction["setFilterValue"];
-      payload: string;
-    }
+    action: QueryAction["setFilterValue"];
+    payload: string;
+  }
   | {
-      action: QueryAction["setGeneralSearchExclusionValue"];
-      payload: string;
-    }
+    action: QueryAction["setGeneralSearchExclusionValue"];
+    payload: string;
+  }
   | {
-      action: QueryAction["setGeneralSearchInclusionValue"];
-      payload: string;
-    }
+    action: QueryAction["setGeneralSearchInclusionValue"];
+    payload: string;
+  }
   | {
-      action: QueryAction["setIsError"];
-      payload: SetPageInErrorPayload;
-    }
+    action: QueryAction["setIsError"];
+    payload: SetPageInErrorPayload;
+  }
   | {
-      action: QueryAction["setGeneralSearchCase"];
-      payload: GeneralSearchCase;
-    }
+    action: QueryAction["setGeneralSearchCase"];
+    payload: GeneralSearchCase;
+  }
   | {
-      action: QueryAction["setIsSearchDisabled"];
-      payload: boolean;
-    }
+    action: QueryAction["setIsSearchDisabled"];
+    payload: boolean;
+  }
   | {
-      action: QueryAction["setProjectionExclusionFields"];
-      payload: string[];
-    }
+    action: QueryAction["setProjectionExclusionFields"];
+    payload: string[];
+  }
   | {
-      action: QueryAction["setSortDirection"];
-      payload: SortDirection;
-    }
+    action: QueryAction["setSortDirection"];
+    payload: SortDirection;
+  }
   | {
-      action: QueryAction["setSortField"];
-      payload: string;
-    };
+    action: QueryAction["setSortField"];
+    payload: string;
+  };
 
 export type {
   ComparisonOperator,
@@ -189,6 +184,7 @@ export type {
   LogicalOperatorChainsSetsMap,
   ModifyQueryChainPayload,
   ModifyQueryChainsDispatch,
+  MongoComparisonOperator,
   QueryChain,
   QueryChainActions,
   QueryChainKind,
@@ -197,7 +193,6 @@ export type {
   QueryFilterPayload,
   QueryLink,
   QueryOperator,
-  QueryProps,
   QueryState,
   SearchFieldsValuesSetMap,
   SortDirection,

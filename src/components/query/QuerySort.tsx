@@ -1,19 +1,19 @@
 import { Stack } from "@mantine/core";
-import qs from "qs";
-import React from "react";
+import type React from "react";
 
-import { CheckboxRadioSelectData } from "../../types";
+import type { CheckboxRadioSelectData } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
-import { QueryAction, queryAction } from "./actions";
+import { type QueryAction, queryAction } from "./actions";
 import { MAX_LINKS_AMOUNT, SORT_DIRECTION_DATA } from "./constants";
-import { ModifyQueryChainPayload, QueryChain, QueryState, SortDirection } from "./types";
-import { createQueryStringFromSort, removeProjectionExclusionFields } from "./utils";
+import type { ModifyQueryChainPayload, QueryState } from "./types";
+import { removeProjectionExclusionFields } from "./utils";
 
-type QuerySortDispatch<ValidValueAction extends string = string> = React.Dispatch<{
-  action: ValidValueAction;
-  payload: string;
-}>;
+type QuerySortDispatch<ValidValueAction extends string = string> =
+  React.Dispatch<{
+    action: ValidValueAction;
+    payload: string;
+  }>;
 
 type QuerySortProps<ValidValueAction extends string = string> = {
   querySortDispatch: QuerySortDispatch<ValidValueAction>;
@@ -31,21 +31,20 @@ function QuerySort<ValidValueAction extends string = string>({
   sortChainDispatch,
   sortFieldSelectData,
 }: QuerySortProps<ValidValueAction>) {
-  const [existingQueryString, setExistingQueryString] = React.useState<string>("");
-
-  const { projectionExclusionFields, queryChains, sortDirection, sortField } = queryState;
+  const { projectionExclusionFields, queryChains, sortDirection, sortField } =
+    queryState;
   const logicalOperatorChainsMap = queryChains.sort;
   const sortChainLength = Array.from(logicalOperatorChainsMap).reduce(
     (acc, [_key, value]) => {
       acc += value.length;
       return acc;
     },
-    0
+    0,
   );
 
   const data = removeProjectionExclusionFields(
     projectionExclusionFields,
-    sortFieldSelectData
+    sortFieldSelectData,
   );
   const disabled = data.length === 0;
 
@@ -85,7 +84,7 @@ function QuerySort<ValidValueAction extends string = string>({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           sortChainDispatch({
             action: queryAction.modifyQueryChains,
@@ -97,25 +96,6 @@ function QuerySort<ValidValueAction extends string = string>({
               queryLink: [sortField, "equal to", sortDirection],
             },
           });
-
-          //
-          //
-          //
-
-          const sortQueryString = createQueryStringFromSort({
-            existingQueryString,
-            sortDirection,
-            sortField,
-          });
-
-          setExistingQueryString(sortQueryString);
-
-          const parsedQueryObject = qs.parse(sortQueryString);
-
-          console.group("addSortLinkButton onClick");
-          console.log("sortQueryString", sortQueryString);
-          console.log("parsedQueryObject", parsedQueryObject);
-          console.groupEnd();
         },
       }}
     />

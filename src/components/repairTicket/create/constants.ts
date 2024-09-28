@@ -7,6 +7,7 @@ import type {
 } from "../../../types";
 import type { RepairCategory } from "../../dashboard/types";
 import type { PartsNeeded, RepairStatus, RequiredRepairs } from "../types";
+import type { CustomerSearchField } from "./types";
 
 const CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION = 4;
 
@@ -302,9 +303,21 @@ const REPAIR_CATEGORIES_DATA: CheckboxRadioSelectData<RepairCategory> = [
   },
 ];
 
+const CUSTOMER_SEARCH_FIELD_DATA: CheckboxRadioSelectData<CustomerSearchField> =
+  [
+    { label: "First Name", value: "firstName" },
+    { label: "Middle Name", value: "middleName" },
+    { label: "Last Name", value: "lastName" },
+    { label: "Preferred Name", value: "preferredName" },
+    { label: "Email", value: "email" },
+    { label: "Username", value: "username" },
+    { label: "Contact Number", value: "contactNumber" },
+  ];
+
 export {
   CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
   CREATE_REPAIR_TICKET_ROLE_PATHS,
+  CUSTOMER_SEARCH_FIELD_DATA,
   PARTS_NEEDED_DATA,
   REPAIR_CATEGORIES_DATA,
   REPAIR_STATUS_DATA,

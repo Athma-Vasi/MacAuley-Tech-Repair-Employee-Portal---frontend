@@ -2775,6 +2775,7 @@ async function fetchRequestPOSTSafe<
     isSubmittingAction,
     isSuccessfulAction,
     openSubmitFormModal,
+    queryString,
     requestBody,
     roleResourceRoutePaths,
     roles,
@@ -2795,6 +2796,7 @@ async function fetchRequestPOSTSafe<
     isSubmittingAction: IsSubmittingAction;
     isSuccessfulAction: IsSuccessfulAction;
     openSubmitFormModal: () => void;
+    queryString?: string;
     requestBody?: string | FormData;
     roleResourceRoutePaths?: RoleResourceRoutePaths;
     roles: UserRoles;
@@ -2815,7 +2817,10 @@ async function fetchRequestPOSTSafe<
     ? "admin"
     : "employee";
   const url = customUrl ??
-    urlBuilder({ path: roleResourceRoutePaths?.[userRole] ?? "" });
+    urlBuilder({
+      path: roleResourceRoutePaths?.[userRole],
+      query: queryString,
+    });
 
   const body = requestBody ??
     JSON.stringify({ schema: schema ?? {} });
@@ -2898,6 +2903,7 @@ async function fetchResourceGETSafe<
   loadingMessage,
   openSubmitFormModal,
   parentDispatch,
+  queryString,
   roleResourceRoutePaths,
   roles,
   setIsLoadingAction,
@@ -2932,6 +2938,7 @@ async function fetchResourceGETSafe<
       payload: number;
     }
   >;
+  queryString?: string;
   roleResourceRoutePaths: RoleResourceRoutePaths;
   roles: UserRoles;
   setResourceDataAction: SetResourceDataAction;
@@ -2957,7 +2964,7 @@ async function fetchResourceGETSafe<
     : "employee";
 
   const url = customUrl ??
-    urlBuilder({ path: roleResourceRoutePaths[userRole] });
+    urlBuilder({ path: roleResourceRoutePaths[userRole], query: queryString });
 
   const requestInit: RequestInit = {
     headers: {
@@ -3018,6 +3025,28 @@ async function fetchResourceGETSafe<
     return new Err({ data: error, kind: "error" });
   } finally {
     closeSubmitFormModal();
+  }
+}
+
+async function fetchSafe(input: RequestInfo | URL, init?: RequestInit): Promise<
+  SafeBoxResult<Response>
+> {
+  try {
+    const response: Response = await fetch(input, init);
+    return new Ok({ data: response, kind: "success" });
+  } catch (error: unknown) {
+    return new Err({ data: error, kind: "error" });
+  }
+}
+
+async function responseToJSONSafe<T>(
+  response: Response,
+): Promise<SafeBoxResult<T>> {
+  try {
+    const data: T = await response.json();
+    return new Ok({ data, kind: "success" });
+  } catch (error: unknown) {
+    return new Err({ data: error, kind: "error" });
   }
 }
 
@@ -3183,6 +3212,7 @@ export {
   fetchRequestPOSTSafe,
   fetchResourceGETSafe,
   fetchResourcePATCHSafe,
+  fetchSafe,
   filterFieldsFromObject,
   flattenObjectIterative,
   formatDate,
@@ -3194,6 +3224,7 @@ export {
   removeUndefinedAndNull,
   replaceLastCommaWithAnd,
   replaceLastCommaWithOr,
+  responseToJSONSafe,
   returnAcknowledgementValidationText,
   returnAddressValidationText,
   returnBrandNameValidationText,

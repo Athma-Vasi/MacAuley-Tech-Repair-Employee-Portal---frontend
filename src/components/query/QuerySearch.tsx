@@ -1,28 +1,28 @@
 import { Stack, Text } from "@mantine/core";
 import React from "react";
 
-import { SetPageInErrorPayload, StepperPage } from "../../types";
+import type { SetPageInErrorPayload, StepperPage } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { queryAction } from "./actions";
 import { QUERY_SEARCH_CASE_DATA } from "./constants";
-import { QueryDispatch, QueryState } from "./types";
-import { InputsValidationsMap } from "./utils";
+import type { QueryDispatch, QueryState } from "./types";
 
 type QuerySearchProps = {
-  inputsValidationsMap: InputsValidationsMap;
   parentDispatch: React.Dispatch<QueryDispatch>;
   queryState: QueryState;
 };
 
 function QuerySearch({
-  inputsValidationsMap,
   parentDispatch,
   queryState,
 }: QuerySearchProps) {
-  const { generalSearchCase, generalSearchExclusionValue, generalSearchInclusionValue } =
-    queryState;
+  const {
+    generalSearchCase,
+    generalSearchExclusionValue,
+    generalSearchInclusionValue,
+  } = queryState;
 
   type QuerySearchState = {
     exclusion: string;
@@ -48,15 +48,20 @@ function QuerySearch({
 
   type QuerySearchDispatch =
     | {
-        action: QuerySearchActions["setExclusion"] | QuerySearchActions["setInclusion"];
-        payload: string;
-      }
+      action:
+        | QuerySearchActions["setExclusion"]
+        | QuerySearchActions["setInclusion"];
+      payload: string;
+    }
     | {
-        action: QuerySearchActions["setPageInError"];
-        payload: SetPageInErrorPayload;
-      };
+      action: QuerySearchActions["setPageInError"];
+      payload: SetPageInErrorPayload;
+    };
 
-  function querySearchReducer(state: QuerySearchState, dispatch: QuerySearchDispatch) {
+  function querySearchReducer(
+    state: QuerySearchState,
+    dispatch: QuerySearchDispatch,
+  ) {
     switch (dispatch.action) {
       case querySearchActions.setExclusion:
         return { ...state, exclusion: dispatch.payload };
@@ -82,7 +87,7 @@ function QuerySearch({
 
   const [querySearchState, querySearchDispatch] = React.useReducer(
     querySearchReducer,
-    initialQuerySearchState
+    initialQuerySearchState,
   );
   const { exclusion, inclusion, pagesInError } = querySearchState;
 
@@ -152,7 +157,7 @@ function QuerySearch({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           parentDispatch({
             action: queryAction.setGeneralSearchExclusionValue,

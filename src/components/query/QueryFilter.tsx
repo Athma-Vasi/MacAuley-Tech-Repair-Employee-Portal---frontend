@@ -1,9 +1,8 @@
 import { Stack } from "@mantine/core";
-import React from "react";
-import qs from "qs";
+import type React from "react";
 
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
-import {
+import type {
   CheckboxRadioSelectData,
   SetPageInErrorPayload,
   StepperPage,
@@ -13,53 +12,47 @@ import { splitCamelCase } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { QueryAction, queryAction } from "./actions";
-import { LOGICAL_OPERATORS_DATA, MAX_LINKS_AMOUNT } from "./constants";
+import { queryAction } from "./actions";
 import {
-  ComparisonOperator,
-  GeneralSearchCase,
-  LogicalOperator,
-  ModifyQueryChainPayload,
+  BOOLEAN_VALUES_DATA,
+  LOGICAL_OPERATORS_DATA,
+  MAX_LINKS_AMOUNT,
+} from "./constants";
+import type {
   ModifyQueryChainsDispatch,
-  QueryChain,
-  QueryChainKind,
   QueryDispatch,
-  QueryOperator,
   QueryState,
-  SortDirection,
 } from "./types";
 import {
-  createQueryStringFromFilter,
-  InputsValidationsMap,
-  OperatorsInputType,
+  type InputsValidationsMap,
+  type OperatorsInputType,
   removeProjectionExclusionFields,
 } from "./utils";
-import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
-import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
 
 type SetFilterInputValuesDispatch<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = React.Dispatch<
   | {
-      action: ValidValueAction;
-      payload: {
-        fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
-        value: string;
-        selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
-        searchFieldSelectInputData: CheckboxRadioSelectData;
-      };
-    }
+    action: ValidValueAction;
+    payload: {
+      fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
+      value: string;
+      selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
+      searchFieldSelectInputData: CheckboxRadioSelectData;
+    };
+  }
   | {
-      action: InvalidValueAction;
-      payload: SetPageInErrorPayload;
-    }
+    action: InvalidValueAction;
+    payload: SetPageInErrorPayload;
+  }
 >;
 
 type SetFilterInputValuesDispatchData<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   setFilterInputValuesDispatch: SetFilterInputValuesDispatch<
@@ -93,8 +86,6 @@ function QueryFilter<ValidValueAction extends string = string>({
   selectInputsDataMap,
   setFilterInputValuesDispatch,
 }: QueryFilterProps<ValidValueAction>) {
-  const [existingQueryString, setExistingQueryString] = React.useState<string>("");
-
   const {
     filterField,
     filterComparisonOperator,
@@ -104,15 +95,20 @@ function QueryFilter<ValidValueAction extends string = string>({
     projectionExclusionFields,
     queryChains,
   } = queryState;
-  const chainLength = Array.from(queryChains.filter).reduce((acc, [_key, value]) => {
-    acc += value.length;
-    return acc;
-  }, 0);
+
+  const chainLength = Array.from(queryChains.filter).reduce(
+    (acc, [_key, value]) => {
+      acc += value.length;
+      return acc;
+    },
+    0,
+  );
 
   const logicalOperatorSelectInput = (
     <AccessibleSelectInput
       attributes={{
         data: LOGICAL_OPERATORS_DATA,
+        label: "Logical Operator",
         name: "filterLogicalOperator",
         parentDispatch,
         validValueAction: queryAction.setFilterLogicalOperator,
@@ -126,19 +122,21 @@ function QueryFilter<ValidValueAction extends string = string>({
     ...searchFieldSelectInputData,
   ]);
   const disabled = data.length === 0;
-  const setFilterInputValuesDispatchData: SetFilterInputValuesDispatchData<ValidValueAction> =
-    {
-      fieldNamesOperatorsTypesMap,
-      searchFieldSelectInputData,
-      setFilterInputValuesDispatch,
-      selectInputsDataMap,
-    };
+  const setFilterInputValuesDispatchData: SetFilterInputValuesDispatchData<
+    ValidValueAction
+  > = {
+    fieldNamesOperatorsTypesMap,
+    searchFieldSelectInputData,
+    setFilterInputValuesDispatch,
+    selectInputsDataMap,
+  };
 
   const fieldSelectInput = (
     <AccessibleSelectInput
       attributes={{
         data,
         disabled,
+        label: "Field",
         name: "filterField",
         setFilterInputValuesDispatchData,
         validValueAction: queryAction.setFilterField as ValidValueAction,
@@ -152,6 +150,7 @@ function QueryFilter<ValidValueAction extends string = string>({
       attributes={{
         data: fieldNamesOperatorsTypesMap.get(filterField)?.operators ?? [],
         disabled: disabled,
+        label: "Comparison Operator",
         name: "filterComparisonOperator",
         parentDispatch,
         validValueAction: queryAction.setFilterComparisonOperator,
@@ -173,18 +172,17 @@ function QueryFilter<ValidValueAction extends string = string>({
     <AccessibleButton
       attributes={{
         enabledScreenreaderText: "Add filter link to chain",
-        disabledScreenreaderText:
-          chainLength === MAX_LINKS_AMOUNT
-            ? "Max query links amount reached"
-            : isError
-            ? "Value cannot be invalid"
-            : "Value cannot be empty",
+        disabledScreenreaderText: chainLength === MAX_LINKS_AMOUNT
+          ? "Max query links amount reached"
+          : isError
+          ? "Value cannot be invalid"
+          : "Value cannot be empty",
         disabled: disabled || isError || chainLength === MAX_LINKS_AMOUNT,
         kind: "add",
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           modifyQueryChainsDispatch({
             action: queryAction.modifyQueryChains,
@@ -196,27 +194,6 @@ function QueryFilter<ValidValueAction extends string = string>({
               queryLink: [filterField, filterComparisonOperator, filterValue],
             },
           });
-
-          //
-          //
-          //
-
-          const filterQueryString = createQueryStringFromFilter({
-            existingQueryString,
-            filterComparisonOperator,
-            filterField,
-            filterLogicalOperator,
-            filterValue,
-          });
-
-          setExistingQueryString(filterQueryString);
-
-          const parsedQueryObject = qs.parse(filterQueryString);
-
-          console.group("addFilterLinkButton onClick");
-          console.log("filterQueryString", filterQueryString);
-          console.log("parsedQueryObject", parsedQueryObject);
-          console.groupEnd();
         },
       }}
     />
@@ -226,7 +203,9 @@ function QueryFilter<ValidValueAction extends string = string>({
     <Stack>
       {logicalOperatorSelectInput}
       {fieldSelectInput}
-      {searchFieldSelectInputData.map(({ value }) => value).includes(filterField)
+      {searchFieldSelectInputData.map(({ value }) => value).includes(
+          filterField,
+        )
         ? null
         : filterComparisonOperatorSelectInput}
       {dynamicValueInput}
@@ -248,7 +227,9 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
   filterValue: string;
   inputsValidationsMap: InputsValidationsMap;
   parentDispatch: React.Dispatch<QueryDispatch>;
-  setFilterInputValuesDispatchData: SetFilterInputValuesDispatchData<ValidValueAction>;
+  setFilterInputValuesDispatchData: SetFilterInputValuesDispatchData<
+    ValidValueAction
+  >;
 }) {
   const { fieldNamesOperatorsTypesMap, selectInputsDataMap } =
     setFilterInputValuesDispatchData;
@@ -265,14 +246,11 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
     return (
       <AccessibleSelectInput
         attributes={{
-          data: [
-            { label: "True", value: "true" },
-            { label: "False", value: "false" },
-          ],
+          data: BOOLEAN_VALUES_DATA,
           disabled,
           name,
-          setFilterInputValuesDispatchData,
-          validValueAction: queryAction.setFilterValue as ValidValueAction,
+          parentDispatch,
+          validValueAction: queryAction.setFilterValue,
           value: filterValue,
         }}
       />
@@ -286,8 +264,8 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
           data: selectInputsDataMap.get(filterField) ?? [],
           disabled,
           name,
-          setFilterInputValuesDispatchData,
-          validValueAction: queryAction.setFilterValue as ValidValueAction,
+          parentDispatch,
+          validValueAction: queryAction.setFilterValue,
           value: filterValue,
         }}
       />
@@ -345,6 +323,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
             disabled,
             invalidValueAction: queryAction.setIsError,
             name,
+            parentDispatch,
             stepperPages,
             validValueAction: queryAction.setFilterValue,
             value: filterValue,

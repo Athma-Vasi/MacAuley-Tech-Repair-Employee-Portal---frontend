@@ -1,7 +1,7 @@
-import { CheckboxRadioSelectData } from "../../types";
+import type { CheckboxRadioSelectData } from "../../types";
 import { AccessibleCheckboxInputGroup } from "../accessibleInputs/AccessibleCheckboxInput";
 import { queryAction } from "./actions";
-import { QueryDispatch, QueryState } from "./types";
+import type { QueryDispatch, QueryState } from "./types";
 
 type QueryProjectionProps = {
   hideProjection: boolean;

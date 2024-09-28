@@ -1,7 +1,8 @@
 type QueryAction = {
   modifyQueryChains: "modifyQueryChains";
   setFilterComparisonOperator: "setFilterComparisonOperator";
-  setFilterComparisonOperatorSelectData: "setFilterComparisonOperatorSelectData";
+  setFilterComparisonOperatorSelectData:
+    "setFilterComparisonOperatorSelectData";
   setFilterField: "setFilterField";
   setFilterLogicalOperator: "setFilterLogicalOperator";
   setFilterValue: "setFilterValue";
@@ -18,7 +19,8 @@ type QueryAction = {
 const queryAction: QueryAction = {
   modifyQueryChains: "modifyQueryChains",
   setFilterComparisonOperator: "setFilterComparisonOperator",
-  setFilterComparisonOperatorSelectData: "setFilterComparisonOperatorSelectData",
+  setFilterComparisonOperatorSelectData:
+    "setFilterComparisonOperatorSelectData",
   setFilterField: "setFilterField",
   setFilterLogicalOperator: "setFilterLogicalOperator",
   setFilterValue: "setFilterValue",

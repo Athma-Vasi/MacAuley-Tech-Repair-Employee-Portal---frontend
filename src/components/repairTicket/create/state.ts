@@ -1,7 +1,8 @@
 import type { CreateRepairTicketState } from "./types";
 
 const initialCreateRepairTicketState: CreateRepairTicketState = {
-  customerSearchField: "firstName",
+  customerSearchField: "username",
+  customerSearchKeyword: "",
   selectedCustomer: null,
   selectedFieldData: [],
 
@@ -21,10 +22,16 @@ const initialCreateRepairTicketState: CreateRepairTicketState = {
   estimatedCompletionDate: "",
   repairPriority: "low",
 
+  queryString: "",
+  customerSearchResults: [],
+  totalDocuments: 0,
+  totalPages: 0,
+  triggerCustomerSearchSubmit: false,
   triggerRepairFormSubmit: false,
   pagesInError: new Set(),
   isSubmitting: false,
   isSuccessful: false,
+  isLoading: true,
 };
 
 export { initialCreateRepairTicketState };

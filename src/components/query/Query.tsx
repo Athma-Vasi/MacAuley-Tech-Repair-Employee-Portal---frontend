@@ -1,24 +1,52 @@
 import { Accordion, Stack } from "@mantine/core";
-import React from "react";
+import React, { useEffect } from "react";
 
-import { Chain, QueryChainDispatch } from "./Chain";
-import { QueryFilter, SetFilterInputValuesDispatch } from "./QueryFilter";
+import type { SetPageInErrorPayload, StepperPage } from "../../types";
+import { Chain, type QueryChainDispatch } from "./Chain";
+import { QueryFilter, type SetFilterInputValuesDispatch } from "./QueryFilter";
 import { QueryProjection } from "./QueryProjection";
 import { QuerySearch } from "./QuerySearch";
-import { QuerySort, QuerySortDispatch } from "./QuerySort";
+import { QuerySort, type QuerySortDispatch } from "./QuerySort";
 import { queryReducer } from "./reducers";
 import { createInitialQueryState } from "./state";
-import { QueryProps } from "./types";
+
 import { createQueryInputsData } from "./utils";
 
-function Query({
+type QueryProps<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string,
+> = {
+  collectionName: string;
+  hideProjection?: boolean;
+  invalidValueAction: InvalidValueAction;
+  page?: number;
+  parentDispatch: React.Dispatch<
+    | {
+      action: ValidValueAction;
+      payload: string;
+    }
+    | {
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
+  >;
+  /** only the children steppers objs are used */
+  stepperPages: StepperPage[];
+  validValueAction: ValidValueAction;
+};
+
+function Query<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string,
+>({
   collectionName,
-  // invalidValueAction,
-  // parentDispatch,
+  invalidValueAction,
+  page = 0,
+  parentDispatch,
   stepperPages,
-  // validValueAction,
+  validValueAction,
   hideProjection = false,
-}: QueryProps) {
+}: QueryProps<ValidValueAction, InvalidValueAction>) {
   const {
     fieldNamesOperatorsTypesMap,
     filterFieldSelectInputData,
@@ -31,15 +59,30 @@ function Query({
 
   const [queryState, queryDispatch] = React.useReducer(
     queryReducer,
-    createInitialQueryState(searchFieldSelectInputData)
+    createInitialQueryState(searchFieldSelectInputData),
   );
+
+  useEffect(() => {
+    parentDispatch({
+      action: invalidValueAction,
+      payload: {
+        kind: queryState.isError ? "add" : "delete",
+        page,
+      },
+    });
+
+    parentDispatch({
+      action: validValueAction,
+      payload: queryState.queryString,
+    });
+  }, [queryState.queryString, queryState.isError]);
 
   console.group("Query");
   console.log("queryState", queryState);
   console.log("stepperPages", stepperPages);
   console.log("fieldNamesOperatorsTypesMap", fieldNamesOperatorsTypesMap);
-  console.log("filterFieldSelectInputData", filterFieldSelectInputData);
   console.log("projectionCheckboxData", projectionCheckboxData);
+  console.log("filterFieldSelectInputData", filterFieldSelectInputData);
   console.log("searchFieldSelectInputData", searchFieldSelectInputData);
   console.log("selectInputsDataMap", selectInputsDataMap);
   console.log("sortFieldSelectData", sortFieldSelectData);
@@ -79,7 +122,6 @@ function Query({
 
   const querySearch = (
     <QuerySearch
-      inputsValidationsMap={inputsValidationsMap}
       parentDispatch={queryDispatch}
       queryState={queryState}
     />
@@ -119,7 +161,7 @@ function Query({
   );
 
   return (
-    <Stack w={700}>
+    <Stack>
       {queryChain}
       {queryAccordion}
     </Stack>

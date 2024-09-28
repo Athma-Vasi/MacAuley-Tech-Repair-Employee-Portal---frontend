@@ -235,19 +235,19 @@ function AccessibleTextInput<
       valueBuffer,
     });
 
-  console.group(`AccessibleTextInput: ${name}`);
-  console.log("name:", name);
-  console.log("stepperPages:", stepperPages);
-  console.log("validationFunctionsTable:", validationFunctionsTable);
-  console.log("partials:", partials);
-  console.log("valueBuffer:", valueBuffer);
-  console.log("isValueBufferValid:", isValueBufferValid);
-  console.log("validationTexts:", validationTexts);
-  console.groupEnd();
+  // console.group(`AccessibleTextInput: ${name}`);
+  // console.log("name:", name);
+  // console.log("stepperPages:", stepperPages);
+  // console.log("validationFunctionsTable:", validationFunctionsTable);
+  // console.log("partials:", partials);
+  // console.log("valueBuffer:", valueBuffer);
+  // console.log("isValueBufferValid:", isValueBufferValid);
+  // console.log("validationTexts:", validationTexts);
+  // console.groupEnd();
 
   return (
     <Container
-      key={`${name}-${value}-${uniqueId}`}
+      key={`${name}-${value}-${uniqueId ?? ""}`}
       style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
       w="100%"
     >

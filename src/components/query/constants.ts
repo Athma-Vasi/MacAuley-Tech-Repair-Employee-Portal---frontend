@@ -1,5 +1,5 @@
-import { CheckboxRadioSelectData } from "../../types";
-import {
+import type { CheckboxRadioSelectData } from "../../types";
+import type {
   ComparisonOperator,
   GeneralSearchCase,
   LogicalOperator,
@@ -23,9 +23,14 @@ const COMPARISON_OPERATORS_DATA: CheckboxRadioSelectData<ComparisonOperator> = [
   // { label: "is not empty", value: "is not empty" },
 ];
 
-const IN_OPERATOR_DATA: CheckboxRadioSelectData = [{ label: "in", value: "in" }];
+const IN_OPERATOR_DATA: CheckboxRadioSelectData = [{
+  label: "in",
+  value: "in",
+}];
+
 const BOOLEAN_OPERATOR_DATA: CheckboxRadioSelectData = [
   { label: "equal to", value: "eq" },
+  { label: "not equal to", value: "ne" },
 ];
 
 const LOGICAL_OPERATORS_DATA: CheckboxRadioSelectData<LogicalOperator> = [
@@ -44,8 +49,14 @@ const QUERY_SEARCH_CASE_DATA: GeneralSearchCase[] = [
   "case-insensitive",
 ];
 
+const BOOLEAN_VALUES_DATA: CheckboxRadioSelectData<"true" | "false"> = [
+  { label: "True", value: "true" },
+  { label: "False", value: "false" },
+];
+
 export {
   BOOLEAN_OPERATOR_DATA,
+  BOOLEAN_VALUES_DATA,
   COMPARISON_OPERATORS_DATA,
   IN_OPERATOR_DATA,
   LOGICAL_OPERATORS_DATA,

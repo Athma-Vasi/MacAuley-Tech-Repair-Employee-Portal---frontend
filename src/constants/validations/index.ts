@@ -12,7 +12,6 @@ type ValidationKey =
   | "cpuFrequency"
   | "cpuSocket" // | "gpuChipset" | "motherboardSocket" | "motherboardChipset"
   | "date"
-  | "dateFullRange"
   | "dateNearFuture"
   | "dateNearPast"
   | "dateOfBirth"
@@ -50,7 +49,8 @@ type ValidationKey =
   | "weight";
 
 /**
- * this table contains the validation objects consumed by validator functions in Accessible${Inputs} components, allowing safe deep copying in reducers.
+ * - Validation functions for input fields.
+ * - validation === false ? message : ""
  */
 const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   accessoryType: [
@@ -120,18 +120,13 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
   date: [
     [
-      /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])$/,
-      "Must be a valid year in the range 1900-2024.",
+      /^(19[0-9][0-9]|20[0-2][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/,
+      "Must be a valid date from 1900-01-01 to 2029-12-31.",
     ],
-    [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
-    [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
     [/^.{10}$/, "Must be 10 characters length."],
   ],
 
   dateNearFuture: [
-    [/^(?:202[4-6])$/, "Must be a valid year in the range 2024-2026."],
-    [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
-    [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
     [/^.{10}$/, "Must be 10 characters length."],
     [
       (value: string) => {
@@ -142,20 +137,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   ],
 
-  dateFullRange: [
-    [
-      /^(?:19[0-9][0-9]|20[0-9][0-9]|202[0-6])$/,
-      "Must be a valid year in the range 1900-2099.",
-    ],
-    [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
-    [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
-    [/^.{10}$/, "Must be 10 characters length."],
-  ],
-
   dateNearPast: [
-    [/^(?:202[0-4])$/, "Must be a valid year in the range 2020-2024."],
-    [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
-    [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
     [/^.{10}$/, "Must be 10 characters length."],
     [
       (value: string) => {
@@ -168,13 +150,11 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
   dateOfBirth: [
     [
-      /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])$/,
-      `Must be a valid year in the range 1900-${
+      /^(19[0-9][0-9]|20[0-1][0-9]|202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/,
+      `Must be a valid date in the range 1900-${
         new Date().getFullYear() - 18
       }.`,
     ],
-    [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
-    [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
     [/^.{10}$/, "Must be 10 characters length."],
     [
       (value: string) => {

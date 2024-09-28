@@ -762,26 +762,12 @@ function returnValidationTexts({
 
       const partials = validationFunctionsTable[validationKey ?? "allowAll"];
 
-      console.group("returnValidationTexts");
-      console.log("inputName", inputName);
-      console.log("validationKey", validationKey);
-      console.log("partials", partials);
-      console.groupEnd();
-
       const partialInvalidText = partials.length
         ? partials
           .map(([regexOrFunc, errorMessage]) => {
             if (typeof regexOrFunc === "function") {
               return regexOrFunc(valueBuffer) ? "" : errorMessage;
             }
-
-            console.log("regexOrFunc", regexOrFunc);
-            console.log("valueBuffer", valueBuffer);
-            console.log(
-              "regexOrFunc.test(valueBuffer)",
-              regexOrFunc.test(valueBuffer),
-            );
-            console.log("errorMessage", errorMessage);
 
             return regexOrFunc.test(valueBuffer) ? "" : errorMessage;
           })

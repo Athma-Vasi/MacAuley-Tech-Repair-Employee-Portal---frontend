@@ -12,9 +12,10 @@ import {
   type Dispatch,
   type ReactNode,
   type RefObject,
+  useEffect,
   useState,
 } from "react";
-import { TbCheck, TbExclamationCircle } from "react-icons/tb";
+import { TbCheck, TbX } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
@@ -140,6 +141,11 @@ function AccessibleDateTimeInput<
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
 
+  // prevents stale values when inputs are dynamically created
+  useEffect(() => {
+    setValueBuffer(value);
+  }, [value]);
+
   const {
     globalState: { themeObject },
   } = useGlobalState();
@@ -165,7 +171,7 @@ function AccessibleDateTimeInput<
       ? <TbCheck color={greenColorShade} size={18} />
       : valueBuffer.length === 0
       ? null
-      : <TbExclamationCircle color={redColorShade} size={18} />);
+      : <TbX color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,
@@ -174,13 +180,13 @@ function AccessibleDateTimeInput<
     valueBuffer,
   });
 
-  console.group("AccessibleDateTimeInput");
-  console.log("name:", name);
-  console.log("valueBuffer:", valueBuffer);
-  console.log("partials:", partials);
-  console.log("stepperPages", stepperPages);
-  console.log("validationTexts:", validationTexts);
-  console.groupEnd();
+  // console.group("AccessibleDateTimeInput");
+  // console.log("name:", name);
+  // console.log("valueBuffer:", valueBuffer);
+  // console.log("partials:", partials);
+  // console.log("stepperPages", stepperPages);
+  // console.log("validationTexts:", validationTexts);
+  // console.groupEnd();
 
   const { invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
