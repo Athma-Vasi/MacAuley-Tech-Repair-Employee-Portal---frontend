@@ -552,6 +552,12 @@ const PROJECTION_HELP_MODAL_CONTENT = (
 export {
   createQueryInputsData,
   createQueryString,
+  FILTER_HELP_MODAL_CONTENT,
+  GENERAL_SEARCH_HELP_MODAL_CONTENT,
+  PROJECTION_HELP_MODAL_CONTENT,
+  QUERY_BUILDER_HELP_MODAL_CONTENT,
   removeProjectionExclusionFields,
+  SEARCH_CHAIN_HELP_MODAL_CONTENT,
+  SORT_HELP_MODAL_CONTENT,
 };
 export type { InputsValidationsMap, OperatorsInputType, QueryInputsData };

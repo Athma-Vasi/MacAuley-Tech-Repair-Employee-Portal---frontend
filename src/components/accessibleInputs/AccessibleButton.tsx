@@ -23,6 +23,7 @@ import {
   TbDownload,
   TbEdit,
   TbFilter,
+  TbHelp,
   TbPlayerPauseFilled,
   TbPlayerPlayFilled,
   TbPlus,
@@ -50,6 +51,7 @@ type AccessibleButtonKind =
   | "edit"
   | "expand"
   | "filter"
+  | "help"
   | "hide"
   | "insert"
   | "next"
@@ -137,6 +139,7 @@ function AccessibleButton({ attributes, uniqueId }: AccessibleButtonProps) {
     expand: <VscExpandAll />,
     filter: <TbFilter />,
     insert: <TbRowInsertTop />,
+    help: <TbHelp />,
     hide: <TbArrowDown />,
     next: <TiArrowRightThick />,
     pause: <TbPlayerPauseFilled />,

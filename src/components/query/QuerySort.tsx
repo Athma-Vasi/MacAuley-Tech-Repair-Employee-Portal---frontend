@@ -1,13 +1,17 @@
-import { Stack } from "@mantine/core";
+import { Group, Modal, Stack } from "@mantine/core";
 import type React from "react";
 
+import { useDisclosure } from "@mantine/hooks";
 import type { CheckboxRadioSelectData } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { type QueryAction, queryAction } from "./actions";
 import { MAX_LINKS_AMOUNT, SORT_DIRECTION_DATA } from "./constants";
 import type { ModifyQueryChainPayload, QueryState } from "./types";
-import { removeProjectionExclusionFields } from "./utils";
+import {
+  removeProjectionExclusionFields,
+  SORT_HELP_MODAL_CONTENT,
+} from "./utils";
 
 type QuerySortDispatch<ValidValueAction extends string = string> =
   React.Dispatch<{
@@ -31,6 +35,11 @@ function QuerySort<ValidValueAction extends string = string>({
   sortChainDispatch,
   sortFieldSelectData,
 }: QuerySortProps<ValidValueAction>) {
+  const [
+    openedSortHelpModal,
+    { open: openSortHelpModal, close: closeSortHelpModal },
+  ] = useDisclosure(false);
+
   const { projectionExclusionFields, queryChains, sortDirection, sortField } =
     queryState;
   const logicalOperatorChainsMap = queryChains.sort;
@@ -77,7 +86,7 @@ function QuerySort<ValidValueAction extends string = string>({
   const addSortLinkButton = (
     <AccessibleButton
       attributes={{
-        enabledScreenreaderText: "Add search link to chain",
+        enabledScreenreaderText: "Add sort link to chain",
         disabledScreenreaderText: "Max query links amount reached",
         disabled: disabled || sortChainLength === MAX_LINKS_AMOUNT,
         kind: "add",
@@ -101,11 +110,43 @@ function QuerySort<ValidValueAction extends string = string>({
     />
   );
 
+  const sortHelpButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Open sort help modal",
+        disabledScreenreaderText: "Sort help modal is already open",
+        disabled: openedSortHelpModal,
+        kind: "help",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement, MouseEvent>
+            | React.PointerEvent<HTMLButtonElement>,
+        ) => {
+          openSortHelpModal();
+        },
+      }}
+    />
+  );
+
+  const sortHelpModal = (
+    <Modal
+      opened={openedSortHelpModal}
+      onClose={closeSortHelpModal}
+      title="Sort Query guide"
+    >
+      {SORT_HELP_MODAL_CONTENT}
+    </Modal>
+  );
+
   return (
     <Stack>
       {sortFieldSelectInput}
       {sortDirectionSelectInput}
-      {addSortLinkButton}
+      <Group>
+        {sortHelpButton}
+        {addSortLinkButton}
+        {sortHelpModal}
+      </Group>
     </Stack>
   );
 }

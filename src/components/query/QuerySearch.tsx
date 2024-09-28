@@ -1,6 +1,7 @@
-import { Stack, Text } from "@mantine/core";
+import { Group, Modal, Stack, Text } from "@mantine/core";
 import React from "react";
 
+import { useDisclosure } from "@mantine/hooks";
 import type { SetPageInErrorPayload, StepperPage } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
@@ -8,6 +9,7 @@ import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInpu
 import { queryAction } from "./actions";
 import { QUERY_SEARCH_CASE_DATA } from "./constants";
 import type { QueryDispatch, QueryState } from "./types";
+import { SEARCH_CHAIN_HELP_MODAL_CONTENT } from "./utils";
 
 type QuerySearchProps = {
   parentDispatch: React.Dispatch<QueryDispatch>;
@@ -91,6 +93,11 @@ function QuerySearch({
   );
   const { exclusion, inclusion, pagesInError } = querySearchState;
 
+  const [
+    openedSearchHelpModal,
+    { open: openSearchHelpModal, close: closeSearchHelpModal },
+  ] = useDisclosure(false);
+
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -173,13 +180,45 @@ function QuerySearch({
     />
   );
 
+  const searchHelpButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Open search help modal",
+        disabledScreenreaderText: "Search help modal is already open",
+        disabled: openedSearchHelpModal,
+        kind: "help",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement, MouseEvent>
+            | React.PointerEvent<HTMLButtonElement>,
+        ) => {
+          openSearchHelpModal();
+        },
+      }}
+    />
+  );
+
+  const searchHelpModal = (
+    <Modal
+      opened={openedSearchHelpModal}
+      onClose={closeSearchHelpModal}
+      title="Search Query guide"
+    >
+      {SEARCH_CHAIN_HELP_MODAL_CONTENT}
+    </Modal>
+  );
+
   const generalSearchSection = (
     <Stack>
       <Text size="md">Search</Text>
       {caseSensitiveSegmentedControl}
       {generalSearchInclusionTextInput}
       {generalSearchExclusionTextInput}
-      {addSearchLinkButton}
+      <Group>
+        {searchHelpButton}
+        {addSearchLinkButton}
+        {searchHelpModal}
+      </Group>
     </Stack>
   );
 

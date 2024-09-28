@@ -1,6 +1,7 @@
-import { Stack } from "@mantine/core";
+import { Group, Modal, Stack } from "@mantine/core";
 import type React from "react";
 
+import { useDisclosure } from "@mantine/hooks";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import type {
   CheckboxRadioSelectData,
@@ -26,6 +27,7 @@ import type {
   QueryState,
 } from "./types";
 import {
+  FILTER_HELP_MODAL_CONTENT,
   type InputsValidationsMap,
   type OperatorsInputType,
   removeProjectionExclusionFields,
@@ -95,6 +97,11 @@ function QueryFilter<ValidValueAction extends string = string>({
     projectionExclusionFields,
     queryChains,
   } = queryState;
+
+  const [
+    openedFilterHelpModal,
+    { open: openFilterHelpModal, close: closeFilterHelpModal },
+  ] = useDisclosure(false);
 
   const chainLength = Array.from(queryChains.filter).reduce(
     (acc, [_key, value]) => {
@@ -199,6 +206,34 @@ function QueryFilter<ValidValueAction extends string = string>({
     />
   );
 
+  const filterHelpButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Open filter help modal",
+        disabledScreenreaderText: "Filter help modal is already open",
+        disabled: openedFilterHelpModal,
+        kind: "help",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement, MouseEvent>
+            | React.PointerEvent<HTMLButtonElement>,
+        ) => {
+          openFilterHelpModal();
+        },
+      }}
+    />
+  );
+
+  const filterHelpModal = (
+    <Modal
+      opened={openedFilterHelpModal}
+      onClose={closeFilterHelpModal}
+      title="Filter Query guide"
+    >
+      {FILTER_HELP_MODAL_CONTENT}
+    </Modal>
+  );
+
   return (
     <Stack>
       {logicalOperatorSelectInput}
@@ -209,7 +244,11 @@ function QueryFilter<ValidValueAction extends string = string>({
         ? null
         : filterComparisonOperatorSelectInput}
       {dynamicValueInput}
-      {addFilterLinkButton}
+      <Group>
+        {filterHelpButton}
+        {addFilterLinkButton}
+        {filterHelpModal}
+      </Group>
     </Stack>
   );
 }
