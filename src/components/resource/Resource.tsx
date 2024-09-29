@@ -185,7 +185,7 @@ function Resource() {
           isComponentMountedRef.current = true;
           let isComponentMounted = isComponentMountedRef.current;
 
-          // TODO: fetchResourcePATCHSafe({})
+          // TODO: fetchRequestPATCHSafe({})
         },
         type: "submit",
       }}

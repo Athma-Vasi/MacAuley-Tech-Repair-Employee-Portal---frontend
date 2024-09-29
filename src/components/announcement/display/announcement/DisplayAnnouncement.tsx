@@ -17,7 +17,7 @@ import { COLORS_SWATCHES } from "../../../../constants/data";
 import { globalAction } from "../../../../context/globalProvider/actions";
 import { useAuth, useGlobalState } from "../../../../hooks";
 import {
-  fetchResourcePATCHSafe,
+  fetchRequestPATCHSafe,
   formatDate,
   returnThemeColors,
 } from "../../../../utils";
@@ -25,6 +25,7 @@ import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
 import AccessibleImage from "../../../accessibleInputs/AccessibleImage";
 import { ResponsivePieChart } from "../../../charts";
 import type { PieChartData } from "../../../charts/responsivePieChart/types";
+import { Comment } from "../../../comment/Comment";
 import { CustomRating } from "../../../customRating/CustomRating";
 import { NotificationModal } from "../../../notificationModal";
 import { ANNOUNCEMENT_ROUTE_PATHS } from "../../constants";
@@ -33,7 +34,6 @@ import { displayAnnouncementAction } from "./actions";
 import { displayAnnouncementReducer } from "./reducers";
 import { initialDisplayAnnouncementState } from "./state";
 import { updateRatingResponse } from "./utils";
-import { Comment } from "../../../comment/Comment";
 
 function DisplayAnnouncement() {
   const [displayAnnouncementState, displayAnnouncementDispatch] = useReducer(
@@ -114,7 +114,7 @@ function DisplayAnnouncement() {
         },
       };
 
-      const ratingSubmitResult = await fetchResourcePATCHSafe({
+      const ratingSubmitResult = await fetchRequestPATCHSafe({
         closeSubmitFormModal,
         fetchAbortController,
         isComponentMounted,

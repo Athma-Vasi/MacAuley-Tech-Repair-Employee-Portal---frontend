@@ -2754,6 +2754,28 @@ async function decodeJWTSafe<Decoded extends DecodedToken = DecodedToken>(
   }
 }
 
+async function fetchSafe(input: RequestInfo | URL, init?: RequestInit): Promise<
+  SafeBoxResult<Response>
+> {
+  try {
+    const response: Response = await fetch(input, init);
+    return new Ok({ data: response, kind: "success" });
+  } catch (error: unknown) {
+    return new Err({ data: error, kind: "error" });
+  }
+}
+
+async function responseToJSONSafe<Data = unknown>(
+  response: Response,
+): Promise<SafeBoxResult<Data>> {
+  try {
+    const data: Data = await response.json();
+    return new Ok({ data, kind: "success" });
+  } catch (error: unknown) {
+    return new Err({ data: error, kind: "error" });
+  }
+}
+
 async function fetchRequestPOSTSafe<
   DBRecord = Record<string, unknown> & {
     _id: string;
@@ -2816,6 +2838,7 @@ async function fetchRequestPOSTSafe<
     : roles.includes("Admin")
     ? "admin"
     : "employee";
+
   const url = customUrl ??
     urlBuilder({
       path: roleResourceRoutePaths?.[userRole],
@@ -2835,23 +2858,54 @@ async function fetchRequestPOSTSafe<
     signal: fetchAbortController.signal,
   };
 
-  console.group("fetchRequestPOSTSafe");
-  console.log("url", url.toString());
-  console.log("requestInit", requestInit);
-  console.groupEnd();
-
   try {
-    const response: Response = await fetch(url.toString(), requestInit);
+    const responseResult = await fetchSafe(url, requestInit);
+
+    if (responseResult.err) {
+      return new Err({
+        data: responseResult.val.data ??
+          new Error("Network error", {
+            cause: responseResult.val.message ?? "Unknown error",
+          }),
+        kind: "error",
+      });
+    }
 
     if (!isComponentMounted) {
-      return new Ok({ kind: "error" });
+      return new Ok({ kind: "error", message: "Component is not mounted" });
     }
 
-    if (!response.ok) {
-      return new Ok({ kind: "error", message: response.statusText });
+    const responseUnwrapped = responseResult.safeUnwrap().data;
+    if (responseUnwrapped === undefined) {
+      return new Ok({ kind: "error", message: "Response is undefined" });
     }
 
-    const serverResponse: HttpServerResponse<DBRecord> = await response.json();
+    if (!responseUnwrapped.ok) {
+      return new Ok({ kind: "error", message: responseUnwrapped.statusText });
+    }
+
+    const jsonResult = await responseToJSONSafe<HttpServerResponse<DBRecord>>(
+      responseUnwrapped,
+    );
+
+    if (jsonResult.err) {
+      return new Err({
+        data: jsonResult.val.data ??
+          new Error("Network error", {
+            cause: jsonResult.val.message ?? "Unknown error",
+          }),
+        kind: "error",
+      });
+    }
+
+    if (!isComponentMounted) {
+      return new Ok({ kind: "error", message: "Component is not mounted" });
+    }
+
+    const serverResponse = jsonResult.safeUnwrap().data;
+    if (serverResponse === undefined) {
+      return new Ok({ kind: "error", message: "JSON data is undefined" });
+    }
 
     dispatch({
       action: isSuccessfulAction,
@@ -2881,7 +2935,7 @@ async function fetchRequestPOSTSafe<
   }
 }
 
-async function fetchResourceGETSafe<
+async function fetchRequestGETSafe<
   DBRecord = Record<string, unknown> & {
     _id: string;
     createdAt: string;
@@ -2889,10 +2943,10 @@ async function fetchResourceGETSafe<
     __v: number;
   },
   SetIsLoadingAction extends string = string,
-  SetLoadingMessageAction extends string = string,
   SetResourceDataAction extends string = string,
   SetTotalDocumentsAction extends string = string,
   SetTotalPagesAction extends string = string,
+  SetLoadingMessageAction extends string = string,
   TriggerFormSubmitAction extends string = string,
 >({
   accessToken = "",
@@ -2976,18 +3030,53 @@ async function fetchResourceGETSafe<
   };
 
   try {
-    const response: Response = await fetch(url.toString(), requestInit);
+    const responseResult = await fetchSafe(url, requestInit);
+
+    if (responseResult.err) {
+      return new Err({
+        data: responseResult.val.data ??
+          new Error("Network error", {
+            cause: responseResult.val.message ?? "Unknown error",
+          }),
+        kind: "error",
+      });
+    }
 
     if (!isComponentMounted) {
-      return new Ok({ kind: "error" });
+      return new Ok({ kind: "error", message: "Component is not mounted" });
     }
 
-    if (!response.ok) {
-      return new Ok({ kind: "error", message: response.statusText });
+    const responseUnwrapped = responseResult.safeUnwrap().data;
+    if (responseUnwrapped === undefined) {
+      return new Ok({ kind: "error", message: "Response is undefined" });
     }
 
-    const serverResponse: HttpServerResponse<DBRecord> = await response
-      .json();
+    if (!responseUnwrapped.ok) {
+      return new Ok({ kind: "error", message: responseUnwrapped.statusText });
+    }
+
+    const jsonResult = await responseToJSONSafe<HttpServerResponse<DBRecord>>(
+      responseUnwrapped,
+    );
+
+    if (jsonResult.err) {
+      return new Err({
+        data: jsonResult.val.data ??
+          new Error("Network error", {
+            cause: jsonResult.val.message ?? "Unknown error",
+          }),
+        kind: "error",
+      });
+    }
+
+    if (!isComponentMounted) {
+      return new Ok({ kind: "error", message: "Component is not mounted" });
+    }
+
+    const serverResponse = jsonResult.safeUnwrap().data;
+    if (serverResponse === undefined) {
+      return new Ok({ kind: "error", message: "JSON data is undefined" });
+    }
 
     parentDispatch({
       action: setResourceDataAction,
@@ -3028,29 +3117,7 @@ async function fetchResourceGETSafe<
   }
 }
 
-async function fetchSafe(input: RequestInfo | URL, init?: RequestInit): Promise<
-  SafeBoxResult<Response>
-> {
-  try {
-    const response: Response = await fetch(input, init);
-    return new Ok({ data: response, kind: "success" });
-  } catch (error: unknown) {
-    return new Err({ data: error, kind: "error" });
-  }
-}
-
-async function responseToJSONSafe<T>(
-  response: Response,
-): Promise<SafeBoxResult<T>> {
-  try {
-    const data: T = await response.json();
-    return new Ok({ data, kind: "success" });
-  } catch (error: unknown) {
-    return new Err({ data: error, kind: "error" });
-  }
-}
-
-async function fetchResourcePATCHSafe<
+async function fetchRequestPATCHSafe<
   DBRecord = Record<string, unknown> & {
     _id: string;
     createdAt: string;
@@ -3144,18 +3211,53 @@ async function fetchResourcePATCHSafe<
   };
 
   try {
-    const response: Response = await fetch(url.toString(), requestInit);
+    const responseResult = await fetchSafe(url, requestInit);
+
+    if (responseResult.err) {
+      return new Err({
+        data: responseResult.val.data ??
+          new Error("Network error", {
+            cause: responseResult.val.message ?? "Unknown error",
+          }),
+        kind: "error",
+      });
+    }
 
     if (!isComponentMounted) {
-      return new Ok({ kind: "error" });
+      return new Ok({ kind: "error", message: "Component is not mounted" });
     }
 
-    if (!response.ok) {
-      return new Ok({ kind: "error", message: response.statusText });
+    const responseUnwrapped = responseResult.safeUnwrap().data;
+    if (responseUnwrapped === undefined) {
+      return new Ok({ kind: "error", message: "Response is undefined" });
     }
 
-    const serverResponse: HttpServerResponse<DBRecord> = await response
-      .json();
+    if (!responseUnwrapped.ok) {
+      return new Ok({ kind: "error", message: responseUnwrapped.statusText });
+    }
+
+    const jsonResult = await responseToJSONSafe<HttpServerResponse<DBRecord>>(
+      responseUnwrapped,
+    );
+
+    if (jsonResult.err) {
+      return new Err({
+        data: jsonResult.val.data ??
+          new Error("Network error", {
+            cause: jsonResult.val.message ?? "Unknown error",
+          }),
+        kind: "error",
+      });
+    }
+
+    if (!isComponentMounted) {
+      return new Ok({ kind: "error", message: "Component is not mounted" });
+    }
+
+    const serverResponse = jsonResult.safeUnwrap().data;
+    if (serverResponse === undefined) {
+      return new Ok({ kind: "error", message: "JSON data is undefined" });
+    }
 
     if (setResourceDataAction) {
       parentDispatch({
@@ -3209,9 +3311,9 @@ export {
   capitalizeJoinWithAnd,
   captureScreenshot,
   decodeJWTSafe,
+  fetchRequestGETSafe,
+  fetchRequestPATCHSafe,
   fetchRequestPOSTSafe,
-  fetchResourceGETSafe,
-  fetchResourcePATCHSafe,
   fetchSafe,
   filterFieldsFromObject,
   flattenObjectIterative,

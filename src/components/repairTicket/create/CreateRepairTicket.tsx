@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Container, Stack, Title } from "@mantine/core";
 import { useAuth } from "../../../hooks";
+import { HttpServerResponse } from "../../../types";
 import {
   fetchRequestPOSTSafe,
   fetchSafe,
@@ -18,7 +19,7 @@ import {
   CUSTOMER_RESOURCE_ROUTE_PATHS,
   returnCustomerStepperPages,
 } from "../../customer/constants";
-import type { CustomerDocument } from "../../customer/types";
+import { CustomerDocument } from "../../customer/types";
 import { NotificationModal } from "../../notificationModal";
 import { Query } from "../../query/Query";
 import type { RepairTicketInitialSchema } from "../types";
@@ -107,6 +108,15 @@ function CreateRepairTicket() {
     async function handleCustomerSearchFormSubmit() {
       openSubmitFormModal();
 
+      createRepairTicketDispatch({
+        action: createRepairTicketAction.setIsSuccessful,
+        payload: false,
+      });
+      createRepairTicketDispatch({
+        action: createRepairTicketAction.setIsSubmitting,
+        payload: true,
+      });
+
       const userRole = roles.includes("Manager")
         ? "manager"
         : roles.includes("Admin")
@@ -146,7 +156,9 @@ function CreateRepairTicket() {
         return;
       }
 
-      const jsonResult = await responseToJSONSafe<CustomerDocument[]>(
+      const jsonResult = await responseToJSONSafe<
+        HttpServerResponse<CustomerDocument>
+      >(
         responseUnwrapped,
       );
 
@@ -159,25 +171,47 @@ function CreateRepairTicket() {
         return;
       }
 
-      const customerSearchResult = jsonResult.safeUnwrap().data;
+      const serverResponse = jsonResult.safeUnwrap().data;
 
-      if (customerSearchResult === undefined) {
+      if (serverResponse === undefined) {
         showBoundary(new Error("No data returned from server"));
         return;
       }
 
       console.group("Customer Search Result");
       console.log(
-        "customerSearchResult",
-        customerSearchResult,
+        "serverResponse",
+        serverResponse,
       );
       console.log("accessToken", accessToken);
       console.groupEnd();
 
       createRepairTicketDispatch({
+        action: createRepairTicketAction.setCustomerSearchResults,
+        payload: serverResponse.data,
+      });
+      createRepairTicketDispatch({
+        action: createRepairTicketAction.setTotalDocuments,
+        payload: serverResponse.totalDocuments,
+      });
+      createRepairTicketDispatch({
+        action: createRepairTicketAction.setTotalPages,
+        payload: serverResponse.pages,
+      });
+      createRepairTicketDispatch({
+        action: createRepairTicketAction.setIsSubmitting,
+        payload: false,
+      });
+      createRepairTicketDispatch({
+        action: createRepairTicketAction.setIsSuccessful,
+        payload: true,
+      });
+      createRepairTicketDispatch({
         action: createRepairTicketAction.setTriggerCustomerSearchSubmit,
         payload: false,
       });
+
+      closeSubmitFormModal();
     }
 
     if (triggerCustomerSearchSubmit) {
@@ -291,7 +325,7 @@ function CreateRepairTicket() {
         loading: isSubmitting,
         text: "Submitting Repair Ticket form ...",
       }}
-      title={<Title order={4}>Submitting ...</Title>}
+      title={<Title order={4}>Submitting request...</Title>}
       withCloseButton={false}
     />
   );

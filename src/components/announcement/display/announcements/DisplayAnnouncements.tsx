@@ -14,7 +14,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { COLORS_SWATCHES } from "../../../../constants/data";
 import { globalAction } from "../../../../context/globalProvider/actions";
 import { useAuth, useGlobalState } from "../../../../hooks";
-import { fetchResourceGETSafe, returnThemeColors } from "../../../../utils";
+import { fetchRequestGETSafe, returnThemeColors } from "../../../../utils";
 import AccessibleImage from "../../../accessibleInputs/AccessibleImage";
 import AccessiblePagination from "../../../accessibleInputs/AccessiblePagination";
 import DisplayResourceHeader from "../../../displayResourceHeader/DisplayResourceHeader";
@@ -66,7 +66,7 @@ function DisplayAnnouncements() {
     const isComponentMounted = isComponentMountedRef.current;
 
     async function fetchAnnouncements() {
-      const fetchAnnouncementsResult = await fetchResourceGETSafe({
+      const fetchAnnouncementsResult = await fetchRequestGETSafe({
         accessToken,
         closeSubmitFormModal: closeLoadingFormModal,
         fetchAbortController,
