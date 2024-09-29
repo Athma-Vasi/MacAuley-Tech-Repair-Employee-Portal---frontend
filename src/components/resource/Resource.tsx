@@ -1,29 +1,26 @@
-import { Modal, Stack, Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import React from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { useAuth } from "../../hooks";
+import { Card, Stack, Text } from "@mantine/core";
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useAuth, useGlobalState } from "../../hooks";
 import type { RoleResourceRoutePaths, StepperPage } from "../../types";
-import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { logState, returnThemeColors, splitCamelCase } from "../../utils";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
-import { returnEventStepperPages } from "../event/constants";
-import { PageNavigation } from "../pageNavigation/PageNavigation";
-import { Desktop } from "./Desktop";
-import { Mobile } from "./Mobile";
-import { LEAVE_REQUEST_RESOURCE_DATA } from "./TEMPDATA";
-import { resourceAction } from "./actions";
 import { resourceReducer } from "./reducers";
 import { initialResourceState } from "./state";
-import { createEditDocumentInput } from "./utils";
 
 type ResourceProps = {
   resourceName: string;
+  responseDocs: Array<Record<string, unknown>>;
   roleResourceRoutePaths: RoleResourceRoutePaths;
   stepperPages: Array<StepperPage>;
 };
 
-function Resource() {
+function Resource(
+  { responseDocs, resourceName, roleResourceRoutePaths, stepperPages }:
+    ResourceProps,
+) {
   const [resourceState, resourceDispatch] = React.useReducer(
     resourceReducer,
     initialResourceState,
@@ -31,8 +28,6 @@ function Resource() {
 
   const {
     currentPage,
-    editFieldValue,
-    editFieldValues,
     isError,
     isLoading,
     isSubmitting,
@@ -46,16 +41,10 @@ function Resource() {
     selectedDocument,
     selectedField,
     sortField,
-    sortFieldDirection,
     sortDirection,
     totalDocuments,
     totalPages,
   } = resourceState;
-
-  const [
-    openedDocumentEditModal,
-    { open: openDocumentEditModal, close: closeDocumentEditModal },
-  ] = useDisclosure(false);
 
   const {
     authState: {
@@ -75,7 +64,7 @@ function Resource() {
     const fetchAbortController = fetchAbortControllerRef.current;
 
     isComponentMountedRef.current = true;
-    let isComponentMounted = isComponentMountedRef.current;
+    const isComponentMounted = isComponentMountedRef.current;
 
     // fetchResourceGET({
     //   fetchAbortController,
@@ -97,11 +86,6 @@ function Resource() {
     //   userRole: "manager",
     // });
 
-    resourceDispatch({
-      action: resourceAction.setResourceData,
-      payload: LEAVE_REQUEST_RESOURCE_DATA.resourceData,
-    });
-
     return () => {
       fetchAbortController.abort();
       isComponentMountedRef.current = false;
@@ -109,149 +93,179 @@ function Resource() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isLoading) {
-    return <Text>{loadingMessage}</Text>;
-  }
-
-  if (isError) {
-    return <Text>Error...</Text>;
-  }
-
-  if (isSuccessful) {
-    return <Text>Success...</Text>;
-  }
-
-  if (isSubmitting) {
-    return <Text>Submitting...</Text>;
-  }
-
-  const stepperPages = returnEventStepperPages();
-
-  const pageNavigation = (
-    <PageNavigation
-      limitPerPage={limitPerPage}
-      parentDispatch={resourceDispatch}
-      totalPages={totalPages}
-      validValueAction={resourceAction.setCurrentPage}
-    />
-  );
-
-  const desktop = (
-    <Desktop
-      openDocumentEditModal={openDocumentEditModal}
-      resourceData={resourceData}
-      resourceDispatch={resourceDispatch}
-    />
-  );
-
-  const mobile = (
-    <Mobile
-      openDocumentEditModal={openDocumentEditModal}
-      resourceData={resourceData}
-      resourceDispatch={resourceDispatch}
-      sortDirection={sortDirection}
-      sortField={sortField}
-    />
-  );
-
-  const editDocumentInput = createEditDocumentInput({
-    editFieldValue,
-    editFieldValues,
-    resourceAction,
-    resourceDispatch,
-    selectedField,
-    stepperPages,
+  logState({
+    state: resourceState,
+    groupLabel: "Resource State",
   });
 
-  const editDocumentSubmitButton = (
-    <AccessibleButton
-      attributes={{
-        disabled: isSubmitting || pagesInError.size > 0,
-        disabledScreenreaderText:
-          "Please fix errors before submitting edited document",
-        enabledScreenreaderText: "Click to submit edited document",
-        kind: "submit",
-        onClick: (
-          event:
-            | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>,
-        ) => {
-          event?.preventDefault();
-
-          fetchAbortControllerRef.current?.abort();
-          fetchAbortControllerRef.current = new AbortController();
-          const fetchAbortController = fetchAbortControllerRef.current;
-
-          isComponentMountedRef.current = true;
-          let isComponentMounted = isComponentMountedRef.current;
-
-          // TODO: fetchRequestPATCHSafe({})
-        },
-        type: "submit",
-      }}
-    />
+  return (
+    <Stack>
+      <Text>Resource</Text>
+      {
+        <DisplayResource
+          actionString="setSelectedDocument"
+          parentDispatch={resourceDispatch}
+          resourceData={responseDocs}
+          selectedDocumentId={selectedDocument?._id}
+        />
+      }
+    </Stack>
   );
+}
 
-  const editDocumentForm = (
-    <form action="" method="patch" name="editDocumentForm">
-      <Stack>
-        {editDocumentInput}
-        {editDocumentSubmitButton}
-      </Stack>
-    </form>
-  );
-
-  const documentEditModal = (
-    <Modal
-      centered
-      opened={openedDocumentEditModal}
-      onClose={() => {
-        resourceDispatch({
-          action: resourceAction.setEditFieldValue,
-          payload: "",
-        });
-        resourceDispatch({
-          action: resourceAction.setEditFieldValues,
-          payload: [],
-        });
-        resourceDispatch({
-          action: resourceAction.setSelectedDocument,
-          payload: null,
-        });
-        resourceDispatch({
-          action: resourceAction.setSelectedField,
-          payload: "",
-        });
-
-        closeDocumentEditModal();
+function Entry(
+  { index, field, style = {}, uniqueId, value }: {
+    index: number;
+    field: string;
+    style?: React.CSSProperties;
+    uniqueId: string;
+    value: React.ReactNode;
+  },
+) {
+  return (
+    <GoldenGrid
+      key={uniqueId}
+      style={{
+        ...style,
+        backgroundColor: index % 2 === 0 ? "transparent" : "silver",
       }}
-      title={<Text>Edit Document</Text>}
     >
-      <Stack w={350}>
-        {editDocumentForm}
-        {Object.entries(selectedDocument ?? {}).map(([key, value], index) => (
-          <GoldenGrid
-            key={`${index}-${key}-${value?.toString().slice(17) ?? ""}`}
-          >
-            <Text>{key}</Text>
-            <Text>{value?.toString() ?? ""}</Text>
-          </GoldenGrid>
-        ))}
-      </Stack>
-    </Modal>
+      <Text>
+        {splitCamelCase(field)}
+      </Text>
+      <Text>{value}</Text>
+    </GoldenGrid>
+  );
+}
+
+function displayCard<
+  Action extends string = string,
+  Payload extends string = string,
+  D = { action: Action; payload: Payload },
+>(
+  action: string,
+  document: Record<string, unknown>,
+  parentDispatch: React.Dispatch<D>,
+  selectedDocumentId?: string,
+  themeColorShade?: string,
+) {
+  const docElement = Object.entries(document).map(([key, value], keyIndex) => {
+    // primitive value
+    if (
+      !Array.isArray(value) && typeof value !== "object" &&
+      value !== null && value !== undefined
+    ) {
+      return (
+        <Entry
+          index={keyIndex}
+          field={key}
+          uniqueId={`${keyIndex}-${key}`}
+          value={value.toString() ?? ""}
+        />
+      );
+    }
+
+    // array value
+    if (Array.isArray(value)) {
+      const valueElements = value.map((item, itemIndex) => {
+        return (
+          <Text key={itemIndex.toString()}>
+            {item.toString() ?? ""}
+          </Text>
+        );
+      });
+
+      return (
+        <Entry
+          index={keyIndex}
+          field={key}
+          uniqueId={`${keyIndex}-${key}`}
+          value={valueElements}
+        />
+      );
+    }
+
+    // object value
+    if (typeof value === "object" && value !== null) {
+      return (
+        <Stack>
+          {Object.entries(value).map(([subKey, subValue], subKeyIndex) => {
+            return (
+              <Entry
+                key={`${subKeyIndex}-${subKey}`}
+                index={subKeyIndex}
+                field={subKey}
+                style={{ paddingTop: subKeyIndex === 0 ? 8 : 0 }}
+                uniqueId={`${keyIndex}-${key}-${subKey}`}
+                value={subValue.toString() ?? ""}
+              />
+            );
+          })}
+        </Stack>
+      );
+    }
+  });
+
+  const card = (
+    <Card
+      shadow="sm"
+      onClick={() => {
+        console.group("Card clicked");
+        console.log("selectedDocumentId:", selectedDocumentId);
+        console.groupEnd();
+        parentDispatch({ action, payload: document } as D);
+      }}
+      radius="md"
+      style={{
+        cursor: selectedDocumentId && selectedDocumentId === document._id
+          ? "default"
+          : "pointer",
+        border: selectedDocumentId && selectedDocumentId === document._id
+          ? `2px solid ${themeColorShade}`
+          : "2px solid transparent",
+      }}
+      withBorder
+    >
+      {docElement}
+    </Card>
   );
 
-  console.group("Resource");
-  console.log("resourceState", resourceState);
-  console.groupEnd();
+  return card;
+}
+
+function DisplayResource<
+  Action extends string = string,
+  Payload extends string = string,
+  D = { action: Action; payload: Payload },
+>(
+  { actionString, parentDispatch, resourceData, selectedDocumentId }: {
+    actionString: string;
+    resourceData: Array<Record<string, unknown>>;
+    parentDispatch: React.Dispatch<D>;
+    selectedDocumentId?: string;
+  },
+) {
+  const { globalState: { themeObject } } = useGlobalState();
+  const { generalColors: { themeColorShade } } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   return (
-    <Stack w={700}>
-      <Text>Resource</Text>
-      {documentEditModal}
-      {pageNavigation}
-      {desktop}
-      {mobile}
+    <Stack>
+      {resourceData.map((data, index) => {
+        return (
+          <Stack key={index.toString()}>
+            {displayCard(
+              actionString,
+              data,
+              parentDispatch,
+              selectedDocumentId,
+              themeColorShade,
+            )}
+          </Stack>
+        );
+      })}
     </Stack>
   );
 }

@@ -1,9 +1,7 @@
-import { ResourceState } from "./types";
+import type { ResourceState } from "./types";
 
 const initialResourceState: ResourceState = {
   currentPage: 1,
-  editFieldValue: "",
-  editFieldValues: [],
   isError: false,
   isLoading: false,
   isSubmitting: false,
@@ -17,10 +15,6 @@ const initialResourceState: ResourceState = {
   selectedDocument: null,
   selectedField: "",
   sortField: "createdAt",
-  sortFieldDirection: {
-    field: "createdAt",
-    direction: "ascending",
-  },
   sortDirection: "ascending",
   totalDocuments: 0,
   totalPages: 10,

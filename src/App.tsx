@@ -1,7 +1,6 @@
 import "./index.css";
 
 import { MantineProvider } from "@mantine/core";
-import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import CreateAnnouncementWrapper from "./components/announcement/create";
@@ -24,7 +23,6 @@ import PortalLayoutWrapper from "./components/portalLayout";
 import ProductWrapper from "./components/product";
 import RegisterWrapper from "./components/register";
 import RepairTicketWrapper from "./components/repairTicket";
-import ResourceWrapper from "./components/resource";
 import CreateSurveyWrapper from "./components/survey/create";
 import DisplaySurveysWrapper from "./components/survey/display";
 import { useGlobalState } from "./hooks/useGlobalState";
@@ -221,8 +219,6 @@ function App() {
             // @access private
           }
           <Route path="directory" element={<DirectoryWrapper />} />
-
-          <Route path="resource" element={<ResourceWrapper />} />
         </Route>
 
         {

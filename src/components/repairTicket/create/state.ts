@@ -1,10 +1,12 @@
 import type { CreateRepairTicketState } from "./types";
 
 const initialCreateRepairTicketState: CreateRepairTicketState = {
-  customerSearchField: "username",
-  customerSearchKeyword: "",
+  customerSearchResults: [],
+  queryString: "",
   selectedCustomer: null,
-  selectedFieldData: [],
+  totalDocuments: 0,
+  totalPages: 0,
+  triggerCustomerSearchSubmit: false,
 
   partName: "",
   partSerialId: "",
@@ -22,11 +24,6 @@ const initialCreateRepairTicketState: CreateRepairTicketState = {
   estimatedCompletionDate: "",
   repairPriority: "low",
 
-  queryString: "",
-  customerSearchResults: [],
-  totalDocuments: 0,
-  totalPages: 0,
-  triggerCustomerSearchSubmit: false,
   triggerRepairFormSubmit: false,
   pagesInError: new Set(),
   isSubmitting: false,

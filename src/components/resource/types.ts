@@ -1,11 +1,11 @@
-import {
+import type {
   QueryResponseData,
   RoleResourceRoutePaths,
   SetPageInErrorPayload,
   StepperPage,
 } from "../../types";
-import { SortDirection } from "../query/types";
-import { ResourceAction } from "./actions";
+import type { SortDirection } from "../query/types";
+import type { ResourceAction } from "./actions";
 
 type LimitPerPage = "10" | "25" | "50" | "75";
 
@@ -16,15 +16,8 @@ type ResourceProps = {
   roleResourceRoutePaths: RoleResourceRoutePaths;
 };
 
-type SortFieldDirection = {
-  field: string;
-  direction: SortDirection;
-};
-
 type ResourceState = {
   currentPage: number;
-  editFieldValue: string;
-  editFieldValues: Array<string>;
   isError: boolean;
   isLoading: boolean;
   isSubmitting: boolean;
@@ -38,8 +31,6 @@ type ResourceState = {
   selectedDocument: QueryResponseData | null;
   selectedField: string;
   sortField: string; // dispatched from Mobile
-  /** Desktop requires both at dispatch */
-  sortFieldDirection: SortFieldDirection;
   sortDirection: SortDirection; // dispatched from Mobile
   totalDocuments: number;
   totalPages: number;
@@ -47,90 +38,72 @@ type ResourceState = {
 
 type ResourceDispatch =
   | {
-      action: ResourceAction["setCurrentPage"];
-      payload: number;
-    }
+    action: ResourceAction["setCurrentPage"];
+    payload: number;
+  }
   | {
-      action: ResourceAction["setEditFieldValue"];
-      payload: string;
-    }
+    action: ResourceAction["setIsError"];
+    payload: boolean;
+  }
   | {
-      action: ResourceAction["setEditFieldValues"];
-      payload: Array<string>;
-    }
+    action: ResourceAction["setIsLoading"];
+    payload: boolean;
+  }
   | {
-      action: ResourceAction["setIsError"];
-      payload: boolean;
-    }
+    action: ResourceAction["setIsSubmitting"];
+    payload: boolean;
+  }
   | {
-      action: ResourceAction["setIsLoading"];
-      payload: boolean;
-    }
+    action: ResourceAction["setIsSuccessful"];
+    payload: boolean;
+  }
   | {
-      action: ResourceAction["setIsSubmitting"];
-      payload: boolean;
-    }
+    action: ResourceAction["setLimitPerPage"];
+    payload: LimitPerPage;
+  }
   | {
-      action: ResourceAction["setIsSuccessful"];
-      payload: boolean;
-    }
+    action: ResourceAction["setLoadingMessage"];
+    payload: string;
+  }
   | {
-      action: ResourceAction["setLimitPerPage"];
-      payload: LimitPerPage;
-    }
+    action: ResourceAction["setNewQueryFlag"];
+    payload: boolean;
+  }
   | {
-      action: ResourceAction["setLoadingMessage"];
-      payload: string;
-    }
+    action: ResourceAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  }
   | {
-      action: ResourceAction["setNewQueryFlag"];
-      payload: boolean;
-    }
+    action: ResourceAction["setQueryString"];
+    payload: string;
+  }
   | {
-      action: ResourceAction["setPageInError"];
-      payload: SetPageInErrorPayload;
-    }
+    action: ResourceAction["setResourceData"];
+    payload: Array<QueryResponseData>;
+  }
   | {
-      action: ResourceAction["setQueryString"];
-      payload: string;
-    }
+    action: ResourceAction["setSelectedDocument"];
+    payload: QueryResponseData | null;
+  }
   | {
-      action: ResourceAction["setResourceData"];
-      payload: Array<QueryResponseData>;
-    }
+    action: ResourceAction["setSelectedField"];
+    payload: string;
+  }
   | {
-      action: ResourceAction["setSelectedDocument"];
-      payload: QueryResponseData | null;
-    }
+    action: ResourceAction["setSortField"];
+    payload: string;
+  }
   | {
-      action: ResourceAction["setSelectedField"];
-      payload: string;
-    }
+    action: ResourceAction["setSortDirection"];
+    payload: SortDirection;
+  }
   | {
-      action: ResourceAction["setSortField"];
-      payload: string;
-    }
+    action: ResourceAction["setTotalPages"];
+    payload: number;
+  }
   | {
-      action: ResourceAction["setSortFieldDirection"];
-      payload: SortFieldDirection;
-    }
-  | {
-      action: ResourceAction["setSortDirection"];
-      payload: SortDirection;
-    }
-  | {
-      action: ResourceAction["setTotalPages"];
-      payload: number;
-    }
-  | {
-      action: ResourceAction["setTotalDocuments"];
-      payload: number;
-    };
+    action: ResourceAction["setTotalDocuments"];
+    payload: number;
+  };
 
-export type {
-  LimitPerPage,
-  ResourceDispatch,
-  ResourceProps,
-  ResourceState,
-  SortFieldDirection,
-};
+export type { LimitPerPage, ResourceDispatch, ResourceProps, ResourceState };

@@ -9,7 +9,6 @@ import {
 import type {
     CreateRepairTicketDispatch,
     CreateRepairTicketState,
-    CustomerSearchField,
 } from "./types";
 
 function createRepairTicketReducer(
@@ -27,18 +26,6 @@ const createRepairTicketReducersMap = new Map<
         dispatch: CreateRepairTicketDispatch,
     ) => CreateRepairTicketState
 >([
-    [
-        createRepairTicketAction.setCustomerSearchField,
-        createRepairTicketReducer_setCustomerSearchField,
-    ],
-    [
-        createRepairTicketAction.setCustomerSearchKeyword,
-        createRepairTicketReducer_setCustomerSearchKeyword,
-    ],
-    [
-        createRepairTicketAction.setSelectedFieldData,
-        createRepairTicketReducer_setSelectedFieldData,
-    ],
     [
         createRepairTicketAction.setSelectedCustomer,
         createRepairTicketReducer_setSelectedCustomer,
@@ -141,43 +128,13 @@ const createRepairTicketReducersMap = new Map<
     ],
 ]);
 
-function createRepairTicketReducer_setCustomerSearchField(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        customerSearchField: dispatch.payload as CustomerSearchField,
-    };
-}
-
-function createRepairTicketReducer_setCustomerSearchKeyword(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        customerSearchKeyword: dispatch.payload as string,
-    };
-}
-
-function createRepairTicketReducer_setSelectedFieldData(
-    state: CreateRepairTicketState,
-    dispatch: CreateRepairTicketDispatch,
-): CreateRepairTicketState {
-    return {
-        ...state,
-        selectedFieldData: dispatch.payload as string[],
-    };
-}
-
 function createRepairTicketReducer_setSelectedCustomer(
     state: CreateRepairTicketState,
     dispatch: CreateRepairTicketDispatch,
 ): CreateRepairTicketState {
     return {
         ...state,
-        selectedCustomer: dispatch.payload as CustomerDocument | null,
+        selectedCustomer: dispatch.payload as CustomerDocument,
     };
 }
 

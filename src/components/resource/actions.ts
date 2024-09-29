@@ -1,7 +1,5 @@
 type ResourceAction = {
   setCurrentPage: "setCurrentPage";
-  setEditFieldValue: "setEditFieldValue";
-  setEditFieldValues: "setEditFieldValues";
   setIsError: "setIsError";
   setIsLoading: "setIsLoading";
   setIsSubmitting: "setIsSubmitting";
@@ -15,7 +13,6 @@ type ResourceAction = {
   setSelectedDocument: "setSelectedDocument";
   setSelectedField: "setSelectedField";
   setSortField: "setSortField";
-  setSortFieldDirection: "setSortFieldDirection";
   setSortDirection: "setSortDirection";
   setTotalDocuments: "setTotalDocuments";
   setTotalPages: "setTotalPages";
@@ -23,8 +20,6 @@ type ResourceAction = {
 
 const resourceAction: ResourceAction = {
   setCurrentPage: "setCurrentPage",
-  setEditFieldValue: "setEditFieldValue",
-  setEditFieldValues: "setEditFieldValues",
   setIsError: "setIsError",
   setIsLoading: "setIsLoading",
   setIsSubmitting: "setIsSubmitting",
@@ -38,7 +33,6 @@ const resourceAction: ResourceAction = {
   setSelectedDocument: "setSelectedDocument",
   setSelectedField: "setSelectedField",
   setSortField: "setSortField",
-  setSortFieldDirection: "setSortFieldDirection",
   setSortDirection: "setSortDirection",
   setTotalDocuments: "setTotalDocuments",
   setTotalPages: "setTotalPages",

@@ -1,4 +1,4 @@
-import { LimitPerPage } from "./types";
+import type { LimitPerPage } from "./types";
 
 const LIMIT_PER_PAGE_DATA: LimitPerPage[] = ["10", "25", "50", "75"];
 
@@ -35,4 +35,8 @@ const KEYS_WITH_DATE_VALUES_SET = new Set([
   "dateOfBirth",
 ]);
 
-export { KEYS_WITH_DATE_VALUES_SET, LIMIT_PER_PAGE_DATA, UNMODIFIABLE_FIELDS_SET };
+export {
+  KEYS_WITH_DATE_VALUES_SET,
+  LIMIT_PER_PAGE_DATA,
+  UNMODIFIABLE_FIELDS_SET,
+};

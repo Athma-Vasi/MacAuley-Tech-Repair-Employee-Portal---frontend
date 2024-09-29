@@ -1,69 +1,57 @@
 type CreateRepairTicketAction = {
-    setCustomerSearchField: "setCustomerSearchField";
-    setCustomerSearchKeyword: "setCustomerSearchKeyword";
     setSelectedCustomer: "setSelectedCustomer";
-    setSelectedFieldData: "setSelectedFieldData";
-
-    setPartName: "setPartName";
-    setPartSerialId: "setPartSerialId";
+    setCustomerSearchResults: "setCustomerSearchResults";
     setDateReceived: "setDateReceived";
     setDescriptionOfIssue: "setDescriptionOfIssue";
-    setInitialInspectionNotes: "setInitialInspectionNotes";
-
-    setRepairCategory: "setRepairCategory";
-    setRequiredRepairs: "setRequiredRepairs";
-    setPartsNeeded: "setPartsNeeded";
-    setPartsNeededModels: "setPartsNeededModels";
-    setPartUnderWarranty: "setPartUnderWarranty";
+    setEstimatedCompletionDate: "setEstimatedCompletionDate";
     setEstimatedRepairCost: "setEstimatedRepairCost";
     setEstimatedRepairCostCurrency: "setEstimatedRepairCostCurrency";
-    setEstimatedCompletionDate: "setEstimatedCompletionDate";
-    setRepairPriority: "setRepairPriority";
-
+    setInitialInspectionNotes: "setInitialInspectionNotes";
+    setIsLoading: "setIsLoading";
+    setIsSubmitting: "setIsSubmitting";
+    setIsSuccessful: "setIsSuccessful";
+    setPageInError: "setPageInError";
+    setPartName: "setPartName";
+    setPartSerialId: "setPartSerialId";
+    setPartUnderWarranty: "setPartUnderWarranty";
+    setPartsNeeded: "setPartsNeeded";
+    setPartsNeededModels: "setPartsNeededModels";
     setQueryString: "setQueryString";
-    setCustomerSearchResults: "setCustomerSearchResults";
+    setRepairCategory: "setRepairCategory";
+    setRepairPriority: "setRepairPriority";
+    setRequiredRepairs: "setRequiredRepairs";
     setTotalDocuments: "setTotalDocuments";
     setTotalPages: "setTotalPages";
     setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit";
     setTriggerRepairFormSubmit: "setTriggerRepairFormSubmit";
-    setPageInError: "setPageInError";
-    setIsSubmitting: "setIsSubmitting";
-    setIsSuccessful: "setIsSuccessful";
-    setIsLoading: "setIsLoading";
 };
 
 const createRepairTicketAction: CreateRepairTicketAction = {
-    setCustomerSearchField: "setCustomerSearchField",
-    setCustomerSearchKeyword: "setCustomerSearchKeyword",
-    setSelectedCustomer: "setSelectedCustomer",
-    setSelectedFieldData: "setSelectedFieldData",
-
-    setPartName: "setPartName",
-    setPartSerialId: "setPartSerialId",
+    setCustomerSearchResults: "setCustomerSearchResults",
     setDateReceived: "setDateReceived",
     setDescriptionOfIssue: "setDescriptionOfIssue",
-    setInitialInspectionNotes: "setInitialInspectionNotes",
-
-    setRepairCategory: "setRepairCategory",
-    setRequiredRepairs: "setRequiredRepairs",
-    setPartsNeeded: "setPartsNeeded",
-    setPartsNeededModels: "setPartsNeededModels",
-    setPartUnderWarranty: "setPartUnderWarranty",
+    setEstimatedCompletionDate: "setEstimatedCompletionDate",
     setEstimatedRepairCost: "setEstimatedRepairCost",
     setEstimatedRepairCostCurrency: "setEstimatedRepairCostCurrency",
-    setEstimatedCompletionDate: "setEstimatedCompletionDate",
-    setRepairPriority: "setRepairPriority",
-
+    setInitialInspectionNotes: "setInitialInspectionNotes",
+    setIsLoading: "setIsLoading",
+    setIsSubmitting: "setIsSubmitting",
+    setIsSuccessful: "setIsSuccessful",
+    setPageInError: "setPageInError",
+    setPartName: "setPartName",
+    setPartSerialId: "setPartSerialId",
+    setPartUnderWarranty: "setPartUnderWarranty",
+    setPartsNeeded: "setPartsNeeded",
+    setPartsNeededModels: "setPartsNeededModels",
     setQueryString: "setQueryString",
-    setCustomerSearchResults: "setCustomerSearchResults",
+    setRepairCategory: "setRepairCategory",
+    setRepairPriority: "setRepairPriority",
+    setRequiredRepairs: "setRequiredRepairs",
+    setSelectedCustomer: "setSelectedCustomer",
     setTotalDocuments: "setTotalDocuments",
     setTotalPages: "setTotalPages",
     setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit",
     setTriggerRepairFormSubmit: "setTriggerRepairFormSubmit",
-    setPageInError: "setPageInError",
-    setIsSubmitting: "setIsSubmitting",
-    setIsSuccessful: "setIsSuccessful",
-    setIsLoading: "setIsLoading",
 };
 
 export { createRepairTicketAction };
