@@ -20,8 +20,12 @@ type ResourceProps = {
 };
 
 function Resource(
-  { responseDocs, resourceName, roleResourceRoutePaths, stepperPages }:
-    ResourceProps,
+  {
+    responseDocs,
+    resourceName,
+    roleResourceRoutePaths,
+    stepperPages,
+  }: ResourceProps,
 ) {
   const [resourceState, resourceDispatch] = React.useReducer(
     resourceReducer,
@@ -56,18 +60,6 @@ function Resource(
   } = useAuth();
 
   const { showBoundary } = useErrorBoundary();
-
-  useEffect(() => {
-    resourceDispatch({
-      action: resourceAction.setQueryString,
-      payload: `${queryString}&page=${currentPage}`,
-    });
-
-    resourceDispatch({
-      action: resourceAction.setNewQueryFlag,
-      payload: false,
-    });
-  }, [currentPage]);
 
   useEffect(() => {
     resourceDispatch({
@@ -114,15 +106,6 @@ function Resource(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const paginationElement = (
-    <PageNavigation
-      disabled={resourceData.length === 0}
-      parentDispatch={resourceDispatch}
-      totalPages={totalPages}
-      validValueAction={resourceAction.setCurrentPage}
-    />
-  );
-
   logState({
     state: resourceState,
     groupLabel: "Resource State",
@@ -131,7 +114,7 @@ function Resource(
   return (
     <Stack>
       <Text>Resource</Text>
-      {paginationElement}
+
       <DisplayResource
         actionString={resourceAction.setSelectedDocument}
         parentDispatch={resourceDispatch}
@@ -225,7 +208,7 @@ function displayCard<
                 index={subKeyIndex}
                 field={subKey}
                 style={{ paddingTop: subKeyIndex === 0 ? 8 : 0 }}
-                uniqueId={`${keyIndex}-${key}-${subKey}`}
+                uniqueId={`${keyIndex.toString()}-${subKeyIndex.toString()}${key}-${subKey}`}
                 value={subValue.toString() ?? ""}
               />
             );

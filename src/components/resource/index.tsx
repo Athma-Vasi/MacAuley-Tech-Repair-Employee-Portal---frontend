@@ -3,7 +3,12 @@ import ErrorSuspenseHOC from "../error/ErrorSuspenseHOC";
 import Resource from "./Resource";
 
 function ResourceWrapper(
-    { resourceName, responseDocs, roleResourceRoutePaths, stepperPages }: {
+    {
+        resourceName,
+        responseDocs,
+        roleResourceRoutePaths,
+        stepperPages,
+    }: {
         resourceName: string;
         responseDocs: Array<Record<string, unknown>>;
         roleResourceRoutePaths: RoleResourceRoutePaths;

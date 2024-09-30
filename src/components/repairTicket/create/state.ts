@@ -1,11 +1,14 @@
 import type { CreateRepairTicketState } from "./types";
 
 const initialCreateRepairTicketState: CreateRepairTicketState = {
+  currentPage: 1,
   customerSearchResults: [],
+  limitPerPage: "10",
+  newQueryFlag: false,
   queryString: "",
   selectedCustomer: null,
   totalDocuments: 0,
-  totalPages: 0,
+  totalPages: 1,
   triggerCustomerSearchSubmit: false,
 
   partName: "",

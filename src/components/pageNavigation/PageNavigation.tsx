@@ -1,8 +1,10 @@
 import { Pagination, Stack } from "@mantine/core";
-import React, { useEffect } from "react";
+import type React from "react";
 
 type PageNavigationProps<ValidValueAction extends string = string> = {
+  currentPage: number;
   disabled?: boolean;
+  onChangeCallbacks?: Array<() => void>;
   parentDispatch: React.Dispatch<{
     action: ValidValueAction;
     payload: string;
@@ -11,33 +13,32 @@ type PageNavigationProps<ValidValueAction extends string = string> = {
   validValueAction: ValidValueAction;
 };
 
-function PageNavigation<ValidValueAction extends string = string>({
-  disabled = false,
-  parentDispatch,
-  totalPages,
-  validValueAction,
-}: PageNavigationProps<ValidValueAction>): React.JSX.Element {
-  const [page, setPage] = React.useState(() => 1);
-
-  console.group("PageNavigation");
-  console.log("page", page);
-  console.log("totalPages", totalPages);
-  console.groupEnd();
-
-  useEffect(() => {
-    parentDispatch({
-      action: validValueAction,
-      payload: page.toString(),
-    });
-  }, [page, parentDispatch, validValueAction]);
-
+function PageNavigation<ValidValueAction extends string = string>(
+  {
+    currentPage,
+    disabled = false,
+    onChangeCallbacks = [],
+    parentDispatch,
+    totalPages,
+    validValueAction,
+  }: PageNavigationProps<ValidValueAction>,
+): React.JSX.Element {
   return (
     <Stack>
       <Pagination
         disabled={disabled}
-        onChange={setPage}
+        onChange={(value: number) => {
+          parentDispatch({
+            action: validValueAction,
+            payload: value.toString(),
+          });
+
+          onChangeCallbacks.forEach((callback) => {
+            callback?.();
+          });
+        }}
         total={totalPages}
-        value={page}
+        value={currentPage}
       />
     </Stack>
   );

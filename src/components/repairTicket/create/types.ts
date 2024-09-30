@@ -1,6 +1,7 @@
 import type { Currency, SetPageInErrorPayload, Urgency } from "../../../types";
 import type { CustomerDocument } from "../../customer/types";
 import type { RepairCategory } from "../../dashboard/types";
+import type { LimitPerPage } from "../../resource/types";
 import type { PartsNeeded, RequiredRepairs } from "../types";
 import type { CreateRepairTicketAction } from "./actions";
 
@@ -16,6 +17,9 @@ type CustomerSearchField =
 type CreateRepairTicketState = {
   // customer information search - page 1
   customerSearchResults: CustomerDocument[];
+  currentPage: number;
+  limitPerPage: LimitPerPage;
+  newQueryFlag: boolean;
   queryString: string;
   selectedCustomer: CustomerDocument | null;
   totalDocuments: number;
@@ -51,6 +55,18 @@ type CreateRepairTicketState = {
 };
 
 type CreateRepairTicketDispatch =
+  | {
+    action: CreateRepairTicketAction["setCurrentPage"];
+    payload: string;
+  }
+  | {
+    action: CreateRepairTicketAction["setLimitPerPage"];
+    payload: LimitPerPage;
+  }
+  | {
+    action: CreateRepairTicketAction["setNewQueryFlag"];
+    payload: boolean;
+  }
   | {
     action: CreateRepairTicketAction["setSelectedCustomer"];
     payload: CustomerDocument;

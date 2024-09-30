@@ -1,5 +1,5 @@
 type CreateRepairTicketAction = {
-    setSelectedCustomer: "setSelectedCustomer";
+    setCurrentPage: "setCurrentPage";
     setCustomerSearchResults: "setCustomerSearchResults";
     setDateReceived: "setDateReceived";
     setDescriptionOfIssue: "setDescriptionOfIssue";
@@ -10,6 +10,8 @@ type CreateRepairTicketAction = {
     setIsLoading: "setIsLoading";
     setIsSubmitting: "setIsSubmitting";
     setIsSuccessful: "setIsSuccessful";
+    setLimitPerPage: "setLimitPerPage";
+    setNewQueryFlag: "setNewQueryFlag";
     setPageInError: "setPageInError";
     setPartName: "setPartName";
     setPartSerialId: "setPartSerialId";
@@ -20,6 +22,7 @@ type CreateRepairTicketAction = {
     setRepairCategory: "setRepairCategory";
     setRepairPriority: "setRepairPriority";
     setRequiredRepairs: "setRequiredRepairs";
+    setSelectedCustomer: "setSelectedCustomer";
     setTotalDocuments: "setTotalDocuments";
     setTotalPages: "setTotalPages";
     setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit";
@@ -27,6 +30,7 @@ type CreateRepairTicketAction = {
 };
 
 const createRepairTicketAction: CreateRepairTicketAction = {
+    setCurrentPage: "setCurrentPage",
     setCustomerSearchResults: "setCustomerSearchResults",
     setDateReceived: "setDateReceived",
     setDescriptionOfIssue: "setDescriptionOfIssue",
@@ -37,6 +41,8 @@ const createRepairTicketAction: CreateRepairTicketAction = {
     setIsLoading: "setIsLoading",
     setIsSubmitting: "setIsSubmitting",
     setIsSuccessful: "setIsSuccessful",
+    setLimitPerPage: "setLimitPerPage",
+    setNewQueryFlag: "setNewQueryFlag",
     setPageInError: "setPageInError",
     setPartName: "setPartName",
     setPartSerialId: "setPartSerialId",

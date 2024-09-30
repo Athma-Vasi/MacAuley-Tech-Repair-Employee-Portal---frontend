@@ -1,6 +1,7 @@
 import type { Currency, SetPageInErrorPayload, Urgency } from "../../../types";
 import type { CustomerDocument } from "../../customer/types";
 import type { RepairCategory } from "../../dashboard/types";
+import type { LimitPerPage } from "../../resource/types";
 import type { PartsNeeded, RequiredRepairs } from "../types";
 import {
     type CreateRepairTicketAction,
@@ -26,6 +27,18 @@ const createRepairTicketReducersMap = new Map<
         dispatch: CreateRepairTicketDispatch,
     ) => CreateRepairTicketState
 >([
+    [
+        createRepairTicketAction.setCurrentPage,
+        createRepairTicketReducer_setCurrentPage,
+    ],
+    [
+        createRepairTicketAction.setLimitPerPage,
+        createRepairTicketReducer_setLimitPerPage,
+    ],
+    [
+        createRepairTicketAction.setNewQueryFlag,
+        createRepairTicketReducer_setNewQueryFlag,
+    ],
     [
         createRepairTicketAction.setSelectedCustomer,
         createRepairTicketReducer_setSelectedCustomer,
@@ -127,6 +140,36 @@ const createRepairTicketReducersMap = new Map<
         createRepairTicketReducer_setIsLoading,
     ],
 ]);
+
+function createRepairTicketReducer_setCurrentPage(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        currentPage: dispatch.payload as number,
+    };
+}
+
+function createRepairTicketReducer_setLimitPerPage(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        limitPerPage: dispatch.payload as LimitPerPage,
+    };
+}
+
+function createRepairTicketReducer_setNewQueryFlag(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        newQueryFlag: dispatch.payload as boolean,
+    };
+}
 
 function createRepairTicketReducer_setSelectedCustomer(
     state: CreateRepairTicketState,

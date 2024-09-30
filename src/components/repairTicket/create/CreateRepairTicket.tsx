@@ -3,7 +3,7 @@ import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
-import { Container, Stack, Title } from "@mantine/core";
+import { Container, Stack, Text, Title } from "@mantine/core";
 import { authAction } from "../../../context/authProvider";
 import { useAuth } from "../../../hooks";
 import type { HttpServerResponse } from "../../../types";
@@ -22,6 +22,7 @@ import {
 } from "../../customer/constants";
 import type { CustomerDocument } from "../../customer/types";
 import { NotificationModal } from "../../notificationModal";
+import { PageNavigation } from "../../pageNavigation/PageNavigation";
 import { Query } from "../../query/Query";
 import ResourceWrapper from "../../resource";
 import type { RepairTicketInitialSchema } from "../types";
@@ -43,7 +44,10 @@ function CreateRepairTicket() {
 
   const {
     // customer information search - page 1
+    currentPage,
     customerSearchResults,
+    limitPerPage,
+    newQueryFlag,
     queryString,
     selectedCustomer,
     totalDocuments,
@@ -126,9 +130,12 @@ function CreateRepairTicket() {
         ? "admin"
         : "employee";
 
+      const query =
+        `${queryString}&page=${currentPage}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`;
+
       const url = urlBuilder({
         path: CUSTOMER_RESOURCE_ROUTE_PATHS[userRole],
-        query: queryString,
+        query,
       });
 
       const requestInit: RequestInit = {
@@ -181,14 +188,6 @@ function CreateRepairTicket() {
         return;
       }
 
-      console.group("Customer Search Result");
-      console.log(
-        "serverResponse",
-        serverResponse,
-      );
-      console.log("accessToken", accessToken);
-      console.groupEnd();
-
       authDispatch({
         action: authAction.setAccessToken,
         payload: serverResponse.accessToken,
@@ -231,6 +230,127 @@ function CreateRepairTicket() {
       isComponentMountedRef.current = false;
     };
   }, [triggerCustomerSearchSubmit]);
+
+  // useEffect(() => {
+  //   fetchAbortControllerRef.current?.abort();
+  //   fetchAbortControllerRef.current = new AbortController();
+  //   const fetchAbortController = fetchAbortControllerRef.current;
+
+  //   isComponentMountedRef.current = true;
+  //   const isComponentMounted = isComponentMountedRef.current;
+
+  //   async function handleCustomerSearchPagination() {
+  //     createRepairTicketDispatch({
+  //       action: createRepairTicketAction.setIsSuccessful,
+  //       payload: false,
+  //     });
+  //     createRepairTicketDispatch({
+  //       action: createRepairTicketAction.setIsSubmitting,
+  //       payload: true,
+  //     });
+
+  //     const userRole = roles.includes("Manager")
+  //       ? "manager"
+  //       : roles.includes("Admin")
+  //       ? "admin"
+  //       : "employee";
+
+  //     const query =
+  //       `${queryString}&page=${currentPage}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`;
+
+  //     const url = urlBuilder({
+  //       path: CUSTOMER_RESOURCE_ROUTE_PATHS[userRole],
+  //       query,
+  //     });
+
+  //     const requestInit: RequestInit = {
+  //       credentials: "include",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //       method: "GET",
+  //       signal: fetchAbortController.signal,
+  //     };
+
+  //     const responseResult = await fetchSafe(url, requestInit);
+
+  //     if (!isComponentMounted) {
+  //       return;
+  //     }
+
+  //     if (responseResult.err) {
+  //       showBoundary(responseResult.val.data);
+  //       return;
+  //     }
+
+  //     const responseUnwrapped = responseResult.safeUnwrap().data;
+
+  //     if (responseUnwrapped === undefined) {
+  //       showBoundary(new Error("No data returned from server"));
+  //       return;
+  //     }
+
+  //     const jsonResult = await responseToJSONSafe<
+  //       HttpServerResponse<CustomerDocument>
+  //     >(
+  //       responseUnwrapped,
+  //     );
+
+  //     if (!isComponentMounted) {
+  //       return;
+  //     }
+
+  //     if (jsonResult.err) {
+  //       showBoundary(jsonResult.val.data);
+  //       return;
+  //     }
+
+  //     const serverResponse = jsonResult.safeUnwrap().data;
+
+  //     if (serverResponse === undefined) {
+  //       showBoundary(new Error("No data returned from server"));
+  //       return;
+  //     }
+
+  //     authDispatch({
+  //       action: authAction.setAccessToken,
+  //       payload: serverResponse.accessToken,
+  //     });
+
+  //     createRepairTicketDispatch({
+  //       action: createRepairTicketAction.setCustomerSearchResults,
+  //       payload: serverResponse.data,
+  //     });
+  //     createRepairTicketDispatch({
+  //       action: createRepairTicketAction.setTotalDocuments,
+  //       payload: serverResponse.totalDocuments,
+  //     });
+  //     createRepairTicketDispatch({
+  //       action: createRepairTicketAction.setTotalPages,
+  //       payload: serverResponse.pages,
+  //     });
+  //     createRepairTicketDispatch({
+  //       action: createRepairTicketAction.setIsSubmitting,
+  //       payload: false,
+  //     });
+  //     createRepairTicketDispatch({
+  //       action: createRepairTicketAction.setIsSuccessful,
+  //       payload: true,
+  //     });
+  //     createRepairTicketDispatch({
+  //       action: createRepairTicketAction.setTriggerCustomerSearchSubmit,
+  //       payload: false,
+  //     });
+  //   }
+
+  //   handleCustomerSearchPagination();
+
+  //   return () => {
+  //     fetchAbortController.abort();
+  //     isComponentMountedRef.current = false;
+  //   };
+  // }, [currentPage]);
 
   useEffect(() => {
     fetchAbortControllerRef.current?.abort();
@@ -298,6 +418,12 @@ function CreateRepairTicket() {
         kind: "submit",
         name: "submit",
         onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          // every submit is a new query
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setNewQueryFlag,
+            payload: true,
+          });
+
           createRepairTicketDispatch({
             action: createRepairTicketAction.setTriggerCustomerSearchSubmit,
             payload: true,
@@ -346,6 +472,25 @@ function CreateRepairTicket() {
     groupLabel: "Create Repair Ticket State",
   });
 
+  const paginationElement = (
+    <Stack>
+      <Text>Page navigation</Text>
+      <PageNavigation
+        currentPage={currentPage}
+        disabled={customerSearchResults.length === 0}
+        onChangeCallbacks={[() => {
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setTriggerCustomerSearchSubmit,
+            payload: true,
+          });
+        }]}
+        parentDispatch={createRepairTicketDispatch}
+        totalPages={totalPages}
+        validValueAction={createRepairTicketAction.setCurrentPage}
+      />
+    </Stack>
+  );
+
   const firstPageElements = (
     <Stack>
       <Query
@@ -356,6 +501,7 @@ function CreateRepairTicket() {
         validValueAction={createRepairTicketAction.setQueryString}
       />
       {submitCustomerSearchButton}
+      {paginationElement}
       <ResourceWrapper
         resourceName="Customer"
         responseDocs={customerSearchResults}
