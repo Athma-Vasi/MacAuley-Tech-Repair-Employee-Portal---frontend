@@ -1,20 +1,18 @@
-import { Pagination, Stack, Text } from "@mantine/core";
+import { Pagination, Stack } from "@mantine/core";
 import React, { useEffect } from "react";
 
-import { LimitPerPage } from "../resource/types";
-
 type PageNavigationProps<ValidValueAction extends string = string> = {
-  limitPerPage: LimitPerPage;
+  disabled?: boolean;
   parentDispatch: React.Dispatch<{
     action: ValidValueAction;
-    payload: number;
+    payload: string;
   }>;
   totalPages: number;
   validValueAction: ValidValueAction;
 };
 
 function PageNavigation<ValidValueAction extends string = string>({
-  limitPerPage,
+  disabled = false,
   parentDispatch,
   totalPages,
   validValueAction,
@@ -29,14 +27,18 @@ function PageNavigation<ValidValueAction extends string = string>({
   useEffect(() => {
     parentDispatch({
       action: validValueAction,
-      payload: page,
+      payload: page.toString(),
     });
   }, [page, parentDispatch, validValueAction]);
 
   return (
     <Stack>
-      <Text>Page Navigation</Text>
-      <Pagination onChange={setPage} total={totalPages} value={page} />
+      <Pagination
+        disabled={disabled}
+        onChange={setPage}
+        total={totalPages}
+        value={page}
+      />
     </Stack>
   );
 }

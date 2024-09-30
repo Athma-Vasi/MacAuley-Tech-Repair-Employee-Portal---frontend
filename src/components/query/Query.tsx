@@ -10,6 +10,9 @@ import { QuerySort, type QuerySortDispatch } from "./QuerySort";
 import { queryReducer } from "./reducers";
 import { createInitialQueryState } from "./state";
 
+import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { LIMIT_PER_PAGE_DATA } from "../resource/constants";
+import { queryAction } from "./actions";
 import { createQueryInputsData } from "./utils";
 
 type QueryProps<
@@ -61,6 +64,29 @@ function Query<
     queryReducer,
     createInitialQueryState(searchFieldSelectInputData),
   );
+
+  const {
+    filterComparisonOperator,
+    filterComparisonOperatorSelectData,
+    filterField,
+    filterFieldsOperatorsValuesSetsMap,
+    filterLogicalOperator,
+    filterValue,
+    generalSearchCase,
+    generalSearchExclusionValue,
+    generalSearchInclusionValue,
+    isError,
+    isSearchDisabled,
+    limitPerPage,
+    logicalOperatorChainsSetsMap,
+    projectionExclusionFields,
+    queryChains,
+    queryString,
+    searchFieldsOperatorsValuesSetMap,
+    sortDirection,
+    sortField,
+    sortFieldsSet,
+  } = queryState;
 
   useEffect(() => {
     parentDispatch({
@@ -160,9 +186,22 @@ function Query<
     </Accordion>
   );
 
+  const limitPerPageSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: LIMIT_PER_PAGE_DATA,
+        name: "limitPerPage",
+        parentDispatch: queryDispatch,
+        validValueAction: queryAction.setLimitPerPage,
+        value: limitPerPage,
+      }}
+    />
+  );
+
   return (
     <Stack>
       {queryChain}
+      {limitPerPageSelectInput}
       {queryAccordion}
     </Stack>
   );

@@ -1,6 +1,13 @@
+import type { CheckboxRadioSelectData } from "../../types";
 import type { LimitPerPage } from "./types";
 
-const LIMIT_PER_PAGE_DATA: LimitPerPage[] = ["10", "25", "50", "75"];
+const LIMIT_PER_PAGE_DATA: CheckboxRadioSelectData<LimitPerPage> = [
+  { label: "10", value: "10" },
+  { label: "25", value: "25" },
+  { label: "50", value: "50" },
+  { label: "75", value: "75" },
+  { label: "100", value: "100" },
+];
 
 const UNMODIFIABLE_FIELDS_SET = new Set([
   "_id",

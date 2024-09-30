@@ -7,7 +7,7 @@ import type {
 import type { SortDirection } from "../query/types";
 import type { ResourceAction } from "./actions";
 
-type LimitPerPage = "10" | "25" | "50" | "75";
+type LimitPerPage = "10" | "25" | "50" | "75" | "100";
 
 type ResourceProps = {
   stepperPages: StepperPage[];
@@ -39,7 +39,7 @@ type ResourceState = {
 type ResourceDispatch =
   | {
     action: ResourceAction["setCurrentPage"];
-    payload: number;
+    payload: string;
   }
   | {
     action: ResourceAction["setIsError"];

@@ -41,7 +41,11 @@ function resourceReducer_setCurrentPage(
   // const currentPage = (dispatch.payload as number) + 1;
   // const newPage = currentPage > state.totalPages ? state.totalPages : currentPage;
   // return { ...state, currentPage: newPage };
-  return { ...state, currentPage: dispatch.payload as number };
+
+  return {
+    ...state,
+    currentPage: Number.parseInt(dispatch.payload as string) ?? 1,
+  };
 }
 
 function resourceReducer_setIsError(

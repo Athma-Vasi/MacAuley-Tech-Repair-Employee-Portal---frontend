@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
 import { Card, Stack, Text } from "@mantine/core";
@@ -7,6 +7,8 @@ import { useAuth, useGlobalState } from "../../hooks";
 import type { RoleResourceRoutePaths, StepperPage } from "../../types";
 import { logState, returnThemeColors, splitCamelCase } from "../../utils";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
+import { PageNavigation } from "../pageNavigation/PageNavigation";
+import { resourceAction } from "./actions";
 import { resourceReducer } from "./reducers";
 import { initialResourceState } from "./state";
 
@@ -55,6 +57,25 @@ function Resource(
 
   const { showBoundary } = useErrorBoundary();
 
+  useEffect(() => {
+    resourceDispatch({
+      action: resourceAction.setQueryString,
+      payload: `${queryString}&page=${currentPage}`,
+    });
+
+    resourceDispatch({
+      action: resourceAction.setNewQueryFlag,
+      payload: false,
+    });
+  }, [currentPage]);
+
+  useEffect(() => {
+    resourceDispatch({
+      action: resourceAction.setNewQueryFlag,
+      payload: true,
+    });
+  }, [queryString]);
+
   const isComponentMountedRef = React.useRef(false);
   const fetchAbortControllerRef = React.useRef<AbortController | null>(null);
 
@@ -93,6 +114,15 @@ function Resource(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const paginationElement = (
+    <PageNavigation
+      disabled={resourceData.length === 0}
+      parentDispatch={resourceDispatch}
+      totalPages={totalPages}
+      validValueAction={resourceAction.setCurrentPage}
+    />
+  );
+
   logState({
     state: resourceState,
     groupLabel: "Resource State",
@@ -101,14 +131,13 @@ function Resource(
   return (
     <Stack>
       <Text>Resource</Text>
-      {
-        <DisplayResource
-          actionString="setSelectedDocument"
-          parentDispatch={resourceDispatch}
-          resourceData={responseDocs}
-          selectedDocumentId={selectedDocument?._id}
-        />
-      }
+      {paginationElement}
+      <DisplayResource
+        actionString={resourceAction.setSelectedDocument}
+        parentDispatch={resourceDispatch}
+        resourceData={responseDocs}
+        selectedDocumentId={selectedDocument?._id}
+      />
     </Stack>
   );
 }
@@ -169,7 +198,7 @@ function displayCard<
     if (Array.isArray(value)) {
       const valueElements = value.map((item, itemIndex) => {
         return (
-          <Text key={itemIndex.toString()}>
+          <Text key={`${item.toString()}-${itemIndex.toString()}`}>
             {item.toString() ?? ""}
           </Text>
         );
@@ -209,12 +238,7 @@ function displayCard<
   const card = (
     <Card
       shadow="sm"
-      onClick={() => {
-        console.group("Card clicked");
-        console.log("selectedDocumentId:", selectedDocumentId);
-        console.groupEnd();
-        parentDispatch({ action, payload: document } as D);
-      }}
+      onClick={() => parentDispatch({ action, payload: document } as D)}
       radius="md"
       style={{
         cursor: selectedDocumentId && selectedDocumentId === document._id

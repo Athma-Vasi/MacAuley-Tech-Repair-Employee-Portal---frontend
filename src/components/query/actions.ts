@@ -11,6 +11,7 @@ type QueryAction = {
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue";
   setIsError: "setIsError";
   setIsSearchDisabled: "setIsSearchDisabled";
+  setLimitPerPage: "setLimitPerPage";
   setProjectionExclusionFields: "setProjectionExclusionFields";
   setSortDirection: "setSortDirection";
   setSortField: "setSortField";
@@ -29,6 +30,7 @@ const queryAction: QueryAction = {
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue",
   setIsError: "setIsError",
   setIsSearchDisabled: "setIsSearchDisabled",
+  setLimitPerPage: "setLimitPerPage",
   setProjectionExclusionFields: "setProjectionExclusionFields",
   setSortDirection: "setSortDirection",
   setSortField: "setSortField",

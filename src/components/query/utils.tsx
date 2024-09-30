@@ -204,12 +204,14 @@ function createQueryString({
   generalSearchCase,
   generalSearchExclusionValue,
   generalSearchInclusionValue,
+  limitPerPage,
   projectionExclusionFields,
   queryChains,
 }: {
   generalSearchCase: GeneralSearchCase;
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
+  limitPerPage: string;
   projectionExclusionFields: string[];
   queryChains: QueryChains;
 }): string {
@@ -277,7 +279,9 @@ function createQueryString({
     }&$text[$caseSensitive]=${generalSearchCase === "case-sensitive"}`
     : "";
 
-  return filterAndSortQueryString + projectionQueryString + searchQueryString;
+  return `${
+    filterAndSortQueryString + projectionQueryString + searchQueryString
+  }&limit=${Number.parseInt(limitPerPage) ?? 10}`;
 }
 
 const QUERY_BUILDER_HELP_MODAL_CONTENT = (

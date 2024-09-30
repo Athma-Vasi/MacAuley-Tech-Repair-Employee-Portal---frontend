@@ -44,6 +44,7 @@ const queryReducers = new Map<
   [queryAction.setGeneralSearchCase, queryReducer_setGeneralSearchCase],
   [queryAction.setIsError, queryReducer_setIsError],
   [queryAction.setIsSearchDisabled, queryReducer_setIsSearchDisabled],
+  [queryAction.setLimitPerPage, queryReducer_setLimitPerPage],
   [
     queryAction.setProjectionExclusionFields,
     queryReducer_setProjectionExclusionFields,
@@ -118,6 +119,7 @@ function queryReducer_modifyQueryChains(
         generalSearchCase: state.generalSearchCase,
         generalSearchExclusionValue: state.generalSearchExclusionValue,
         generalSearchInclusionValue: state.generalSearchInclusionValue,
+        limitPerPage: state.limitPerPage,
         projectionExclusionFields: state.projectionExclusionFields,
         queryChains: newQueryChains,
       });
@@ -215,6 +217,7 @@ function queryReducer_modifyQueryChains(
         generalSearchCase: state.generalSearchCase,
         generalSearchExclusionValue: state.generalSearchExclusionValue,
         generalSearchInclusionValue: state.generalSearchInclusionValue,
+        limitPerPage: state.limitPerPage,
         projectionExclusionFields: state.projectionExclusionFields,
         queryChains: newQueryChains,
       });
@@ -243,6 +246,7 @@ function queryReducer_modifyQueryChains(
         generalSearchCase: state.generalSearchCase,
         generalSearchExclusionValue: state.generalSearchExclusionValue,
         generalSearchInclusionValue: state.generalSearchInclusionValue,
+        limitPerPage: state.limitPerPage,
         projectionExclusionFields: state.projectionExclusionFields,
         queryChains: newQueryChains,
       });
@@ -270,6 +274,7 @@ function queryReducer_modifyQueryChains(
         generalSearchCase: state.generalSearchCase,
         generalSearchExclusionValue: state.generalSearchExclusionValue,
         generalSearchInclusionValue: state.generalSearchInclusionValue,
+        limitPerPage: state.limitPerPage,
         projectionExclusionFields: state.projectionExclusionFields,
         queryChains: newQueryChains,
       });
@@ -401,6 +406,7 @@ function queryReducer_setGeneralSearchExclusionValue(
     generalSearchCase: state.generalSearchCase,
     generalSearchExclusionValue,
     generalSearchInclusionValue: state.generalSearchInclusionValue,
+    limitPerPage: state.limitPerPage,
     projectionExclusionFields: state.projectionExclusionFields,
     queryChains: state.queryChains,
   });
@@ -417,6 +423,7 @@ function queryReducer_setGeneralSearchInclusionValue(
     generalSearchCase: state.generalSearchCase,
     generalSearchExclusionValue: state.generalSearchExclusionValue,
     generalSearchInclusionValue,
+    limitPerPage: state.limitPerPage,
     projectionExclusionFields: state.projectionExclusionFields,
     queryChains: state.queryChains,
   });
@@ -439,6 +446,23 @@ function queryReducer_setIsSearchDisabled(
   return { ...state, isSearchDisabled: dispatch.payload as boolean };
 }
 
+function queryReducer_setLimitPerPage(
+  state: QueryState,
+  dispatch: QueryDispatch,
+): QueryState {
+  const limitPerPage = dispatch.payload as string;
+  const queryString = createQueryString({
+    generalSearchCase: state.generalSearchCase,
+    generalSearchExclusionValue: state.generalSearchExclusionValue,
+    generalSearchInclusionValue: state.generalSearchInclusionValue,
+    limitPerPage,
+    projectionExclusionFields: state.projectionExclusionFields,
+    queryChains: state.queryChains,
+  });
+
+  return { ...state, limitPerPage, queryString };
+}
+
 function queryReducer_setProjectionExclusionFields(
   state: QueryState,
   dispatch: QueryDispatch,
@@ -448,6 +472,7 @@ function queryReducer_setProjectionExclusionFields(
     generalSearchCase: state.generalSearchCase,
     generalSearchExclusionValue: state.generalSearchExclusionValue,
     generalSearchInclusionValue: state.generalSearchInclusionValue,
+    limitPerPage: state.limitPerPage,
     projectionExclusionFields,
     queryChains: state.queryChains,
   });

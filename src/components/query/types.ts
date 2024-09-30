@@ -85,6 +85,7 @@ type QueryState = {
   generalSearchInclusionValue: string;
   isError: boolean;
   isSearchDisabled: boolean;
+  limitPerPage: string;
   logicalOperatorChainsSetsMap: LogicalOperatorChainsSetsMap;
   projectionExclusionFields: string[];
   queryChains: QueryChains;
@@ -159,6 +160,10 @@ type QueryDispatch =
   | {
     action: QueryAction["setIsSearchDisabled"];
     payload: boolean;
+  }
+  | {
+    action: QueryAction["setLimitPerPage"];
+    payload: string;
   }
   | {
     action: QueryAction["setProjectionExclusionFields"];

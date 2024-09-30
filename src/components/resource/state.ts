@@ -17,7 +17,7 @@ const initialResourceState: ResourceState = {
   sortField: "createdAt",
   sortDirection: "ascending",
   totalDocuments: 0,
-  totalPages: 10,
+  totalPages: 1,
 };
 
 export { initialResourceState };
