@@ -1,18 +1,26 @@
 import React, { useEffect } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { Card, Stack, Text } from "@mantine/core";
+import {
+  Card,
+  Loader,
+  LoadingOverlay,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useAuth, useGlobalState } from "../../hooks";
 import type { RoleResourceRoutePaths, StepperPage } from "../../types";
 import { logState, returnThemeColors, splitCamelCase } from "../../utils";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
-import { PageNavigation } from "../pageNavigation/PageNavigation";
 import { resourceAction } from "./actions";
 import { resourceReducer } from "./reducers";
 import { initialResourceState } from "./state";
 
 type ResourceProps = {
+  isLoading: boolean;
+  isSubmitting: boolean;
   resourceName: string;
   responseDocs: Array<Record<string, unknown>>;
   roleResourceRoutePaths: RoleResourceRoutePaths;
@@ -21,6 +29,8 @@ type ResourceProps = {
 
 function Resource(
   {
+    isLoading,
+    isSubmitting,
     responseDocs,
     resourceName,
     roleResourceRoutePaths,
@@ -35,8 +45,8 @@ function Resource(
   const {
     currentPage,
     isError,
-    isLoading,
-    isSubmitting,
+    // isLoading,
+    // isSubmitting,
     isSuccessful,
     limitPerPage,
     loadingMessage,
@@ -106,15 +116,31 @@ function Resource(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (isLoading) {
+    return (
+      <Stack>
+        <Title order={5}>Loading ...</Title>
+        <Loader size="md" />
+      </Stack>
+    );
+  }
+
   logState({
     state: resourceState,
     groupLabel: "Resource State",
   });
 
-  return (
-    <Stack>
-      <Text>Resource</Text>
+  const overlay = (
+    <LoadingOverlay
+      visible={isSubmitting}
+      overlayBlur={2}
+    />
+  );
 
+  return (
+    <Stack style={{ position: "relative" }}>
+      {responseDocs.length > 0 ? null : <Text>No {resourceName} found</Text>}
+      {overlay}
       <DisplayResource
         actionString={resourceAction.setSelectedDocument}
         parentDispatch={resourceDispatch}

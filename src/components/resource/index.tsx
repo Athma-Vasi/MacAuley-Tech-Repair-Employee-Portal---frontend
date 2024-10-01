@@ -4,11 +4,15 @@ import Resource from "./Resource";
 
 function ResourceWrapper(
     {
+        isLoading,
+        isSubmitting,
         resourceName,
         responseDocs,
         roleResourceRoutePaths,
         stepperPages,
     }: {
+        isLoading: boolean;
+        isSubmitting: boolean;
         resourceName: string;
         responseDocs: Array<Record<string, unknown>>;
         roleResourceRoutePaths: RoleResourceRoutePaths;
@@ -16,6 +20,8 @@ function ResourceWrapper(
     },
 ) {
     return ErrorSuspenseHOC(Resource)({
+        isLoading,
+        isSubmitting,
         resourceName,
         responseDocs,
         roleResourceRoutePaths,

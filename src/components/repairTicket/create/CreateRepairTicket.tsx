@@ -3,7 +3,7 @@ import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
-import { Container, Stack, Text, Title } from "@mantine/core";
+import { Container, Stack } from "@mantine/core";
 import { authAction } from "../../../context/authProvider";
 import { useAuth } from "../../../hooks";
 import type { HttpServerResponse } from "../../../types";
@@ -231,127 +231,6 @@ function CreateRepairTicket() {
     };
   }, [triggerCustomerSearchSubmit]);
 
-  // useEffect(() => {
-  //   fetchAbortControllerRef.current?.abort();
-  //   fetchAbortControllerRef.current = new AbortController();
-  //   const fetchAbortController = fetchAbortControllerRef.current;
-
-  //   isComponentMountedRef.current = true;
-  //   const isComponentMounted = isComponentMountedRef.current;
-
-  //   async function handleCustomerSearchPagination() {
-  //     createRepairTicketDispatch({
-  //       action: createRepairTicketAction.setIsSuccessful,
-  //       payload: false,
-  //     });
-  //     createRepairTicketDispatch({
-  //       action: createRepairTicketAction.setIsSubmitting,
-  //       payload: true,
-  //     });
-
-  //     const userRole = roles.includes("Manager")
-  //       ? "manager"
-  //       : roles.includes("Admin")
-  //       ? "admin"
-  //       : "employee";
-
-  //     const query =
-  //       `${queryString}&page=${currentPage}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`;
-
-  //     const url = urlBuilder({
-  //       path: CUSTOMER_RESOURCE_ROUTE_PATHS[userRole],
-  //       query,
-  //     });
-
-  //     const requestInit: RequestInit = {
-  //       credentials: "include",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //       method: "GET",
-  //       signal: fetchAbortController.signal,
-  //     };
-
-  //     const responseResult = await fetchSafe(url, requestInit);
-
-  //     if (!isComponentMounted) {
-  //       return;
-  //     }
-
-  //     if (responseResult.err) {
-  //       showBoundary(responseResult.val.data);
-  //       return;
-  //     }
-
-  //     const responseUnwrapped = responseResult.safeUnwrap().data;
-
-  //     if (responseUnwrapped === undefined) {
-  //       showBoundary(new Error("No data returned from server"));
-  //       return;
-  //     }
-
-  //     const jsonResult = await responseToJSONSafe<
-  //       HttpServerResponse<CustomerDocument>
-  //     >(
-  //       responseUnwrapped,
-  //     );
-
-  //     if (!isComponentMounted) {
-  //       return;
-  //     }
-
-  //     if (jsonResult.err) {
-  //       showBoundary(jsonResult.val.data);
-  //       return;
-  //     }
-
-  //     const serverResponse = jsonResult.safeUnwrap().data;
-
-  //     if (serverResponse === undefined) {
-  //       showBoundary(new Error("No data returned from server"));
-  //       return;
-  //     }
-
-  //     authDispatch({
-  //       action: authAction.setAccessToken,
-  //       payload: serverResponse.accessToken,
-  //     });
-
-  //     createRepairTicketDispatch({
-  //       action: createRepairTicketAction.setCustomerSearchResults,
-  //       payload: serverResponse.data,
-  //     });
-  //     createRepairTicketDispatch({
-  //       action: createRepairTicketAction.setTotalDocuments,
-  //       payload: serverResponse.totalDocuments,
-  //     });
-  //     createRepairTicketDispatch({
-  //       action: createRepairTicketAction.setTotalPages,
-  //       payload: serverResponse.pages,
-  //     });
-  //     createRepairTicketDispatch({
-  //       action: createRepairTicketAction.setIsSubmitting,
-  //       payload: false,
-  //     });
-  //     createRepairTicketDispatch({
-  //       action: createRepairTicketAction.setIsSuccessful,
-  //       payload: true,
-  //     });
-  //     createRepairTicketDispatch({
-  //       action: createRepairTicketAction.setTriggerCustomerSearchSubmit,
-  //       payload: false,
-  //     });
-  //   }
-
-  //   handleCustomerSearchPagination();
-
-  //   return () => {
-  //     fetchAbortController.abort();
-  //     isComponentMountedRef.current = false;
-  //   };
-  // }, [currentPage]);
-
   useEffect(() => {
     fetchAbortControllerRef.current?.abort();
     fetchAbortControllerRef.current = new AbortController();
@@ -455,11 +334,7 @@ function CreateRepairTicket() {
     <NotificationModal
       onCloseCallbacks={[closeSubmitFormModal]}
       opened={openedSubmitFormModal}
-      notificationProps={{
-        loading: isSubmitting,
-        text: "Submitting Repair Ticket form ...",
-      }}
-      title={<Title order={4}>Submitting request...</Title>}
+      notificationProps={{ isLoading: isSubmitting }}
       withCloseButton={false}
     />
   );
@@ -474,16 +349,20 @@ function CreateRepairTicket() {
 
   const paginationElement = (
     <Stack>
-      <Text>Page navigation</Text>
       <PageNavigation
         currentPage={currentPage}
         disabled={customerSearchResults.length === 0}
-        onChangeCallbacks={[() => {
+        onChange={(_value: number) => {
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setNewQueryFlag,
+            payload: false,
+          });
+
           createRepairTicketDispatch({
             action: createRepairTicketAction.setTriggerCustomerSearchSubmit,
             payload: true,
           });
-        }]}
+        }}
         parentDispatch={createRepairTicketDispatch}
         totalPages={totalPages}
         validValueAction={createRepairTicketAction.setCurrentPage}
@@ -503,6 +382,8 @@ function CreateRepairTicket() {
       {submitCustomerSearchButton}
       {paginationElement}
       <ResourceWrapper
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
         resourceName="Customer"
         responseDocs={customerSearchResults}
         roleResourceRoutePaths={CREATE_REPAIR_TICKET_ROLE_PATHS}
@@ -560,7 +441,7 @@ function CreateRepairTicket() {
 
   return (
     <Container>
-      {displaySubmitSuccessNotificationModal}
+      {/* {displaySubmitSuccessNotificationModal} */}
       {stepper}
     </Container>
   );

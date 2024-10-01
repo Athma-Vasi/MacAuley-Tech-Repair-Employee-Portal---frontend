@@ -329,7 +329,7 @@ function Login() {
       onCloseCallbacks={[closeSubmitFormModal]}
       opened={openedSubmitFormModal}
       notificationProps={{
-        loading: isSubmitting,
+        isLoading: isSubmitting,
         text: "Login successful!",
       }}
       title={<Title order={4}>Submitting ...</Title>}

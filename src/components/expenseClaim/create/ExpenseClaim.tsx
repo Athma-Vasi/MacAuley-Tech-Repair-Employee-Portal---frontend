@@ -352,7 +352,7 @@ function ExpenseClaim() {
       onCloseCallbacks={[closeSubmitFormModal]}
       opened={openedSubmitFormModal}
       notificationProps={{
-        loading: isSubmitting,
+        isLoading: isSubmitting,
         text: "Document upload successful!",
       }}
       title={<Title order={4}>Submitting ...</Title>}

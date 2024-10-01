@@ -1,19 +1,19 @@
-import { Modal, Notification, Text } from '@mantine/core';
-import { ReactNode } from 'react';
-import { TbCheck } from 'react-icons/tb';
+import { Modal, Notification, Text, Title } from "@mantine/core";
+import type { ReactNode } from "react";
+import { TbCheck } from "react-icons/tb";
 
-import { useGlobalState } from '../../hooks';
+import { useGlobalState } from "../../hooks";
 
 type CustomNotificationModalProps = {
   centered?: boolean;
   notificationProps: {
     icon?: ReactNode;
-    loading: boolean;
-    text: string;
+    isLoading: boolean;
+    text?: string;
   };
   opened: boolean;
   onCloseCallbacks: Array<() => void>;
-  title: ReactNode;
+  title?: ReactNode;
   withCloseButton?: boolean;
 };
 
@@ -21,14 +21,14 @@ function NotificationModal({
   notificationProps,
   onCloseCallbacks,
   opened,
-  title,
+  title = "Uploading data to the server",
   centered = true,
   withCloseButton = true,
 }: CustomNotificationModalProps) {
   const {
-    text = '',
+    text = "Please wait until data is uploaded ...",
     icon = <TbCheck size={22} />,
-    loading,
+    isLoading,
   } = notificationProps;
 
   const {
@@ -40,19 +40,22 @@ function NotificationModal({
   const notificationModal = (
     <Modal
       centered={centered}
-      closeButtonProps={{ color: primaryColor }}
+      closeButtonProps={{
+        color: primaryColor,
+        "aria-label": "Dismiss notification",
+      }}
       opened={opened}
       onClose={() => {
         onCloseCallbacks.forEach((callback) => callback());
       }}
-      title={title}
+      title={<Title order={4}>{title}</Title>}
       withCloseButton={withCloseButton}
     >
       <Notification
         icon={icon}
-        loading={loading}
+        loading={isLoading}
         withCloseButton={false}
-        style={{ boxShadow: '0 0 0 0', backgroundColor: 'transparent' }}
+        style={{ boxShadow: "0 0 0 0", backgroundColor: "transparent" }}
       >
         <Text>{text}</Text>
       </Notification>

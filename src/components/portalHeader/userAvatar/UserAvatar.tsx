@@ -703,7 +703,7 @@ function UserAvatar() {
       onCloseCallbacks={[closeUserInfoModal]}
       opened={isSubmitting}
       notificationProps={{
-        loading: isSubmitting,
+        isLoading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
       title={

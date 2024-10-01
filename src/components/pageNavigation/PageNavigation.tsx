@@ -1,10 +1,11 @@
 import { Pagination, Stack } from "@mantine/core";
 import type React from "react";
+import { useState } from "react";
 
 type PageNavigationProps<ValidValueAction extends string = string> = {
   currentPage: number;
   disabled?: boolean;
-  onChangeCallbacks?: Array<() => void>;
+  onChange?: (value: number) => void;
   parentDispatch: React.Dispatch<{
     action: ValidValueAction;
     payload: string;
@@ -17,28 +18,29 @@ function PageNavigation<ValidValueAction extends string = string>(
   {
     currentPage,
     disabled = false,
-    onChangeCallbacks = [],
+    onChange,
     parentDispatch,
     totalPages,
     validValueAction,
   }: PageNavigationProps<ValidValueAction>,
 ): React.JSX.Element {
+  const [page, setPage] = useState(currentPage);
+
   return (
     <Stack>
       <Pagination
         disabled={disabled}
         onChange={(value: number) => {
+          setPage(value);
           parentDispatch({
             action: validValueAction,
             payload: value.toString(),
           });
 
-          onChangeCallbacks.forEach((callback) => {
-            callback?.();
-          });
+          onChange?.(value);
         }}
         total={totalPages}
-        value={currentPage}
+        value={page}
       />
     </Stack>
   );

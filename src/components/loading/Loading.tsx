@@ -1,8 +1,8 @@
-import '../../index.css';
+import "../../index.css";
 
-import { Alert, Flex, Loader, Text } from '@mantine/core';
+import { Alert, Flex, Loader, Text } from "@mantine/core";
 
-import { LoadingProps } from './types';
+import type { LoadingProps } from "./types";
 
 function Loading({ dataDirection }: LoadingProps) {
   return (
@@ -18,7 +18,9 @@ function Loading({ dataDirection }: LoadingProps) {
         <Text
           color="dark"
           aria-live="assertive"
-        >{`Please wait while we ${dataDirection} the data.`}</Text>
+        >
+          {`Please wait while we ${dataDirection} the data.`}
+        </Text>
       </Flex>
     </Alert>
   );

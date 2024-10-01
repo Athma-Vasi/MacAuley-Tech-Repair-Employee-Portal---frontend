@@ -31,7 +31,7 @@ const initialCreateRepairTicketState: CreateRepairTicketState = {
   pagesInError: new Set(),
   isSubmitting: false,
   isSuccessful: false,
-  isLoading: true,
+  isLoading: false,
 };
 
 export { initialCreateRepairTicketState };

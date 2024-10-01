@@ -491,7 +491,7 @@ function DisplayAnnouncement() {
       ]}
       opened={openedSubmitFormModal}
       notificationProps={{
-        loading: isSubmitting,
+        isLoading: isSubmitting,
         text: isSubmitting ? submitMessage : "Success!",
       }}
       title={
