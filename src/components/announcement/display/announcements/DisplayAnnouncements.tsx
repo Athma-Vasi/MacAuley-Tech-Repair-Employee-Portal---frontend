@@ -12,12 +12,18 @@ import { useNavigate } from "react-router-dom";
 
 import { useDisclosure } from "@mantine/hooks";
 import { COLORS_SWATCHES } from "../../../../constants/data";
+import { authAction } from "../../../../context/authProvider";
 import { globalAction } from "../../../../context/globalProvider/actions";
 import { useAuth, useGlobalState } from "../../../../hooks";
-import { fetchRequestGETSafe, returnThemeColors } from "../../../../utils";
+import {
+  fetchRequestGETSafe,
+  fetchRequestGETTokensSafe,
+  returnThemeColors,
+} from "../../../../utils";
 import AccessibleImage from "../../../accessibleInputs/AccessibleImage";
 import AccessiblePagination from "../../../accessibleInputs/AccessiblePagination";
 import DisplayResourceHeader from "../../../displayResourceHeader/DisplayResourceHeader";
+import { NotificationModal } from "../../../notificationModal";
 import { ANNOUNCEMENT_ROUTE_PATHS } from "../../constants";
 import { displayAnnouncementsAction } from "./actions";
 import { displayAnnouncementsReducer } from "./reducers";
@@ -28,8 +34,17 @@ function DisplayAnnouncements() {
     displayAnnouncementsReducer,
     initialDisplayAnnouncementsState,
   );
-  const { currentPage, responseData, pages, totalDocuments, isLoading } =
-    displayAnnouncementsState;
+  const {
+    currentPage,
+    errorMessage,
+    isError,
+    isLoading,
+    loadingMessage,
+    newQueryFlag,
+    pages,
+    responseData,
+    totalDocuments,
+  } = displayAnnouncementsState;
 
   const {
     globalState: { themeObject, width },
@@ -40,19 +55,21 @@ function DisplayAnnouncements() {
     authState: {
       accessToken,
       decodedToken: { sessionId, userInfo: { roles, userId, username } },
+      refreshToken,
     },
+    authDispatch,
   } = useAuth();
 
-  const navigate = useNavigate();
+  const navigateFn = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   const [
-    openedLoadingFormModal,
-    {
-      open: openLoadingFormModal,
-      close: closeLoadingFormModal,
-    },
+    openedLoadingModal,
+    { open: openLoadingModal, close: closeLoadingModal },
   ] = useDisclosure(false);
+
+  const [openedErrorModal, { open: openErrorModal, close: closeErrorModal }] =
+    useDisclosure(false);
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
@@ -65,18 +82,26 @@ function DisplayAnnouncements() {
     isComponentMountedRef.current = true;
     const isComponentMounted = isComponentMountedRef.current;
 
-    async function fetchAnnouncements() {
+    async function handleFetchAnnouncementsFormSubmit() {
+      const queryString =
+        `&page=${currentPage}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`;
+
       const fetchAnnouncementsResult = await fetchRequestGETSafe({
         accessToken,
-        closeSubmitFormModal: closeLoadingFormModal,
+        authAction,
+        authDispatch,
+        closeSubmitFormModal: closeLoadingModal,
         fetchAbortController,
         isComponentMounted,
         loadingMessage: "Fetching announcements from server...",
-        openSubmitFormModal: openLoadingFormModal,
+        navigateFn,
+        openSubmitFormModal: openLoadingModal,
         parentDispatch: displayAnnouncementsDispatch as React.Dispatch<unknown>,
+        queryString,
         roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
         roles,
         setIsLoadingAction: displayAnnouncementsAction.setIsLoading,
+        setLoadingMessageAction: displayAnnouncementsAction.setLoadingMessage,
         setResourceDataAction: displayAnnouncementsAction.setResponseData,
         setTotalDocumentsAction: displayAnnouncementsAction.setTotalDocuments,
         setTotalPagesAction: displayAnnouncementsAction.setPages,
@@ -86,9 +111,59 @@ function DisplayAnnouncements() {
         showBoundary(fetchAnnouncementsResult.val.data);
         return;
       }
+
+      const unwrappedResult = fetchAnnouncementsResult.safeUnwrap();
+
+      if (unwrappedResult.kind === "error") {
+        displayAnnouncementsDispatch({
+          action: displayAnnouncementsAction.setIsError,
+          payload: true,
+        });
+        displayAnnouncementsDispatch({
+          action: displayAnnouncementsAction.setErrorMessage,
+          payload: unwrappedResult.message ?? "Unknown error occurred",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      const serverResponse = unwrappedResult.data;
+      if (serverResponse === undefined) {
+        displayAnnouncementsDispatch({
+          action: displayAnnouncementsAction.setIsError,
+          payload: true,
+        });
+        displayAnnouncementsDispatch({
+          action: displayAnnouncementsAction.setErrorMessage,
+          payload: "Network error",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      if (serverResponse.isTokenExpired) {
+        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+          accessToken,
+          authAction,
+          authDispatch,
+          customUrl: "http://localhost:5500/auth/refresh",
+          fetchAbortController,
+          isComponentMounted,
+          refreshToken,
+        });
+
+        if (tokensRefreshResult.err) {
+          showBoundary(tokensRefreshResult.val.data);
+          return;
+        }
+
+        await handleFetchAnnouncementsFormSubmit();
+      }
     }
 
-    fetchAnnouncements();
+    handleFetchAnnouncementsFormSubmit();
 
     return () => {
       fetchAbortController.abort();
@@ -138,7 +213,7 @@ function DisplayAnnouncements() {
               payload: announcement,
             });
 
-            navigate(`/home/actions/announcement/${dynamicPath}`, {
+            navigateFn(`/home/actions/announcement/${dynamicPath}`, {
               replace: false,
             });
           }}
@@ -228,8 +303,17 @@ function DisplayAnnouncements() {
   //   </Group>
   // );
 
+  const errorNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeErrorModal]}
+      opened={openedErrorModal}
+      notificationProps={{ isLoading: isError, text: errorMessage }}
+    />
+  );
+
   const displayAnnouncementsComponent = (
     <Stack w="100%" align="center">
+      {errorNotificationModal}
       {displayAnnouncementHeader}
       {/* {displayQueryBuilder} */}
       {displayAnnouncementCards}

@@ -9,7 +9,9 @@ type RegisterAction = {
   setEmail: "setEmail";
   setEmergencyContactName: "setEmergencyContactName";
   setEmergencyContactNumber: "setEmergencyContactNumber";
+  setErrorMessage: "setErrorMessage";
   setFirstName: "setFirstName";
+  setIsError: "setIsError";
   setIsSubmitting: "setIsSubmitting";
   setIsSuccessful: "setIsSuccessful";
   setJobPosition: "setJobPosition";
@@ -40,7 +42,9 @@ const registerAction: RegisterAction = {
   setEmail: "setEmail",
   setEmergencyContactName: "setEmergencyContactName",
   setEmergencyContactNumber: "setEmergencyContactNumber",
+  setErrorMessage: "setErrorMessage",
   setFirstName: "setFirstName",
+  setIsError: "setIsError",
   setIsSubmitting: "setIsSubmitting",
   setIsSuccessful: "setIsSuccessful",
   setJobPosition: "setJobPosition",

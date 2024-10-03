@@ -6,6 +6,7 @@ type AuthState = {
   accessToken: string;
   decodedToken: DecodedToken;
   isLoggedIn: boolean;
+  refreshToken: string;
   userDocument: Record<string, unknown>;
 };
 
@@ -25,6 +26,10 @@ type AuthDispatch =
   | {
     action: AuthAction["setIsLoggedIn"];
     payload: boolean;
+  }
+  | {
+    action: AuthAction["setRefreshToken"];
+    payload: string;
   }
   | {
     action: AuthAction["setUserDocument"];

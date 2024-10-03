@@ -1,13 +1,15 @@
-import { Container, Stack, Text, Title } from "@mantine/core";
+import { Container, Stack, Title } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import { CURRENCY_DATA } from "../../../constants/data";
+import { authAction } from "../../../context/authProvider";
 import { useAuth } from "../../../hooks";
 import type { Currency, StepperPage } from "../../../types";
 import {
+  fetchRequestGETTokensSafe,
   fetchRequestPOSTSafe,
   logState,
   removeUndefinedAndNull,
@@ -40,12 +42,14 @@ function ExpenseClaim() {
   const {
     acknowledgement,
     additionalComments,
+    errorMessage,
     expenseClaimAmount,
     expenseClaimCurrency,
     expenseClaimDate,
     expenseClaimDescription,
     expenseClaimKind,
     formData,
+    isError,
     isSubmitting,
     isSuccessful,
     pagesInError,
@@ -56,18 +60,20 @@ function ExpenseClaim() {
     authState: {
       accessToken,
       decodedToken: { userInfo: { userId, username, roles }, sessionId },
+      refreshToken,
     },
+    authDispatch,
   } = useAuth();
 
   const [
     openedSubmitFormModal,
-    {
-      open: openSubmitFormModal,
-      close: closeSubmitFormModal,
-    },
+    { open: openSubmitFormModal, close: closeSubmitFormModal },
   ] = useDisclosure(false);
 
-  const navigate = useNavigate();
+  const [openedErrorModal, { open: openErrorModal, close: closeErrorModal }] =
+    useDisclosure(false);
+
+  const navigateFn = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
@@ -85,12 +91,15 @@ function ExpenseClaim() {
       const fileUploadsResult = await Promise.all(
         formData.map(async (formDataItem) => {
           const filesUploadResult = await fetchRequestPOSTSafe({
+            authAction,
+            authDispatch,
             closeSubmitFormModal,
             dispatch: expenseClaimDispatch,
             fetchAbortController,
             isComponentMounted,
             isSubmittingAction: expenseClaimAction.setIsSubmitting,
             isSuccessfulAction: expenseClaimAction.setIsSuccessful,
+            navigateFn,
             openSubmitFormModal,
             requestBody: formDataItem,
             roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
@@ -146,23 +155,82 @@ function ExpenseClaim() {
         username,
       };
 
-      await fetchRequestPOSTSafe({
+      const expenseClaimResult = await fetchRequestPOSTSafe({
         accessToken,
+        authAction,
+        authDispatch,
         closeSubmitFormModal,
         dispatch: expenseClaimDispatch,
         fetchAbortController,
         isComponentMounted,
         isSubmittingAction: expenseClaimAction.setIsSubmitting,
         isSuccessfulAction: expenseClaimAction.setIsSuccessful,
+        navigateFn,
         openSubmitFormModal,
         roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
         roles,
         schema: expenseClaimSchema,
         triggerFormSubmitAction: expenseClaimAction.setTriggerFormSubmit,
       });
+
+      if (expenseClaimResult.err) {
+        showBoundary(expenseClaimResult.val.data);
+        return;
+      }
+
+      const unwrappedResult = expenseClaimResult.safeUnwrap();
+
+      if (unwrappedResult.kind === "error") {
+        expenseClaimDispatch({
+          action: expenseClaimAction.setIsError,
+          payload: true,
+        });
+        expenseClaimDispatch({
+          action: expenseClaimAction.setErrorMessage,
+          payload: unwrappedResult.message ?? "Unknown error occurred",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      const serverResponse = unwrappedResult.data;
+      if (serverResponse === undefined) {
+        expenseClaimDispatch({
+          action: expenseClaimAction.setIsError,
+          payload: true,
+        });
+        expenseClaimDispatch({
+          action: expenseClaimAction.setErrorMessage,
+          payload: "Network error",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      if (serverResponse.isTokenExpired) {
+        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+          accessToken,
+          authAction,
+          authDispatch,
+          customUrl: "http://localhost:5500/auth/refresh",
+          fetchAbortController,
+          isComponentMounted,
+          refreshToken,
+        });
+
+        if (tokensRefreshResult.err) {
+          showBoundary(tokensRefreshResult.val.data);
+          return;
+        }
+
+        await handleExpenseClaimFormSubmit();
+      }
     }
 
     if (triggerFormSubmit) {
+      handleExpenseClaimFormSubmit();
     }
 
     return () => {
@@ -179,26 +247,6 @@ function ExpenseClaim() {
       groupLabel: "Create ExpenseClaim State",
     });
   }, [expenseClaimState]);
-
-  if (isSubmitting) {
-    const submittingState = (
-      <Stack>
-        <Text size="md">Submitting benefit! Please wait...</Text>
-      </Stack>
-    );
-
-    return submittingState;
-  }
-
-  if (isSuccessful) {
-    const successfulState = (
-      <Stack>
-        <Text size="md">ExpenseClaim submitted successfully!</Text>
-      </Stack>
-    );
-
-    return successfulState;
-  }
 
   const EXPENSE_CLAIM_STEPPER_PAGES: StepperPage[] =
     returnExpenseClaimStepperPages();
@@ -337,7 +385,7 @@ function ExpenseClaim() {
         disabled: pagesInError.size > 0 || triggerFormSubmit,
         kind: "submit",
         name: "submit",
-        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+        onClick: (_expenseClaim: React.MouseEvent<HTMLButtonElement>) => {
           expenseClaimDispatch({
             action: expenseClaimAction.setTriggerFormSubmit,
             payload: true,
@@ -347,7 +395,7 @@ function ExpenseClaim() {
     />
   );
 
-  const displaySubmitSuccessNotificationModal = (
+  const displaySubmitSuccessModal = (
     <NotificationModal
       onCloseCallbacks={[closeSubmitFormModal]}
       opened={openedSubmitFormModal}
@@ -374,10 +422,19 @@ function ExpenseClaim() {
     />
   );
 
+  const notificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeErrorModal]}
+      opened={openedErrorModal}
+      notificationProps={{ isLoading: isError, text: errorMessage }}
+    />
+  );
+
   return (
-    <Container w={700}>
+    <Container>
+      {notificationModal}
       {stepper}
-      {displaySubmitSuccessNotificationModal}
+      {displaySubmitSuccessModal}
     </Container>
   );
 }
@@ -396,10 +453,10 @@ export default ExpenseClaim;
   const { showBoundary } = useErrorBoundary();
 
   const [
-    openedSubmitSuccessNotificationModal,
+    openedSubmitSuccessModal,
     {
-      open: openSubmitSuccessNotificationModal,
-      close: closeSubmitSuccessNotificationModal,
+      open: openSubmitSuccessModal,
+      close: closeSubmitSuccessModal,
     },
   ] = useDisclosure(false);
 
@@ -416,7 +473,7 @@ export default ExpenseClaim;
         type: expenseClaimAction.setSubmitMessage,
         payload: "File uploads are being processed...",
       });
-      openSubmitSuccessNotificationModal();
+      openSubmitSuccessModal();
 
       if (files.length === 0) {
         return;
@@ -830,10 +887,10 @@ export default ExpenseClaim;
         payload: false,
       });
     },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+    onChange: (expenseClaim: ChangeEvent<HTMLInputElement>) => {
       expenseClaimDispatch({
         type: expenseClaimAction.setExpenseClaimAmount,
-        payload: event.currentTarget.value,
+        payload: expenseClaim.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -855,10 +912,10 @@ export default ExpenseClaim;
     data: EXPENSE_CLAIM_KIND_DATA,
     description: "Select a category for your expense claim.",
     label: "Expense Claim Kind",
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+    onChange: (expenseClaim: ChangeEvent<HTMLSelectElement>) => {
       expenseClaimDispatch({
         type: expenseClaimAction.setExpenseClaimKind,
-        payload: event.currentTarget.value as ExpenseClaimKind,
+        payload: expenseClaim.currentTarget.value as ExpenseClaimKind,
       });
     },
     value: expenseClaimKind,
@@ -870,10 +927,10 @@ export default ExpenseClaim;
     data: CURRENCY_DATA,
     description: "Select the currency for your expense claim.",
     label: "Expense Claim Currency",
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+    onChange: (expenseClaim: ChangeEvent<HTMLSelectElement>) => {
       expenseClaimDispatch({
         type: expenseClaimAction.setExpenseClaimCurrency,
-        payload: event.currentTarget.value as Currency,
+        payload: expenseClaim.currentTarget.value as Currency,
       });
     },
     value: expenseClaimCurrency,
@@ -895,10 +952,10 @@ export default ExpenseClaim;
         payload: false,
       });
     },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+    onChange: (expenseClaim: ChangeEvent<HTMLInputElement>) => {
       expenseClaimDispatch({
         type: expenseClaimAction.setExpenseClaimDate,
-        payload: event.currentTarget.value,
+        payload: expenseClaim.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -930,10 +987,10 @@ export default ExpenseClaim;
           payload: false,
         });
       },
-      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (expenseClaim: ChangeEvent<HTMLTextAreaElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setExpenseClaimDescription,
-          payload: event.currentTarget.value,
+          payload: expenseClaim.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -962,10 +1019,10 @@ export default ExpenseClaim;
         payload: false,
       });
     },
-    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+    onChange: (expenseClaim: ChangeEvent<HTMLTextAreaElement>) => {
       expenseClaimDispatch({
         type: expenseClaimAction.setAdditionalComments,
-        payload: event.currentTarget.value,
+        payload: expenseClaim.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -985,10 +1042,10 @@ export default ExpenseClaim;
         deselected: acknowledgementInputDeselectedText,
       },
       checked: acknowledgement,
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      onChange: (expenseClaim: ChangeEvent<HTMLInputElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setAcknowledgement,
-          payload: event.currentTarget.checked,
+          payload: expenseClaim.currentTarget.checked,
         });
       },
       semanticName: "acknowledgement",
@@ -1001,7 +1058,7 @@ export default ExpenseClaim;
     semanticDescription: "expense claim form submit button",
     semanticName: "submit button",
     leftIcon: <TbUpload />,
-    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+    buttonOnClick: (expenseClaim: MouseEvent<HTMLButtonElement>) => {
       expenseClaimDispatch({
         type: expenseClaimAction.setTriggerFormSubmit,
         payload: true,
@@ -1101,15 +1158,15 @@ export default ExpenseClaim;
     />
   );
 
-  const displaySubmitSuccessNotificationModal = (
+  const displaySubmitSuccessModal = (
     <NotificationModal
       onCloseCallbacks={[
-        closeSubmitSuccessNotificationModal,
+        closeSubmitSuccessModal,
         () => {
           navigate("/home/company/expense-claim/display");
         },
       ]}
-      opened={openedSubmitSuccessNotificationModal}
+      opened={openedSubmitSuccessModal}
       notificationProps={{
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
@@ -1156,7 +1213,7 @@ export default ExpenseClaim;
       setCurrentStepperPosition={expenseClaimAction.setCurrentStepperPosition}
       pagesInError={pagesInError}
     >
-      {displaySubmitSuccessNotificationModal}
+      {displaySubmitSuccessModal}
       {displayExpenseClaimForm}
     </StepperWrapper>
   );

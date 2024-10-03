@@ -1,15 +1,17 @@
 import type { AnnouncementState } from "./types";
 
 const initialAnnouncementState: AnnouncementState = {
-  title: "",
-  author: "",
-  bannerImageSrc: "",
-  bannerImageAlt: "",
   article: [""],
-  triggerFormSubmit: false,
-  pagesInError: new Set(),
+  author: "",
+  bannerImageAlt: "",
+  bannerImageSrc: "",
+  errorMessage: "",
+  isError: false,
   isSubmitting: false,
   isSuccessful: false,
+  pagesInError: new Set(),
+  title: "",
+  triggerFormSubmit: false,
 };
 
 export { initialAnnouncementState };

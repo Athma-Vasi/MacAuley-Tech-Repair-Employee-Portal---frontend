@@ -41,12 +41,14 @@ type ExpenseClaimDocument = ExpenseClaimSchema & {
 type ExpenseClaimState = {
   acknowledgement: boolean;
   additionalComments: string;
+  errorMessage: string;
   expenseClaimAmount: string;
   expenseClaimCurrency: Currency;
   expenseClaimDate: string;
   expenseClaimDescription: string;
   expenseClaimKind: ExpenseClaimKind;
   formData: Array<FormData>;
+  isError: boolean;
   isSubmitting: boolean;
   isSuccessful: boolean;
   pagesInError: Set<number>;
@@ -60,6 +62,10 @@ type ExpenseClaimDispatch =
   }
   | {
     action: ExpenseClaimAction["setAdditionalComments"];
+    payload: string;
+  }
+  | {
+    action: ExpenseClaimAction["setErrorMessage"];
     payload: string;
   }
   | {
@@ -85,6 +91,10 @@ type ExpenseClaimDispatch =
   | {
     action: ExpenseClaimAction["setFormData"];
     payload: FormData;
+  }
+  | {
+    action: ExpenseClaimAction["setIsError"];
+    payload: boolean;
   }
   | {
     action: ExpenseClaimAction["setIsSubmitting"];

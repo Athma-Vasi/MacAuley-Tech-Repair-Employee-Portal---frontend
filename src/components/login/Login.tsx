@@ -97,6 +97,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
+        mode: "cors",
         body: JSON.stringify({ schema }),
         signal: fetchAbortController.signal,
       };
@@ -194,6 +195,14 @@ function Login() {
       authDispatch({
         action: authAction.setDecodedToken,
         payload: decodedToken,
+      });
+      authDispatch({
+        action: authAction.setIsLoggedIn,
+        payload: true,
+      });
+      authDispatch({
+        action: authAction.setRefreshToken,
+        payload: serverResponse.refreshToken,
       });
       authDispatch({
         action: authAction.setUserDocument,

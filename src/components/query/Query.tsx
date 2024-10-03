@@ -103,6 +103,16 @@ function Query<
     });
   }, [queryState.queryString, queryState.isError]);
 
+  useEffect(() => {
+    parentDispatch({
+      action: invalidValueAction,
+      payload: {
+        kind: "delete",
+        page,
+      },
+    });
+  }, [filterField]);
+
   console.group("Query");
   console.log("queryState", queryState);
   console.log("stepperPages", stepperPages);

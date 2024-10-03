@@ -15,6 +15,8 @@ const eventReducers = new Map<
   [eventAction.setDescription, eventReducer_setDescription],
   [eventAction.setEndDate, eventReducer_setEndDate],
   [eventAction.setEndTime, eventReducer_setEndTime],
+  [eventAction.setErrorMessage, eventReducer_setErrorMessage],
+  [eventAction.setIsError, eventReducer_setIsError],
   [eventAction.setKind, eventReducer_setKind],
   [eventAction.setLocation, eventReducer_setLocation],
   [eventAction.setStartDate, eventReducer_setStartDate],
@@ -54,6 +56,20 @@ function eventReducer_setEndTime(
   dispatch: EventDispatch,
 ): EventState {
   return { ...state, endTime: dispatch.payload as string };
+}
+
+function eventReducer_setErrorMessage(
+  state: EventState,
+  dispatch: EventDispatch,
+): EventState {
+  return { ...state, errorMessage: dispatch.payload as string };
+}
+
+function eventReducer_setIsError(
+  state: EventState,
+  dispatch: EventDispatch,
+): EventState {
+  return { ...state, isError: dispatch.payload as boolean };
 }
 
 function eventReducer_setKind(

@@ -28,8 +28,24 @@ const displayAnnouncementsReducersMap = new Map<
         displayAnnouncementsReducer_setCurrentPage,
     ],
     [
+        displayAnnouncementsAction.setErrorMessage,
+        displayAnnouncementsReducer_setErrorMessage,
+    ],
+    [
+        displayAnnouncementsAction.setIsError,
+        displayAnnouncementsReducer_setIsError,
+    ],
+    [
         displayAnnouncementsAction.setIsLoading,
         displayAnnouncementsReducer_setIsLoading,
+    ],
+    [
+        displayAnnouncementsAction.setLoadingMessage,
+        displayAnnouncementsReducer_setLoadingMessage,
+    ],
+    [
+        displayAnnouncementsAction.setNewQueryFlag,
+        displayAnnouncementsReducer_setNewQueryFlag,
     ],
     [displayAnnouncementsAction.setPages, displayAnnouncementsReducer_setPages],
     [
@@ -52,6 +68,26 @@ function displayAnnouncementsReducer_setCurrentPage(
     };
 }
 
+function displayAnnouncementsReducer_setErrorMessage(
+    state: DisplayAnnouncementsState,
+    dispatch: DisplayAnnouncementsDispatch,
+): DisplayAnnouncementsState {
+    return {
+        ...state,
+        errorMessage: dispatch.payload as string,
+    };
+}
+
+function displayAnnouncementsReducer_setIsError(
+    state: DisplayAnnouncementsState,
+    dispatch: DisplayAnnouncementsDispatch,
+): DisplayAnnouncementsState {
+    return {
+        ...state,
+        isError: dispatch.payload as boolean,
+    };
+}
+
 function displayAnnouncementsReducer_setIsLoading(
     state: DisplayAnnouncementsState,
     dispatch: DisplayAnnouncementsDispatch,
@@ -59,6 +95,26 @@ function displayAnnouncementsReducer_setIsLoading(
     return {
         ...state,
         isLoading: dispatch.payload as boolean,
+    };
+}
+
+function displayAnnouncementsReducer_setLoadingMessage(
+    state: DisplayAnnouncementsState,
+    dispatch: DisplayAnnouncementsDispatch,
+): DisplayAnnouncementsState {
+    return {
+        ...state,
+        loadingMessage: dispatch.payload as string,
+    };
+}
+
+function displayAnnouncementsReducer_setNewQueryFlag(
+    state: DisplayAnnouncementsState,
+    dispatch: DisplayAnnouncementsDispatch,
+): DisplayAnnouncementsState {
+    return {
+        ...state,
+        newQueryFlag: dispatch.payload as boolean,
     };
 }
 

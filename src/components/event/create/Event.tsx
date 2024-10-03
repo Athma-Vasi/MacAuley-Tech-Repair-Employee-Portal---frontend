@@ -1,18 +1,23 @@
-import { Container, Stack, Text } from "@mantine/core";
+import { Container, Stack } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
+import { authAction } from "../../../context/authProvider";
 import { useAuth } from "../../../hooks";
 import type { StepperPage } from "../../../types";
-import { fetchRequestPOSTSafe } from "../../../utils";
+import {
+  fetchRequestGETTokensSafe,
+  fetchRequestPOSTSafe,
+} from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { NotificationModal } from "../../notificationModal";
 import {
   EVENT_KIND_DATA,
   EVENT_ROLE_ROUTE_PATHS,
@@ -30,39 +35,43 @@ function Event() {
   );
 
   const {
-    title,
-    kind,
-    startDate,
-    endDate,
-    startTime,
-    endTime,
-    location,
-    description,
     attendees,
-    requiredItems,
-    rsvpDeadline,
-    triggerFormSubmit,
-    pagesInError,
+    description,
+    endDate,
+    endTime,
+    errorMessage,
+    isError,
     isSubmitting,
     isSuccessful,
+    kind,
+    location,
+    pagesInError,
+    requiredItems,
+    rsvpDeadline,
+    startDate,
+    startTime,
+    title,
+    triggerFormSubmit,
   } = eventState;
 
   const {
     authState: {
       accessToken,
       decodedToken: { sessionId, userInfo: { roles, userId, username } },
+      refreshToken,
     },
+    authDispatch,
   } = useAuth();
 
   const [
     openedSubmitFormModal,
-    {
-      open: openSubmitFormModal,
-      close: closeSubmitFormModal,
-    },
+    { open: openSubmitFormModal, close: closeSubmitFormModal },
   ] = useDisclosure(false);
 
-  const navigate = useNavigate();
+  const [openedErrorModal, { open: openErrorModal, close: closeErrorModal }] =
+    useDisclosure(false);
+
+  const navigateFn = useNavigate();
 
   const { showBoundary } = useErrorBoundary();
 
@@ -77,7 +86,7 @@ function Event() {
     isComponentMountedRef.current = true;
     const isComponentMounted = isComponentMountedRef.current;
 
-    async function eventFormSubmit() {
+    async function handleEventFormSubmit() {
       const eventSchema: EventSchema = {
         attendees,
         description,
@@ -97,12 +106,15 @@ function Event() {
 
       const formSubmitResult = await fetchRequestPOSTSafe({
         accessToken,
+        authAction,
+        authDispatch,
         closeSubmitFormModal,
         dispatch: eventDispatch,
         fetchAbortController,
         isComponentMounted,
         isSubmittingAction: eventAction.setIsSubmitting,
         isSuccessfulAction: eventAction.setIsSuccessful,
+        navigateFn,
         openSubmitFormModal,
         roleResourceRoutePaths: EVENT_ROLE_ROUTE_PATHS,
         roles,
@@ -112,13 +124,62 @@ function Event() {
 
       if (formSubmitResult.err) {
         showBoundary(formSubmitResult.val.data);
+        return;
       }
 
-      navigate("/home");
+      const unwrappedResult = formSubmitResult.safeUnwrap();
+
+      if (unwrappedResult.kind === "error") {
+        eventDispatch({
+          action: eventAction.setIsError,
+          payload: true,
+        });
+        eventDispatch({
+          action: eventAction.setErrorMessage,
+          payload: unwrappedResult.message ?? "Unknown error occurred",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      const serverResponse = unwrappedResult.data;
+      if (serverResponse === undefined) {
+        eventDispatch({
+          action: eventAction.setIsError,
+          payload: true,
+        });
+        eventDispatch({
+          action: eventAction.setErrorMessage,
+          payload: "Network error",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      if (serverResponse.isTokenExpired) {
+        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+          accessToken,
+          authAction,
+          authDispatch,
+          customUrl: "http://localhost:5500/auth/refresh",
+          fetchAbortController,
+          isComponentMounted,
+          refreshToken,
+        });
+
+        if (tokensRefreshResult.err) {
+          showBoundary(tokensRefreshResult.val.data);
+          return;
+        }
+
+        await handleEventFormSubmit();
+      }
     }
 
     if (triggerFormSubmit) {
-      eventFormSubmit();
+      handleEventFormSubmit();
     }
 
     return () => {
@@ -128,26 +189,6 @@ function Event() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
-
-  if (isSubmitting) {
-    const submittingState = (
-      <Stack>
-        <Text size="md">Submitting address changes! Please wait...</Text>
-      </Stack>
-    );
-
-    return submittingState;
-  }
-
-  if (isSuccessful) {
-    const successfulState = (
-      <Stack>
-        <Text size="md">Address changes submitted successfully!</Text>
-      </Stack>
-    );
-
-    return successfulState;
-  }
 
   const EVENT_STEPPER_PAGES: StepperPage[] = returnEventStepperPages();
 
@@ -340,6 +381,14 @@ function Event() {
     />
   );
 
+  const notificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeErrorModal]}
+      opened={openedErrorModal}
+      notificationProps={{ isLoading: isError, text: errorMessage }}
+    />
+  );
+
   const stepper = (
     <AccessibleStepper
       attributes={{
@@ -353,7 +402,7 @@ function Event() {
     />
   );
 
-  return <Container w={700}>{stepper}</Container>;
+  return <Container>{notificationModal}{stepper}</Container>;
 }
 
 export default Event;

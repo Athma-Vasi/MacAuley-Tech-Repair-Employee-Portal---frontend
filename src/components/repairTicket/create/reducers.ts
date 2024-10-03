@@ -139,6 +139,15 @@ const createRepairTicketReducersMap = new Map<
         createRepairTicketAction.setIsLoading,
         createRepairTicketReducer_setIsLoading,
     ],
+    [createRepairTicketAction.setIsError, createRepairTicketReducer_setIsError],
+    [
+        createRepairTicketAction.setErrorMessage,
+        createRepairTicketReducer_setErrorMessage,
+    ],
+    [
+        createRepairTicketAction.setLoadingMessage,
+        createRepairTicketReducer_setLoadingMessage,
+    ],
 ]);
 
 function createRepairTicketReducer_setCurrentPage(
@@ -422,6 +431,36 @@ function createRepairTicketReducer_setIsLoading(
     return {
         ...state,
         isLoading: dispatch.payload as boolean,
+    };
+}
+
+function createRepairTicketReducer_setIsError(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        isError: dispatch.payload as boolean,
+    };
+}
+
+function createRepairTicketReducer_setErrorMessage(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        errorMessage: dispatch.payload as string,
+    };
+}
+
+function createRepairTicketReducer_setLoadingMessage(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        loadingMessage: dispatch.payload as string,
     };
 }
 

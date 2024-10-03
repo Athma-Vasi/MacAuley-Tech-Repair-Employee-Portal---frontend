@@ -42,6 +42,8 @@ type EventState = {
   description: string;
   endDate: string;
   endTime: string;
+  errorMessage: string;
+  isError: boolean;
   isSubmitting: boolean;
   isSuccessful: boolean;
   kind: EventKind;
@@ -71,6 +73,14 @@ type EventDispatch =
   | {
     action: EventAction["setEndTime"];
     payload: string;
+  }
+  | {
+    action: EventAction["setErrorMessage"];
+    payload: string;
+  }
+  | {
+    action: EventAction["setIsError"];
+    payload: boolean;
   }
   | {
     action: EventAction["setKind"];

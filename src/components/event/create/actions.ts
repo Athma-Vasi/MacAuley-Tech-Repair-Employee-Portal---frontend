@@ -3,15 +3,17 @@ type EventAction = {
   setDescription: "setDescription";
   setEndDate: "setEndDate";
   setEndTime: "setEndTime";
-  setKind: "setKind";
-  setLocation: "setLocation";
-  setStartDate: "setStartDate";
-  setStartTime: "setStartTime";
+  setErrorMessage: "setErrorMessage";
+  setIsError: "setIsError";
   setIsSubmitting: "setIsSubmitting";
   setIsSuccessful: "setIsSuccessful";
+  setKind: "setKind";
+  setLocation: "setLocation";
   setPageInError: "setPageInError";
   setRequiredItems: "setRequiredItems";
   setRsvpDeadline: "setRsvpDeadline";
+  setStartDate: "setStartDate";
+  setStartTime: "setStartTime";
   setTitle: "setTitle";
   setTriggerFormSubmit: "setTriggerFormSubmit";
 };
@@ -21,15 +23,17 @@ const eventAction: EventAction = {
   setDescription: "setDescription",
   setEndDate: "setEndDate",
   setEndTime: "setEndTime",
-  setKind: "setKind",
-  setLocation: "setLocation",
-  setStartDate: "setStartDate",
-  setStartTime: "setStartTime",
+  setErrorMessage: "setErrorMessage",
+  setIsError: "setIsError",
   setIsSubmitting: "setIsSubmitting",
   setIsSuccessful: "setIsSuccessful",
+  setKind: "setKind",
+  setLocation: "setLocation",
   setPageInError: "setPageInError",
   setRequiredItems: "setRequiredItems",
   setRsvpDeadline: "setRsvpDeadline",
+  setStartDate: "setStartDate",
+  setStartTime: "setStartTime",
   setTitle: "setTitle",
   setTriggerFormSubmit: "setTriggerFormSubmit",
 };

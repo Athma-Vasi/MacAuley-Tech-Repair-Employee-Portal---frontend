@@ -41,7 +41,9 @@ const registerReducers = new Map<
     registerAction.setEmergencyContactNumber,
     registerReducer_setEmergencyContactNumber,
   ],
+  [registerAction.setErrorMessage, registerReducer_setErrorMessage],
   [registerAction.setFirstName, registerReducer_setFirstName],
+  [registerAction.setIsError, registerReducer_setIsError],
   [registerAction.setIsSubmitting, registerReducer_setIsSubmitting],
   [registerAction.setIsSuccessful, registerReducer_setIsSuccessful],
   [registerAction.setJobPosition, registerReducer_setJobPosition],
@@ -131,11 +133,25 @@ function registerReducer_setEmergencyContactNumber(
   return { ...state, emergencyContactNumber: dispatch.payload as PhoneNumber };
 }
 
+function registerReducer_setErrorMessage(
+  state: RegisterState,
+  dispatch: RegisterDispatch,
+): RegisterState {
+  return { ...state, errorMessage: dispatch.payload as string };
+}
+
 function registerReducer_setFirstName(
   state: RegisterState,
   dispatch: RegisterDispatch,
 ): RegisterState {
   return { ...state, firstName: dispatch.payload as string };
+}
+
+function registerReducer_setIsError(
+  state: RegisterState,
+  dispatch: RegisterDispatch,
+): RegisterState {
+  return { ...state, isError: dispatch.payload as boolean };
 }
 
 function registerReducer_setIsSubmitting(

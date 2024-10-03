@@ -23,7 +23,9 @@ type RegisterState = {
   email: string;
   emergencyContactName: string;
   emergencyContactNumber: PhoneNumber;
+  errorMessage: string;
   firstName: string;
+  isError: boolean;
   isSubmitting: boolean;
   isSuccessful: boolean;
   jobPosition: JobPosition;
@@ -85,8 +87,16 @@ type RegisterDispatch =
     payload: PhoneNumber | string;
   }
   | {
+    action: RegisterAction["setErrorMessage"];
+    payload: string;
+  }
+  | {
     action: RegisterAction["setFirstName"];
     payload: string;
+  }
+  | {
+    action: RegisterAction["setIsError"];
+    payload: boolean;
   }
   | {
     action: RegisterAction["setIsSubmitting"];

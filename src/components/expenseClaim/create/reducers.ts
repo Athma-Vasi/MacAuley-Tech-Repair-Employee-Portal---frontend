@@ -30,6 +30,7 @@ const expenseClaimReducersMap = new Map<
     expenseClaimAction.setAdditionalComments,
     expenseClaimReducer_setAdditionalComments,
   ],
+  [expenseClaimAction.setErrorMessage, expenseClaimReducer_setErrorMessage],
   [
     expenseClaimAction.setExpenseClaimAmount,
     expenseClaimReducer_setExpenseClaimAmount,
@@ -51,6 +52,7 @@ const expenseClaimReducersMap = new Map<
     expenseClaimReducer_setExpenseClaimKind,
   ],
   [expenseClaimAction.setFormData, expenseClaimReducer_setFormData],
+  [expenseClaimAction.setIsError, expenseClaimReducer_setIsError],
   [expenseClaimAction.setIsSubmitting, expenseClaimReducer_setIsSubmitting],
   [expenseClaimAction.setIsSuccessful, expenseClaimReducer_setIsSuccessful],
   [expenseClaimAction.setPageInError, expenseClaimReducer_setStepsInError],
@@ -77,6 +79,16 @@ function expenseClaimReducer_setAdditionalComments(
   return {
     ...state,
     additionalComments: dispatch.payload as string,
+  };
+}
+
+function expenseClaimReducer_setErrorMessage(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch,
+): ExpenseClaimState {
+  return {
+    ...state,
+    errorMessage: dispatch.payload as string,
   };
 }
 
@@ -138,6 +150,16 @@ function expenseClaimReducer_setFormData(
   return {
     ...state,
     formData: [...state.formData, formData],
+  };
+}
+
+function expenseClaimReducer_setIsError(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch,
+): ExpenseClaimState {
+  return {
+    ...state,
+    isError: dispatch.payload as boolean,
   };
 }
 

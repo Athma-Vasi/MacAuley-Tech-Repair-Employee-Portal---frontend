@@ -3,7 +3,11 @@ import type { DisplayAnnouncementsAction } from "./actions";
 
 type DisplayAnnouncementsState = {
   currentPage: number;
+  errorMessage: string;
+  isError: boolean;
   isLoading: boolean;
+  loadingMessage: string;
+  newQueryFlag: boolean;
   pages: number;
   responseData: Array<AnnouncementDocument> | null;
   totalDocuments: number;
@@ -15,7 +19,23 @@ type DisplayAnnouncementsDispatch =
     payload: number;
   }
   | {
+    action: DisplayAnnouncementsAction["setErrorMessage"];
+    payload: string;
+  }
+  | {
+    action: DisplayAnnouncementsAction["setIsError"];
+    payload: boolean;
+  }
+  | {
     action: DisplayAnnouncementsAction["setIsLoading"];
+    payload: boolean;
+  }
+  | {
+    action: DisplayAnnouncementsAction["setLoadingMessage"];
+    payload: string;
+  }
+  | {
+    action: DisplayAnnouncementsAction["setNewQueryFlag"];
     payload: boolean;
   }
   | {

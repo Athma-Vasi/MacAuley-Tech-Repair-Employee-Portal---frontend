@@ -1,5 +1,5 @@
 import { AppShell, Flex, Group, ScrollArea, Space } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -13,6 +13,11 @@ import { useStyles } from "../styles";
 
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log("opened", opened);
+  }, [opened]);
+
   const {
     globalState: { themeObject, height, width },
   } = useGlobalState();
@@ -47,6 +52,7 @@ function PortalLayout() {
       navbar={<PortalNavbar openedNavbar={opened} />}
       header={
         <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
+        // <Text>Header</Text>
       }
       footer={<PortalFooter />}
     >

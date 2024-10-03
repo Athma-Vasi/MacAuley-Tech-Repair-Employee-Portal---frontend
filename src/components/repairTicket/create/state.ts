@@ -29,9 +29,12 @@ const initialCreateRepairTicketState: CreateRepairTicketState = {
 
   triggerRepairFormSubmit: false,
   pagesInError: new Set(),
+  isError: false,
+  errorMessage: "",
   isSubmitting: false,
   isSuccessful: false,
   isLoading: false,
+  loadingMessage: "",
 };
 
 export { initialCreateRepairTicketState };

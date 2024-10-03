@@ -1,21 +1,23 @@
 import type { EventState } from "./types";
 
 const initialEventState: EventState = {
-  title: "",
-  kind: "Webinar",
-  startDate: "",
-  endDate: "",
-  startTime: "",
-  endTime: "",
-  location: "",
-  description: "",
   attendees: "",
-  requiredItems: "",
-  rsvpDeadline: "",
-  triggerFormSubmit: false,
-  pagesInError: new Set(),
+  description: "",
+  endDate: "",
+  endTime: "",
+  errorMessage: "",
+  isError: false,
   isSubmitting: false,
   isSuccessful: false,
+  kind: "Webinar",
+  location: "",
+  pagesInError: new Set(),
+  requiredItems: "",
+  rsvpDeadline: "",
+  startDate: "",
+  startTime: "",
+  title: "",
+  triggerFormSubmit: false,
 };
 
 export { initialEventState };

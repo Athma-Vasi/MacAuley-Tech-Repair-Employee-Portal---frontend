@@ -1,11 +1,14 @@
-import { Container, Group, Stack, Text } from "@mantine/core";
+import { Container, Group, Stack } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
 import { useDisclosure } from "@mantine/hooks";
+import { useNavigate } from "react-router-dom";
+import { authAction } from "../../../context/authProvider";
 import { useAuth } from "../../../hooks";
 import type { StepperPage } from "../../../types";
 import {
+  fetchRequestGETTokensSafe,
   fetchRequestPOSTSafe,
   logState,
   returnTimeToRead,
@@ -14,6 +17,7 @@ import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { NotificationModal } from "../../notificationModal";
 import { ANNOUNCEMENT_ROUTE_PATHS } from "../constants";
 import { announcementAction } from "./actions";
 import {
@@ -32,33 +36,38 @@ function Announcement() {
   );
 
   const {
-    title,
-    author,
-    bannerImageSrc,
-    bannerImageAlt,
     article,
-    triggerFormSubmit,
-    pagesInError,
+    author,
+    bannerImageAlt,
+    bannerImageSrc,
+    errorMessage,
+    isError,
     isSubmitting,
     isSuccessful,
+    pagesInError,
+    title,
+    triggerFormSubmit,
   } = announcementState;
 
   const {
     authState: {
       accessToken,
       decodedToken: { sessionId, userInfo: { userId, username, roles } },
+      refreshToken,
     },
+    authDispatch,
   } = useAuth();
 
+  const navigateFn = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   const [
     openedSubmitFormModal,
-    {
-      open: openSubmitFormModal,
-      close: closeSubmitFormModal,
-    },
+    { open: openSubmitFormModal, close: closeSubmitFormModal },
   ] = useDisclosure(false);
+
+  const [openedErrorModal, { open: openErrorModal, close: closeErrorModal }] =
+    useDisclosure(false);
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
@@ -71,7 +80,7 @@ function Announcement() {
     isComponentMountedRef.current = true;
     const isComponentMounted = isComponentMountedRef.current;
 
-    if (triggerFormSubmit) {
+    async function handleAnnouncementFormSubmit() {
       const ratingResponse: RatingResponse = {
         ratingEmotion: {
           estatic: 0,
@@ -99,20 +108,82 @@ function Announcement() {
         author,
       };
 
-      fetchRequestPOSTSafe({
+      const announcementResult = await fetchRequestPOSTSafe({
         accessToken,
+        authAction,
+        authDispatch,
         closeSubmitFormModal,
         dispatch: announcementDispatch,
         fetchAbortController,
         isComponentMounted,
         isSubmittingAction: announcementAction.setIsSubmitting,
         isSuccessfulAction: announcementAction.setIsSuccessful,
+        navigateFn,
         openSubmitFormModal,
         roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
         roles,
         schema: announcementSchema,
         triggerFormSubmitAction: announcementAction.setTriggerFormSubmit,
       });
+
+      if (announcementResult.err) {
+        showBoundary(announcementResult.val.data);
+        return;
+      }
+
+      const unwrappedResult = announcementResult.safeUnwrap();
+
+      if (unwrappedResult.kind === "error") {
+        announcementDispatch({
+          action: announcementAction.setIsError,
+          payload: true,
+        });
+        announcementDispatch({
+          action: announcementAction.setErrorMessage,
+          payload: unwrappedResult.message ?? "Unknown error occurred",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      const serverResponse = unwrappedResult.data;
+      if (serverResponse === undefined) {
+        announcementDispatch({
+          action: announcementAction.setIsError,
+          payload: true,
+        });
+        announcementDispatch({
+          action: announcementAction.setErrorMessage,
+          payload: "Network error",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      if (serverResponse.isTokenExpired) {
+        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+          accessToken,
+          authAction,
+          authDispatch,
+          customUrl: "http://localhost:5500/auth/refresh",
+          fetchAbortController,
+          isComponentMounted,
+          refreshToken,
+        });
+
+        if (tokensRefreshResult.err) {
+          showBoundary(tokensRefreshResult.val.data);
+          return;
+        }
+
+        await handleAnnouncementFormSubmit();
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleAnnouncementFormSubmit();
     }
 
     return () => {
@@ -127,26 +198,6 @@ function Announcement() {
     state: announcementState,
     groupLabel: "announcement state",
   });
-
-  if (isSubmitting) {
-    const submittingState = (
-      <Stack>
-        <Text size="md">Submitting address changes! Please wait...</Text>
-      </Stack>
-    );
-
-    return submittingState;
-  }
-
-  if (isSuccessful) {
-    const successfulState = (
-      <Stack>
-        <Text size="md">Address changes submitted successfully!</Text>
-      </Stack>
-    );
-
-    return successfulState;
-  }
 
   const ANNOUNCEMENT_STEPPER_PAGES: StepperPage[] =
     returnAnnouncementStepperPages();
@@ -399,6 +450,14 @@ function Announcement() {
     />
   );
 
+  const notificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeErrorModal]}
+      opened={openedErrorModal}
+      notificationProps={{ isLoading: isError, text: errorMessage }}
+    />
+  );
+
   const stepper = (
     <AccessibleStepper
       attributes={{
@@ -413,7 +472,7 @@ function Announcement() {
     />
   );
 
-  return <Container w={700}>{stepper}</Container>;
+  return <Container>{notificationModal}{stepper}</Container>;
 }
 
 export default Announcement;

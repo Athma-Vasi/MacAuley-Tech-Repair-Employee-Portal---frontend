@@ -33,6 +33,8 @@ const announcementReducers = new Map<
   [announcementAction.setAuthor, announcementReducer_setAuthor],
   [announcementAction.setBannerImageAlt, announcementReducer_setBannerImageAlt],
   [announcementAction.setBannerImageSrc, announcementReducer_setBannerImageSrc],
+  [announcementAction.setErrorMessage, announcementReducer_setErrorMessage],
+  [announcementAction.setIsError, announcementReducer_setIsError],
   [announcementAction.setIsSubmitting, announcementReducer_setIsSubmitting],
   [announcementAction.setIsSuccessful, announcementReducer_setIsSuccessful],
   [announcementAction.setPageInError, announcementReducer_setPageInError],
@@ -142,6 +144,26 @@ function announcementReducer_setBannerImageSrc(
   return {
     ...state,
     bannerImageSrc: dispatch.payload as string,
+  };
+}
+
+function announcementReducer_setErrorMessage(
+  state: AnnouncementState,
+  dispatch: AnnouncementDispatch,
+): AnnouncementState {
+  return {
+    ...state,
+    errorMessage: dispatch.payload as string,
+  };
+}
+
+function announcementReducer_setIsError(
+  state: AnnouncementState,
+  dispatch: AnnouncementDispatch,
+): AnnouncementState {
+  return {
+    ...state,
+    isError: dispatch.payload as boolean,
   };
 }
 

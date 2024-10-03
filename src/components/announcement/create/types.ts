@@ -40,6 +40,8 @@ type AnnouncementState = {
   author: string;
   bannerImageAlt: string;
   bannerImageSrc: string;
+  errorMessage: string;
+  isError: boolean;
   isSubmitting: boolean;
   isSuccessful: boolean;
   pagesInError: Set<number>;
@@ -103,6 +105,14 @@ type AnnouncementDispatch =
   | {
     action: AnnouncementAction["setTriggerFormSubmit"];
     payload: boolean;
+  }
+  | {
+    action: AnnouncementAction["setIsError"];
+    payload: boolean;
+  }
+  | {
+    action: AnnouncementAction["setErrorMessage"];
+    payload: string;
   };
 
 type ParagraphPayload = {

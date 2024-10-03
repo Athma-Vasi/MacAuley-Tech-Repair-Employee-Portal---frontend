@@ -5,6 +5,7 @@ const initialAuthState: AuthState = {
   accessToken: "",
   decodedToken: {} as DecodedToken,
   isLoggedIn: false,
+  refreshToken: "",
   userDocument: {},
 };
 

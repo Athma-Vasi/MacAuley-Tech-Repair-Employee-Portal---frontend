@@ -46,7 +46,7 @@ function NotificationModal({
       }}
       opened={opened}
       onClose={() => {
-        onCloseCallbacks.forEach((callback) => callback());
+        onCloseCallbacks.forEach((callback) => callback?.());
       }}
       title={<Title order={4}>{title}</Title>}
       withCloseButton={withCloseButton}

@@ -15,7 +15,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import {
   TbCheck,
@@ -48,17 +48,22 @@ function UserAvatar() {
     globalDispatch,
   } = useGlobalState();
 
-  const { authState: { userDocument } } = useAuth();
-
   const [userAvatarState, userAvatarDispatch] = useReducer(
     userAvatarReducer,
     initialUserAvatarState,
   );
 
   const {
-    authState: { accessToken, isLoggedIn },
+    authState: { accessToken, isLoggedIn, userDocument, refreshToken },
     authDispatch,
   } = useAuth();
+
+  console.group("UserAvatar: authState");
+  console.log("accessToken", accessToken);
+  console.log("isLoggedIn", isLoggedIn);
+  console.log("refreshToken", refreshToken);
+  console.log("userDocument", userDocument);
+  console.groupEnd();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -721,12 +726,10 @@ function UserAvatar() {
     </Stack>
   );
 
-  useEffect(() => {
-    logState({
-      state: userAvatarState,
-      groupLabel: "user avatar state in UserAvatar",
-    });
-  }, [userAvatarState]);
+  logState({
+    state: userAvatarState,
+    groupLabel: "user avatar state in UserAvatar",
+  });
 
   return displayUserAvatarComponent;
 }

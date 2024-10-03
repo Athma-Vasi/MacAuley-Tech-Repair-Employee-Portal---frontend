@@ -1,4 +1,12 @@
-import { Burger, Flex, Header, MediaQuery, Text, Title } from "@mantine/core";
+import {
+  Burger,
+  Flex,
+  Group,
+  Header,
+  MediaQuery,
+  Text,
+  Title,
+} from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect } from "react";
 
@@ -72,9 +80,9 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
           </Flex>
         )}
 
-        <Flex align="center" justify="flex-end">
+        <Group>
           <UserAvatar />
-        </Flex>
+        </Group>
       </Flex>
     </Header>
   );

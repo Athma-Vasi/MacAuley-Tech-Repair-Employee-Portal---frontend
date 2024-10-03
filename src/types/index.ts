@@ -259,9 +259,11 @@ type DecodedToken = {
 type HttpServerResponse<Data = unknown> = {
   accessToken: string;
   data: Array<Data>;
+  isTokenExpired: boolean;
   kind: "error" | "success";
   message: string;
   pages: number;
+  refreshToken: string;
   status: number;
   totalDocuments: number;
   triggerLogout: boolean;

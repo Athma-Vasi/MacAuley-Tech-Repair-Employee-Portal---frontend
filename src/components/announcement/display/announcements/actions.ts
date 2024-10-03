@@ -1,6 +1,10 @@
 type DisplayAnnouncementsAction = {
     setCurrentPage: "setCurrentPage";
+    setErrorMessage: "setErrorMessage";
+    setIsError: "setIsError";
     setIsLoading: "setIsLoading";
+    setLoadingMessage: "setLoadingMessage";
+    setNewQueryFlag: "setNewQueryFlag";
     setPages: "setPages";
     setResponseData: "setResponseData";
     setTotalDocuments: "setTotalDocuments";
@@ -8,7 +12,11 @@ type DisplayAnnouncementsAction = {
 
 const displayAnnouncementsAction: DisplayAnnouncementsAction = {
     setCurrentPage: "setCurrentPage",
+    setErrorMessage: "setErrorMessage",
+    setIsError: "setIsError",
     setIsLoading: "setIsLoading",
+    setLoadingMessage: "setLoadingMessage",
+    setNewQueryFlag: "setNewQueryFlag",
     setPages: "setPages",
     setResponseData: "setResponseData",
     setTotalDocuments: "setTotalDocuments",

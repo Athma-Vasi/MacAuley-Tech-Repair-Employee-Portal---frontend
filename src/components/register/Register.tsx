@@ -3,14 +3,20 @@ import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
 import { useDisclosure } from "@mantine/hooks";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { COLORS_SWATCHES } from "../../constants/data";
-import { useGlobalState } from "../../hooks";
+import { authAction } from "../../context/authProvider";
+import { useAuth, useGlobalState } from "../../hooks";
 import type { UserSchema } from "../../types";
-import { fetchRequestPOSTSafe, logState, returnThemeColors } from "../../utils";
+import {
+  fetchRequestGETTokensSafe,
+  fetchRequestPOSTSafe,
+  logState,
+  returnThemeColors,
+} from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
-import { useStyles } from "../styles";
+import { NotificationModal } from "../notificationModal";
 import { RegisterAdditional } from "./RegisterAdditional";
 import { RegisterAddress } from "./RegisterAddress";
 import { RegisterAuthentication } from "./RegisterAuthentication";
@@ -37,7 +43,9 @@ function Register() {
     email,
     emergencyContactName,
     emergencyContactNumber,
+    errorMessage,
     firstName,
+    isError,
     isSubmitting,
     isSuccessful,
     jobPosition,
@@ -61,17 +69,31 @@ function Register() {
     globalState: { width, themeObject },
   } = useGlobalState();
 
-  const { showBoundary } = useErrorBoundary();
+  const {
+    authState,
+    authDispatch,
+  } = useAuth();
 
-  const { classes } = useStyles({});
+  const {
+    accessToken,
+    decodedToken: {
+      userInfo: { userId, username: authUsername, roles },
+      sessionId,
+    },
+    refreshToken,
+  } = authState;
+
+  const { showBoundary } = useErrorBoundary();
 
   const [
     openedSubmitFormModal,
-    {
-      open: openSubmitFormModal,
-      close: closeSubmitFormModal,
-    },
+    { open: openSubmitFormModal, close: closeSubmitFormModal },
   ] = useDisclosure(false);
+
+  const [openedErrorModal, { open: openErrorModal, close: closeErrorModal }] =
+    useDisclosure(false);
+
+  const navigateFn = useNavigate();
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
@@ -84,7 +106,7 @@ function Register() {
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
 
-    async function submitRegisterForm() {
+    async function handleRegisterFormSubmit() {
       const userSchema: UserSchema = {
         active: true,
         address: country === "Canada"
@@ -127,12 +149,16 @@ function Register() {
       };
 
       const registerResult = await fetchRequestPOSTSafe({
+        accessToken,
+        authAction,
+        authDispatch,
         closeSubmitFormModal,
         dispatch: registerDispatch,
         fetchAbortController,
         isComponentMounted,
         isSubmittingAction: registerAction.setIsSubmitting,
         isSuccessfulAction: registerAction.setIsSuccessful,
+        navigateFn,
         openSubmitFormModal,
         roles: ["Employee"],
         schema: userSchema,
@@ -141,11 +167,62 @@ function Register() {
 
       if (registerResult.err) {
         showBoundary(registerResult.val.data);
+        return;
+      }
+
+      const unwrappedResult = registerResult.safeUnwrap();
+
+      if (unwrappedResult.kind === "error") {
+        registerDispatch({
+          action: registerAction.setIsError,
+          payload: true,
+        });
+        registerDispatch({
+          action: registerAction.setErrorMessage,
+          payload: unwrappedResult.message ?? "Unknown error occurred",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      const serverResponse = unwrappedResult.data;
+      if (serverResponse === undefined) {
+        registerDispatch({
+          action: registerAction.setIsError,
+          payload: true,
+        });
+        registerDispatch({
+          action: registerAction.setErrorMessage,
+          payload: "Network error",
+        });
+
+        openErrorModal();
+        return;
+      }
+
+      if (serverResponse.isTokenExpired) {
+        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+          accessToken,
+          authAction,
+          authDispatch,
+          customUrl: "http://localhost:5500/auth/refresh",
+          fetchAbortController,
+          isComponentMounted,
+          refreshToken,
+        });
+
+        if (tokensRefreshResult.err) {
+          showBoundary(tokensRefreshResult.val.data);
+          return;
+        }
+
+        await handleRegisterFormSubmit();
       }
     }
 
     if (triggerFormSubmit) {
-      submitRegisterForm();
+      handleRegisterFormSubmit();
     }
 
     return () => {
@@ -154,26 +231,6 @@ function Register() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
-
-  if (isSubmitting) {
-    const submittingState = (
-      <Stack>
-        <Text size="md">Submitting address changes! Please wait...</Text>
-      </Stack>
-    );
-
-    return submittingState;
-  }
-
-  if (isSuccessful) {
-    const successfulState = (
-      <Stack>
-        <Text size="md">Address changes submitted successfully!</Text>
-      </Stack>
-    );
-
-    return successfulState;
-  }
 
   const registerStepperPages = returnRegisterperPages(country);
 
@@ -282,6 +339,23 @@ function Register() {
     themeObject,
   });
 
+  const submitSuccessModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeSubmitFormModal]}
+      opened={openedSubmitFormModal}
+      notificationProps={{ isLoading: isSubmitting }}
+      withCloseButton={false}
+    />
+  );
+
+  const errorNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeErrorModal]}
+      opened={openedErrorModal}
+      notificationProps={{ isLoading: isError, text: errorMessage }}
+    />
+  );
+
   const linkToLogin = (
     <Flex align="center" justify="center" columnGap="sm">
       <Text color="dark">Already have an account?</Text>
@@ -292,7 +366,15 @@ function Register() {
       </Text>
     </Flex>
   );
-  return <Stack>{stepper}{linkToLogin}</Stack>;
+
+  return (
+    <Stack>
+      {stepper}
+      {linkToLogin}
+      {submitSuccessModal}
+      {errorNotificationModal}
+    </Stack>
+  );
 }
 
 export default Register;

@@ -49,9 +49,12 @@ type CreateRepairTicketState = {
 
   triggerRepairFormSubmit: boolean;
   pagesInError: Set<number>;
+  isError: boolean;
+  errorMessage: string;
   isSubmitting: boolean;
   isSuccessful: boolean;
   isLoading: boolean;
+  loadingMessage: string;
 };
 
 type CreateRepairTicketDispatch =
@@ -166,6 +169,18 @@ type CreateRepairTicketDispatch =
   | {
     action: CreateRepairTicketAction["setIsLoading"];
     payload: boolean;
+  }
+  | {
+    action: CreateRepairTicketAction["setIsError"];
+    payload: boolean;
+  }
+  | {
+    action: CreateRepairTicketAction["setErrorMessage"];
+    payload: string;
+  }
+  | {
+    action: CreateRepairTicketAction["setLoadingMessage"];
+    payload: string;
   };
 
 export type {

@@ -3,14 +3,17 @@ type CreateRepairTicketAction = {
     setCustomerSearchResults: "setCustomerSearchResults";
     setDateReceived: "setDateReceived";
     setDescriptionOfIssue: "setDescriptionOfIssue";
+    setErrorMessage: "setErrorMessage";
     setEstimatedCompletionDate: "setEstimatedCompletionDate";
     setEstimatedRepairCost: "setEstimatedRepairCost";
     setEstimatedRepairCostCurrency: "setEstimatedRepairCostCurrency";
     setInitialInspectionNotes: "setInitialInspectionNotes";
+    setIsError: "setIsError";
     setIsLoading: "setIsLoading";
     setIsSubmitting: "setIsSubmitting";
     setIsSuccessful: "setIsSuccessful";
     setLimitPerPage: "setLimitPerPage";
+    setLoadingMessage: "setLoadingMessage";
     setNewQueryFlag: "setNewQueryFlag";
     setPageInError: "setPageInError";
     setPartName: "setPartName";
@@ -34,14 +37,17 @@ const createRepairTicketAction: CreateRepairTicketAction = {
     setCustomerSearchResults: "setCustomerSearchResults",
     setDateReceived: "setDateReceived",
     setDescriptionOfIssue: "setDescriptionOfIssue",
+    setErrorMessage: "setErrorMessage",
     setEstimatedCompletionDate: "setEstimatedCompletionDate",
     setEstimatedRepairCost: "setEstimatedRepairCost",
     setEstimatedRepairCostCurrency: "setEstimatedRepairCostCurrency",
     setInitialInspectionNotes: "setInitialInspectionNotes",
+    setIsError: "setIsError",
     setIsLoading: "setIsLoading",
     setIsSubmitting: "setIsSubmitting",
     setIsSuccessful: "setIsSuccessful",
     setLimitPerPage: "setLimitPerPage",
+    setLoadingMessage: "setLoadingMessage",
     setNewQueryFlag: "setNewQueryFlag",
     setPageInError: "setPageInError",
     setPartName: "setPartName",
