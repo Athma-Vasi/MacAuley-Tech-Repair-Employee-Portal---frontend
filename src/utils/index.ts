@@ -1560,8 +1560,8 @@ async function fetchRequestPATCHSafe<
   },
   SetIsSubmittingAction extends string = string,
   SetSubmittingMessageAction extends string = string,
-  SetResourceDataAction extends string = string,
   TriggerFormSubmitAction extends string = string,
+  SetResourceDataAction extends string = string,
 >({
   accessToken,
   authAction,

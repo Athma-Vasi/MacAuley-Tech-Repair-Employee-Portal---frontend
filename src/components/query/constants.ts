@@ -44,9 +44,9 @@ const SORT_DIRECTION_DATA: CheckboxRadioSelectData<SortDirection> = [
   { label: "Descending", value: "descending" },
 ];
 
-const QUERY_SEARCH_CASE_DATA: GeneralSearchCase[] = [
-  "case-sensitive",
-  "case-insensitive",
+const QUERY_SEARCH_CASE_DATA: CheckboxRadioSelectData<GeneralSearchCase> = [
+  { label: "Case sensitive", value: "case-sensitive" },
+  { label: "Case insensitive", value: "case-insensitive" },
 ];
 
 const BOOLEAN_VALUES_DATA: CheckboxRadioSelectData<"true" | "false"> = [

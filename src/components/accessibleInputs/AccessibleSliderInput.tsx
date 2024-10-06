@@ -7,6 +7,7 @@ import {
 } from "@mantine/core";
 import type { ReactNode } from "react";
 
+import { INPUT_MAX_WIDTH, INPUT_MIN_WIDTH } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import type { SliderMarksData } from "../../types";
 import { returnSliderMarks } from "../../utils";
@@ -62,6 +63,7 @@ type AccessibleSliderInputProps<
   Payload extends number = number,
 > = {
   attributes: AccessibleSliderInputAttributes<ValidValueAction, Payload>;
+  uniqueId?: string;
 };
 
 function AccessibleSliderInput<
@@ -69,6 +71,7 @@ function AccessibleSliderInput<
   Payload extends number = number,
 >({
   attributes,
+  uniqueId,
 }: AccessibleSliderInputProps<ValidValueAction, Payload>) {
   const {
     color,
@@ -148,7 +151,11 @@ function AccessibleSliderInput<
       precision={precision}
       size={size}
       step={step}
-      style={{ border: "none", outline: "none" }}
+      style={{
+        border: "none",
+        outline: "none",
+        cursor: disabled ? "not-allowed" : "pointer",
+      }}
       thumbChildren={thumbChildren}
       thumbLabel={thumbLabel}
       thumbSize={thumbSize}
@@ -157,7 +164,11 @@ function AccessibleSliderInput<
   );
 
   return (
-    <Container w="100%">
+    <Container
+      key={`${name}-${value}-${uniqueId ?? ""}`}
+      style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
+      w="100%"
+    >
       {accessibleSliderInput}
       <Box
         style={

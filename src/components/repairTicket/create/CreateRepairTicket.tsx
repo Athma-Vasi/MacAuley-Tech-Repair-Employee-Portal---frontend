@@ -192,10 +192,10 @@ function CreateRepairTicket() {
           return;
         }
       } catch (error: unknown) {
-        if (!fetchAbortController.signal.aborted) {
-          showBoundary(error);
+        if (!isComponentMounted || fetchAbortController.signal.aborted) {
           return;
         }
+        showBoundary(error);
       }
     }
 
@@ -203,8 +203,13 @@ function CreateRepairTicket() {
       handleCustomerSearchFormSubmit();
     }
 
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
+
     return () => {
-      fetchAbortController.abort("Component unmounted");
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
       isComponentMountedRef.current = false;
     };
   }, [triggerCustomerSearchSubmit]);

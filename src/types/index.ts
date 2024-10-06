@@ -128,12 +128,10 @@ type ScreenshotImageType = "image/png" | "image/jpeg" | "image/webp";
  * Used in the update${resource}ByIdService default PATCH request service functions for all resources.
  */
 type DocumentUpdateOperation<
-  Document extends Record<Key, Value>,
-  Key extends keyof Document = keyof Document,
-  Value extends Document[Key] = Document[Key],
+  Document extends Record<string, unknown> = Record<string, unknown>,
 > =
-  | DocumentFieldUpdateOperation<Document, Key, Value>
-  | DocumentArrayUpdateOperation<Document, Key, Value>;
+  | DocumentFieldUpdateOperation<Document>
+  | DocumentArrayUpdateOperation<Document>;
 
 type FieldOperators =
   | "$currentDate"
@@ -147,25 +145,21 @@ type FieldOperators =
   | "$unset";
 
 type DocumentFieldUpdateOperation<
-  Document extends Record<Key, Value>,
-  Key extends keyof Document = keyof Document,
-  Value extends Document[Key] = Document[Key],
+  Document extends Record<string, unknown> = Record<string, unknown>,
 > = {
   updateKind: "field";
   updateOperator: FieldOperators;
-  fields: Record<Key, Value>;
+  fields: Partial<Document>;
 };
 
 type ArrayOperators = "$addToSet" | "$pop" | "$pull" | "$push" | "$pullAll";
 
 type DocumentArrayUpdateOperation<
-  Document extends Record<Key, Value>,
-  Key extends keyof Document = keyof Document,
-  Value extends Document[Key] = Document[Key],
+  Document extends Record<string, unknown> = Record<string, unknown>,
 > = {
   updateKind: "array";
   updateOperator: ArrayOperators;
-  fields: Record<Key, Value>;
+  fields: Partial<Document>;
 };
 
 type AllowedFileExtensions = ".jpg" | ".jpeg" | ".png" | ".webp";
@@ -287,6 +281,8 @@ export type {
   Currency,
   DecodedToken,
   Department,
+  DocumentArrayUpdateOperation,
+  DocumentFieldUpdateOperation,
   DocumentUpdateOperation,
   ErrorLogSchema,
   FieldOperators,

@@ -1,20 +1,21 @@
 import {
   Box,
   Group,
-  MantineColor,
-  MantineNumberSize,
-  MantineSize,
+  type MantineColor,
+  type MantineNumberSize,
+  type MantineSize,
   SegmentedControl,
   Text,
 } from "@mantine/core";
+import type { CheckboxRadioSelectData } from "../../types";
 import { splitCamelCase } from "../../utils";
 
 type AccessibleSegmentedControlAttributes<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 > = {
   color?: MantineColor;
-  data: Payload[];
+  data: CheckboxRadioSelectData<Payload>;
   defaultValue?: Payload;
   disabled?: boolean;
   fullWidth?: boolean;
@@ -38,14 +39,14 @@ type AccessibleSegmentedControlAttributes<
 
 type AccessibleSegmentedControlProps<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 > = {
   attributes: AccessibleSegmentedControlAttributes<ValidValueAction, Payload>;
 };
 
 function AccessibleSegmentedControl<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 >({ attributes }: AccessibleSegmentedControlProps<ValidValueAction, Payload>) {
   const {
     color,
@@ -116,8 +117,10 @@ function AccessibleSegmentedControl<
           }
         }
       >
-        {/* {switchOnTextElement}
-        {switchOffTextElement} */}
+        {
+          /* {switchOnTextElement}
+        {switchOffTextElement} */
+        }
       </Box>
     </Group>
   );

@@ -1,65 +1,44 @@
+import type { UserAvatarAction } from "./actions";
+
 type UserAvatarState = {
   colorSchemeSwitchChecked: boolean;
-  prefersReducedMotionSwitchChecked: boolean;
-  triggerPrefersReducedMotionFormSubmit: boolean;
-
-  isAppearanceNavLinkActive: boolean;
-  isProfileNavLinkActive: boolean;
-  isLogoutNavLinkActive: boolean;
-
-  triggerLogoutSubmit: boolean;
+  errorMessage: string;
+  isError: boolean;
   isSubmitting: boolean;
-  submitMessage: string;
   isSuccessful: boolean;
-  successMessage: string;
+  prefersReducedMotionSwitchChecked: boolean;
+  submittingMessage: string;
+  triggerLogoutSubmit: boolean;
+  triggerPrefersReducedMotionFormSubmit: boolean;
 };
 
-type UserAvatarAction = {
-  setColorSchemeSwitchChecked: 'setColorSchemeSwitchChecked';
-  setPrefersReducedMotionSwitchChecked: 'setPrefersReducedMotionSwitchChecked';
-  triggerPrefersReducedMotionFormSubmit: 'triggerPrefersReducedMotionFormSubmit';
-
-  setIsAppearanceNavLinkActive: 'setIsAppearanceNavLinkActive';
-  setIsProfileNavLinkActive: 'setIsProfileNavLinkActive';
-  setIsLogoutNavLinkActive: 'setIsLogoutNavLinkActive';
-
-  setTriggerLogoutSubmit: 'setTriggerLogoutSubmit';
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
+type UserAvatarDispatch = {
+  action: UserAvatarAction["setColorSchemeSwitchChecked"];
+  payload: boolean;
+} | {
+  action: UserAvatarAction["setErrorMessage"];
+  payload: string;
+} | {
+  action: UserAvatarAction["setIsError"];
+  payload: boolean;
+} | {
+  action: UserAvatarAction["setIsSubmitting"];
+  payload: boolean;
+} | {
+  action: UserAvatarAction["setIsSuccessful"];
+  payload: boolean;
+} | {
+  action: UserAvatarAction["setPrefersReducedMotionSwitchChecked"];
+  payload: boolean;
+} | {
+  action: UserAvatarAction["setSubmittingMessage"];
+  payload: string;
+} | {
+  action: UserAvatarAction["setTriggerLogoutSubmit"];
+  payload: boolean;
+} | {
+  action: UserAvatarAction["triggerPrefersReducedMotionFormSubmit"];
+  payload: boolean;
 };
 
-type UserAvatarDispatch =
-  | {
-      type:
-        | UserAvatarAction['setColorSchemeSwitchChecked']
-        | UserAvatarAction['setPrefersReducedMotionSwitchChecked']
-        | UserAvatarAction['triggerPrefersReducedMotionFormSubmit']
-        | UserAvatarAction['setIsAppearanceNavLinkActive']
-        | UserAvatarAction['setIsProfileNavLinkActive']
-        | UserAvatarAction['setIsLogoutNavLinkActive']
-        | UserAvatarAction['setTriggerLogoutSubmit']
-        | UserAvatarAction['setIsSubmitting']
-        | UserAvatarAction['setIsSuccessful'];
-
-      payload: boolean;
-    }
-  | {
-      type:
-        | UserAvatarAction['setSubmitMessage']
-        | UserAvatarAction['setSuccessMessage'];
-      payload: string;
-    };
-
-type UserAvatarReducer = (
-  state: UserAvatarState,
-  action: UserAvatarDispatch
-) => UserAvatarState;
-
-export type {
-  UserAvatarAction,
-  UserAvatarDispatch,
-  UserAvatarReducer,
-  UserAvatarState,
-};
+export type { UserAvatarDispatch, UserAvatarState };

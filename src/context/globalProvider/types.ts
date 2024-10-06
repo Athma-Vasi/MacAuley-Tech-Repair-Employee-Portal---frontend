@@ -16,8 +16,8 @@ import type { RadialBarChartData } from "../../components/charts/responsiveRadia
 import type { SunburstChartData } from "../../components/charts/responsiveSunburstChart/types";
 import type { NivoChartUnitKind } from "../../components/charts/types";
 import type { WindowSize } from "../../hooks/useWindowSize";
-import type { QueryResponseData } from "../../types";
 import type { GlobalAction } from "./actions";
+import type { SetPageInErrorPayload } from "../../types";
 
 type ColorScheme = "light" | "dark";
 type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
@@ -146,8 +146,12 @@ type GlobalDispatch =
     payload: MantineColor;
   }
   | {
-    action: GlobalAction["setPrimaryShade"];
-    payload: { light: Shade; dark: Shade };
+    action: GlobalAction["setPrimaryShadeDark"];
+    payload: Shade;
+  }
+  | {
+    action: GlobalAction["setPrimaryShadeLight"];
+    payload: Shade;
   }
   | {
     action: GlobalAction["setDefaultGradient"];
@@ -172,6 +176,10 @@ type GlobalDispatch =
   | {
     action: GlobalAction["setCustomizeChartsPageDataSelectedYYYYMMDD"];
     payload: string;
+  }
+  | {
+    action: GlobalAction["setPageInError"];
+    payload: SetPageInErrorPayload;
   };
 
 type GlobalReducer = (

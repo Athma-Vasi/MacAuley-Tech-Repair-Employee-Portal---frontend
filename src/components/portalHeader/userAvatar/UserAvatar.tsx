@@ -1,13 +1,10 @@
 import {
   Avatar,
   ColorSwatch,
-  Flex,
   Group,
   Modal,
   Popover,
   ScrollArea,
-  SegmentedControl,
-  Slider,
   Stack,
   Switch,
   Text,
@@ -15,7 +12,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import {
   TbCheck,
@@ -27,36 +24,69 @@ import {
 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from "../../../constants/data";
-import { globalAction } from "../../../context/globalProvider/actions";
+import localforage from "localforage";
+import {
+  COLORS_SWATCHES,
+  FETCH_REQUEST_TIMEOUT,
+  USER_RESOURCE_ROUTE_PATHS,
+} from "../../../constants/data";
+import { authAction } from "../../../context/authProvider";
+import {
+  type GlobalAction,
+  globalAction,
+} from "../../../context/globalProvider/actions";
 import type { Shade } from "../../../context/globalProvider/types";
 import { useAuth, useGlobalState } from "../../../hooks";
-import { logState, returnThemeColors, splitCamelCase } from "../../../utils";
+import { DocumentFieldUpdateOperation, UserDocument } from "../../../types";
+import {
+  fetchRequestPATCHSafe,
+  fetchSafe,
+  logState,
+  returnThemeColors,
+  splitCamelCase,
+} from "../../../utils";
 import { AccessibleNavLink } from "../../accessibleInputs/AccessibleNavLink";
+import { AccessibleSegmentedControl } from "../../accessibleInputs/AccessibleSegmentedControl";
+import { AccessibleSliderInput } from "../../accessibleInputs/AccessibleSliderInput";
 import { ChartsAndGraphsControlsStacker } from "../../charts/utils";
 import { NotificationModal } from "../../notificationModal";
+import { LOGOUT_URL } from "../constants";
 import { UserInfo } from "../userInfo/UserInfo";
-import {
-  initialUserAvatarState,
-  userAvatarAction,
-  userAvatarReducer,
-} from "./state";
+import { UserAvatarAction, userAvatarAction } from "./actions";
+import { FONT_FAMILY_DATA } from "./constants";
+import { userAvatarReducer } from "./reducers";
+import { returnInitialUserAvatarState } from "./state";
 
 function UserAvatar() {
   const {
     globalState: { themeObject, width },
     globalDispatch,
   } = useGlobalState();
+  const { colorScheme, fontFamily, primaryColor, primaryShade } = themeObject;
 
   const [userAvatarState, userAvatarDispatch] = useReducer(
     userAvatarReducer,
-    initialUserAvatarState,
+    returnInitialUserAvatarState(colorScheme),
   );
 
   const {
-    authState: { accessToken, isLoggedIn, userDocument },
-    authDispatch,
-  } = useAuth();
+    colorSchemeSwitchChecked,
+    errorMessage,
+    isError,
+    isSubmitting,
+    isSuccessful,
+    prefersReducedMotionSwitchChecked,
+    triggerLogoutSubmit,
+    triggerPrefersReducedMotionFormSubmit,
+  } = userAvatarState;
+
+  const { authState, authDispatch } = useAuth();
+  const {
+    accessToken,
+    decodedToken: { sessionId, userInfo: { roles, userId, username } },
+    isLoggedIn,
+    userDocument,
+  } = authState;
 
   console.group("UserAvatar: authState");
   console.log("accessToken", accessToken);
@@ -64,7 +94,7 @@ function UserAvatar() {
   console.log("userDocument", userDocument);
   console.groupEnd();
 
-  const navigate = useNavigate();
+  const navigateFn = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   const [openedThemeModal, { open: openThemeModal, close: closeThemeModal }] =
@@ -75,238 +105,204 @@ function UserAvatar() {
     { open: openUserInfoModal, close: closeUserInfoModal },
   ] = useDisclosure(false);
 
-  const {
-    colorSchemeSwitchChecked,
-    isAppearanceNavLinkActive,
-    isLogoutNavLinkActive,
-    isProfileNavLinkActive,
-    isSubmitting,
-    isSuccessful,
-    prefersReducedMotionSwitchChecked,
-    submitMessage,
-    successMessage,
-    triggerLogoutSubmit,
-    triggerPrefersReducedMotionFormSubmit,
-  } = userAvatarState;
+  const [
+    openedSubmitFormModal,
+    { open: openSubmitFormModal, close: closeSubmitFormModal },
+  ] = useDisclosure(
+    false,
+  );
+  const [openedErrorModal, { open: openErrorModal, close: closeErrorModal }] =
+    useDisclosure(false);
 
-  const { colorScheme, fontFamily, primaryColor, primaryShade } = themeObject;
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
 
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   const controller = new AbortController();
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort("Previous request cancelled");
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
 
-  //   async function handleLogoutSubmit() {
-  //     userAvatarDispatch({
-  //       type: userAvatarAction.setIsSubmitting,
-  //       payload: true,
-  //     });
-  //     userAvatarDispatch({
-  //       type: userAvatarAction.setSubmitMessage,
-  //       payload: "Please wait while we securely log you out.",
-  //     });
+    isComponentMountedRef.current = true;
+    const isComponentMounted = isComponentMountedRef.current;
 
-  //     const url: URL = new URL("http://localhost:5500/auth/logout");
+    async function handleLogoutSubmit() {
+      userAvatarDispatch({
+        action: userAvatarAction.setIsSubmitting,
+        payload: true,
+      });
 
-  //     const requestInit: RequestInit = {
-  //       body: JSON.stringify({ sessionId }),
-  //       credentials: "include",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       method: "POST",
-  //       mode: "cors",
-  //     };
+      const url = LOGOUT_URL;
 
-  //     try {
-  //       // const response: Response = await wrappedFetch({
-  //       //   isMounted,
-  //       //   requestInit,
-  //       //   signal: controller.signal,
-  //       //   url,
-  //       // });
-  //       const response: Response = await fetch(url, requestInit);
+      const requestInit: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+        body: "",
+        signal: fetchAbortController.signal,
+      };
 
-  //       const data: { message: string } = await response.json();
+      try {
+        const responseResult = await fetchSafe(url, requestInit);
 
-  //       if (!isMounted) {
-  //         return;
-  //       }
-  //       if (response.status !== 200) {
-  //         throw new Error(data.message);
-  //       }
+        if (!isComponentMounted) {
+          return;
+        }
 
-  //       authDispatch({
-  //         type: authAction.setIsLoggedIn,
-  //         payload: false,
-  //       });
+        if (responseResult.err) {
+          showBoundary(responseResult.val.data);
+          return;
+        }
 
-  //       userAvatarDispatch({
-  //         type: userAvatarAction.setIsSuccessful,
-  //         payload: true,
-  //       });
-  //       userAvatarDispatch({
-  //         type: userAvatarAction.setSuccessMessage,
-  //         payload: "Successfully logged out!",
-  //       });
+        authDispatch({
+          action: authAction.setAccessToken,
+          payload: "",
+        });
+        authDispatch({
+          action: authAction.setDecodedToken,
+          payload: Object.create(null),
+        });
+        authDispatch({
+          action: authAction.setIsLoggedIn,
+          payload: false,
+        });
+        authDispatch({
+          action: authAction.setUserDocument,
+          payload: Object.create(null),
+        });
 
-  //       navigate("/");
-  //     } catch (error: any) {
-  //       if (!isMounted || error.name === "AbortError") {
-  //         return;
-  //       }
+        userAvatarDispatch({
+          action: userAvatarAction.setIsSuccessful,
+          payload: true,
+        });
+        userAvatarDispatch({
+          action: userAvatarAction.setIsSubmitting,
+          payload: false,
+        });
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController?.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
+      } finally {
+        navigateFn("/");
+        localforage.clear();
+      }
+    }
 
-  //       const errorMessage = error instanceof InvalidTokenError
-  //         ? "Invalid token. Please login again."
-  //         : !error.response
-  //         ? "Network error. Please try again."
-  //         : error?.message ?? "Unknown error occurred. Please try again.";
+    if (triggerLogoutSubmit) {
+      handleLogoutSubmit();
+    }
 
-  //       globalDispatch({
-  //         type: globalAction.setErrorState,
-  //         payload: {
-  //           isError: true,
-  //           errorMessage,
-  //           errorCallback: () => {
-  //             navigate("/");
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
 
-  //             globalDispatch({
-  //               type: globalAction.setErrorState,
-  //               payload: {
-  //                 isError: false,
-  //                 errorMessage: "",
-  //                 errorCallback: () => {},
-  //               },
-  //             });
-  //           },
-  //         },
-  //       });
+    return () => {
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
+      isComponentMountedRef.current = false;
+    };
+  }, [triggerLogoutSubmit]);
 
-  //       showBoundary(error);
-  //     } finally {
-  //       userAvatarDispatch({
-  //         type: userAvatarAction.setIsSubmitting,
-  //         payload: false,
-  //       });
-  //       userAvatarDispatch({
-  //         type: userAvatarAction.setSubmitMessage,
-  //         payload: "",
-  //       });
-  //       userAvatarDispatch({
-  //         type: userAvatarAction.setTriggerLogoutSubmit,
-  //         payload: false,
-  //       });
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort("Previous request cancelled");
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
 
-  //       // flush local forage
-  //       localforage.clear();
-  //     }
-  //   }
+    isComponentMountedRef.current = true;
+    const isComponentMounted = isComponentMountedRef.current;
 
-  //   if (triggerLogoutSubmit) {
-  //     handleLogoutSubmit();
-  //   }
+    async function handlePrefersReducedMotionSubmit() {
+      const documentUpdate: DocumentFieldUpdateOperation<UserDocument> = {
+        updateKind: "field",
+        updateOperator: "$set",
+        fields: { isPrefersReducedMotion: prefersReducedMotionSwitchChecked },
+      };
+      try {
+        const prefersReducedMotionResult = await fetchRequestPATCHSafe<
+          UserDocument,
+          UserAvatarAction["setIsSubmitting"],
+          UserAvatarAction["setSubmittingMessage"]
+        >({
+          accessToken,
+          authAction,
+          authDispatch,
+          closeSubmitFormModal,
+          customUrl: `http://localhost:5500/api/v1/user/${userId}`,
+          fetchAbortController,
+          isComponentMounted,
+          navigateFn,
+          openSubmitFormModal,
+          parentDispatch: userAvatarDispatch as any,
+          requestBody: JSON.stringify({ documentUpdate }),
+          roles,
+          roleResourceRoutePaths: USER_RESOURCE_ROUTE_PATHS,
+          setIsSubmittingAction: userAvatarAction.setIsSubmitting,
+          setSubmittingMessageAction: userAvatarAction.setSubmittingMessage,
+          submitMessage: "Updating prefers reduced motion setting...",
+          triggerFormSubmitAction:
+            userAvatarAction.triggerPrefersReducedMotionFormSubmit,
+        });
 
-  //   return () => {
-  //     isMounted = false;
-  //     controller.abort();
-  //   };
-  //   // only run logout submit when triggerLogoutSubmit changes
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [triggerLogoutSubmit]);
+        if (prefersReducedMotionResult.err) {
+          showBoundary(prefersReducedMotionResult.val.data);
+          return;
+        }
 
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   const controller = new AbortController();
+        const unwrappedResult = prefersReducedMotionResult.safeUnwrap();
 
-  //   async function updatePrefersReducedMotion() {
-  //     const url: URL = urlBuilder({
-  //       path: "/user",
-  //     });
+        if (unwrappedResult.kind === "error") {
+          userAvatarDispatch({
+            action: userAvatarAction.setIsError,
+            payload: true,
+          });
+          userAvatarDispatch({
+            action: userAvatarAction.setErrorMessage,
+            payload: unwrappedResult.message ?? "Unknown error occurred",
+          });
 
-  //     const body = JSON.stringify({
-  //       userFields: {
-  //         isPrefersReducedMotion: prefersReducedMotionSwitchChecked,
-  //       },
-  //     });
+          openErrorModal();
+          return;
+        }
 
-  //     const requestInit: RequestInit = {
-  //       body,
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       method: "PATCH",
-  //     };
+        const serverResponse = unwrappedResult.data;
+        if (serverResponse === undefined) {
+          userAvatarDispatch({
+            action: userAvatarAction.setIsError,
+            payload: true,
+          });
+          userAvatarDispatch({
+            action: userAvatarAction.setErrorMessage,
+            payload: "Network error",
+          });
 
-  //     try {
-  //       const response: Response = await wrappedFetch({
-  //         isMounted,
-  //         requestInit,
-  //         signal: controller.signal,
-  //         url,
-  //       });
+          openErrorModal();
+          return;
+        }
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
+      }
+    }
 
-  //       const data: { message: string } = await response.json();
+    if (triggerPrefersReducedMotionFormSubmit) {
+      handlePrefersReducedMotionSubmit();
+    }
 
-  //       if (!isMounted) {
-  //         return;
-  //       }
-  //       if (response.status !== 200) {
-  //         throw new Error(data.message);
-  //       }
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
 
-  //       globalDispatch({
-  //         type: globalAction.setPrefersReducedMotion,
-  //         payload: prefersReducedMotionSwitchChecked,
-  //       });
-  //     } catch (error: any) {
-  //       if (!isMounted || error.name === "AbortError") {
-  //         return;
-  //       }
-
-  //       const errorMessage = error instanceof InvalidTokenError
-  //         ? "Invalid token. Please login again."
-  //         : !error.response
-  //         ? "Network error. Please try again."
-  //         : error?.message ?? "Unknown error occurred. Please try again.";
-
-  //       globalDispatch({
-  //         type: globalAction.setErrorState,
-  //         payload: {
-  //           isError: true,
-  //           errorMessage,
-  //           errorCallback: () => {
-  //             navigate("/");
-
-  //             globalDispatch({
-  //               type: globalAction.setErrorState,
-  //               payload: {
-  //                 isError: false,
-  //                 errorMessage: "",
-  //                 errorCallback: () => {},
-  //               },
-  //             });
-  //           },
-  //         },
-  //       });
-
-  //       showBoundary(error);
-  //     } finally {
-  //       userAvatarDispatch({
-  //         type: userAvatarAction.triggerPrefersReducedMotionFormSubmit,
-  //         payload: false,
-  //       });
-  //     }
-  //   }
-
-  //   if (triggerPrefersReducedMotionFormSubmit) {
-  //     updatePrefersReducedMotion();
-  //   }
-  //   return () => {
-  //     isMounted = false;
-  //     controller.abort();
-  //   };
-  //   // only trigger when isAccessTokenExpired and prefersReducedMotionSwitchChecked changes
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [triggerPrefersReducedMotionFormSubmit]);
+    return () => {
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
+      isComponentMountedRef.current = false;
+    };
+  }, [triggerPrefersReducedMotionFormSubmit]);
 
   const {
     appThemeColors: { borderColor },
@@ -326,8 +322,8 @@ function UserAvatar() {
       checked={colorSchemeSwitchChecked}
       onChange={() => {
         userAvatarDispatch({
-          type: userAvatarAction.setColorSchemeSwitchChecked,
-          payload: colorScheme === "light",
+          action: userAvatarAction.setColorSchemeSwitchChecked,
+          payload: colorScheme === "dark",
         });
         globalDispatch({
           action: globalAction.setColorScheme,
@@ -411,9 +407,9 @@ function UserAvatar() {
     });
 
   const displayColorSwatches = (
-    <Stack w="100%">
+    <Stack style={{ borderBottom: borderColor }} pb="md">
       <Stack>
-        <Text weight={500}>Primary color</Text>
+        <Title order={5}>Primary color</Title>
         <Text
           aria-live="polite"
           style={{
@@ -426,65 +422,51 @@ function UserAvatar() {
           {`${primaryColor.charAt(0).toUpperCase()}${primaryColor.slice(1)}`}
         </Text>
       </Stack>
-      <Flex
-        w="100%"
-        align="center"
-        justify="center"
-        wrap="wrap"
-        style={{ borderBottom: borderColor }}
-      >
-        {colorSwatches}
-      </Flex>
+      <Group spacing="xs">{colorSwatches}</Group>
     </Stack>
   );
 
-  const lightSchemeShadeSlider = (
-    <Slider
-      aria-label="Select light scheme shade"
-      defaultValue={primaryShade.light}
-      disabled={colorScheme === "dark"}
-      label={(value) => <Text color={sliderLabelColor}>{value}</Text>}
-      max={9}
-      min={0}
-      onChange={(value: number) => {
-        globalDispatch({
-          action: globalAction.setPrimaryShade,
-          payload: {
-            light: value as Shade,
-            dark: primaryShade.dark,
-          },
-        });
+  const lightSchemeShadeSliderInput = (
+    <AccessibleSliderInput<
+      GlobalAction["setPrimaryShadeLight"],
+      Shade
+    >
+      attributes={{
+        disabled: colorScheme === "dark",
+        label: "Select light scheme shade",
+        max: 9,
+        min: 0,
+        name: "lightSchemeShadeSlider",
+        parentDispatch: globalDispatch,
+        step: 1,
+        validValueAction: globalAction.setPrimaryShadeLight,
+        value: primaryShade.light,
       }}
-      step={1}
-      value={primaryShade.light}
     />
   );
 
-  const darkSchemeShadeSlider = (
-    <Slider
-      aria-label="Select dark scheme shade"
-      defaultValue={primaryShade.dark}
-      disabled={colorScheme === "light"}
-      label={(value) => <Text color={sliderLabelColor}>{value}</Text>}
-      max={9}
-      min={0}
-      onChange={(value: number) => {
-        globalDispatch({
-          action: globalAction.setPrimaryShade,
-          payload: {
-            light: primaryShade.light,
-            dark: value as Shade,
-          },
-        });
+  const darkSchemeShadeSliderInput = (
+    <AccessibleSliderInput<
+      GlobalAction["setPrimaryShadeDark"],
+      Shade
+    >
+      attributes={{
+        disabled: colorScheme === "light",
+        label: "Select dark scheme shade",
+        max: 9,
+        min: 0,
+        name: "darkSchemeShadeSlider",
+        parentDispatch: globalDispatch,
+        step: 1,
+        validValueAction: globalAction.setPrimaryShadeDark,
+        value: primaryShade.dark,
       }}
-      step={1}
-      value={primaryShade.dark}
     />
   );
 
   const displayLightShadeSlider = (
     <ChartsAndGraphsControlsStacker
-      input={lightSchemeShadeSlider}
+      input={lightSchemeShadeSliderInput}
       label="Light shade"
       value={primaryShade.light}
       symbol=""
@@ -493,7 +475,7 @@ function UserAvatar() {
 
   const displayDarkShadeSlider = (
     <ChartsAndGraphsControlsStacker
-      input={darkSchemeShadeSlider}
+      input={darkSchemeShadeSliderInput}
       label="Dark shade"
       value={primaryShade.dark}
       symbol=""
@@ -507,17 +489,34 @@ function UserAvatar() {
     </Stack>
   );
 
+  // const colorSchemeSwitchInput = (
+  //   <AccessibleSwitchInput
+  //     attributes={{
+  //       checked: colorScheme === "light",
+  //       label: "Select color scheme",
+  //       name: "colorSchemeSwitch",
+  //       parentDispatch: globalDispatch,
+  //       validValueAction: globalAction.setColorScheme,
+  //       invalidValueAction: globalAction.setPageInError,
+  //       preventErrorStateWhenOff: true,
+  //       value: colorScheme === "dark",
+  //       offLabel: <TbMoon size={18} />,
+  //       onLabel: <TbSun size={18} />,
+  //     }}
+  //   />
+  // );
+
   const reducedMotionSwitch = (
     <Switch
       checked={prefersReducedMotionSwitchChecked}
       onChange={() => {
         userAvatarDispatch({
-          type: userAvatarAction.setPrefersReducedMotionSwitchChecked,
+          action: userAvatarAction.setPrefersReducedMotionSwitchChecked,
           payload: !prefersReducedMotionSwitchChecked,
         });
 
         userAvatarDispatch({
-          type: userAvatarAction.triggerPrefersReducedMotionFormSubmit,
+          action: userAvatarAction.triggerPrefersReducedMotionFormSubmit,
           payload: true,
         });
       }}
@@ -536,22 +535,34 @@ function UserAvatar() {
     />
   );
 
-  // font family section
+  // const fontFamilySegmentedControl = (
+  //   <SegmentedControl
+  //     data={[
+  //       { value: "sans-serif", label: "Sans" },
+  //       { value: "serif", label: "Serif" },
+  //       { value: "Open-Dyslexic", label: "Dyslexic" },
+  //     ]}
+  //     value={fontFamily}
+  //     onChange={(value) => {
+  //       globalDispatch({
+  //         action: globalAction.setFontFamily,
+  //         payload: value,
+  //       });
+  //     }}
+  //     color={primaryColor}
+  //   />
+  // );
+
   const fontFamilySegmentedControl = (
-    <SegmentedControl
-      data={[
-        { value: "sans-serif", label: "Sans" },
-        { value: "serif", label: "Serif" },
-        { value: "Open-Dyslexic", label: "Dyslexic" },
-      ]}
-      value={fontFamily}
-      onChange={(value) => {
-        globalDispatch({
-          action: globalAction.setFontFamily,
-          payload: value,
-        });
+    <AccessibleSegmentedControl
+      attributes={{
+        data: FONT_FAMILY_DATA,
+        name: "fontFamily",
+        parentDispatch: globalDispatch,
+        validValueAction: globalAction.setFontFamily,
+        value: fontFamily,
+        defaultValue: "sans-serif",
       }}
-      color={primaryColor}
     />
   );
 
@@ -570,15 +581,9 @@ function UserAvatar() {
     <AccessibleNavLink
       attributes={{
         description: "Select color scheme, primary color, and font family",
-        icon: <TbColorFilter />,
+        icon: <TbColorFilter color={themeColorShade} />,
         name: "appearance",
-        onClick: () => {
-          userAvatarDispatch({
-            type: userAvatarAction.setIsAppearanceNavLinkActive,
-            payload: !isAppearanceNavLinkActive,
-          });
-          openThemeModal();
-        },
+        onClick: () => openThemeModal(),
       }}
     />
   );
@@ -587,15 +592,9 @@ function UserAvatar() {
     <AccessibleNavLink
       attributes={{
         description: "View profile information",
-        icon: <TbUserCircle />,
+        icon: <TbUserCircle color={themeColorShade} />,
         name: "profile",
-        onClick: () => {
-          userAvatarDispatch({
-            type: userAvatarAction.setIsProfileNavLinkActive,
-            payload: !isProfileNavLinkActive,
-          });
-          openUserInfoModal();
-        },
+        onClick: () => openUserInfoModal(),
       }}
     />
   );
@@ -604,11 +603,11 @@ function UserAvatar() {
     <AccessibleNavLink
       attributes={{
         description: "Sign out",
-        icon: <TbLogout />,
+        icon: <TbLogout color={themeColorShade} />,
         name: "logout",
         onClick: () => {
           userAvatarDispatch({
-            type: userAvatarAction.setTriggerLogoutSubmit,
+            action: userAvatarAction.setTriggerLogoutSubmit,
             payload: true,
           });
         },
@@ -629,22 +628,16 @@ function UserAvatar() {
     : 900 - 40;
 
   // modal section
-  const displayThemeModal = (
+  const appearanceModal = (
     <Modal
       centered
       closeButtonProps={{ color: themeColorShade }}
       opened={openedThemeModal}
-      onClose={() => {
-        userAvatarDispatch({
-          type: userAvatarAction.setIsAppearanceNavLinkActive,
-          payload: false,
-        });
-        closeThemeModal();
-      }}
-      size={modalSize}
+      onClose={() => closeThemeModal()}
+      size={375}
       title={<Text size="xl">Appearance options</Text>}
     >
-      <Stack w="100%">
+      <Stack>
         {displayColorSchemeSwitch}
         {displayColorSwatches}
         {displayShadeSliders}
@@ -654,27 +647,27 @@ function UserAvatar() {
     </Modal>
   );
 
-  const displayUserInfoModal = (
+  const userInfoModal = (
     <Modal
       centered
       closeButtonProps={{ color: themeColorShade }}
       opened={openedUserInfoModal}
       onClose={() => {
-        userAvatarDispatch({
-          type: userAvatarAction.setIsProfileNavLinkActive,
-          payload: false,
-        });
+        // userAvatarDispatch({
+        //   action: userAvatarAction.setIsProfileNavLinkActive,
+        //   payload: false,
+        // });
         closeUserInfoModal();
       }}
-      size={modalSize}
       scrollAreaComponent={ScrollArea.Autosize}
+      size={modalSize}
       title={<Text size="xl">Profile information</Text>}
     >
       <UserInfo closeUserInfoModal={closeUserInfoModal} />
     </Modal>
   );
 
-  const displayAvatar = (
+  const avatar = (
     <Group style={{ cursor: "pointer" }}>
       {accessToken && isLoggedIn
         ? (
@@ -689,27 +682,24 @@ function UserAvatar() {
   );
 
   const profilePopover = (
-    <Popover width={300} withArrow position="bottom" shadow="md">
-      <Popover.Target>{displayAvatar}</Popover.Target>
+    <Stack>
+      <Popover width={225} withArrow position="bottom-end" shadow="md">
+        <Popover.Target>{avatar}</Popover.Target>
 
-      <Popover.Dropdown>
-        <Flex direction="column">
+        <Popover.Dropdown>
           {appearanceNavLink}
           {profileNavLink}
           {logoutNavLink}
-        </Flex>
-      </Popover.Dropdown>
-    </Popover>
+        </Popover.Dropdown>
+      </Popover>
+    </Stack>
   );
 
-  const displaySubmitSuccessNotificationModal = (
+  const submitSuccessModal = (
     <NotificationModal
-      onCloseCallbacks={[closeUserInfoModal]}
+      onCloseCallbacks={[closeSubmitFormModal, closeUserInfoModal]}
       opened={isSubmitting}
-      notificationProps={{
-        isLoading: isSubmitting,
-        text: isSubmitting ? submitMessage : successMessage,
-      }}
+      notificationProps={{ isLoading: isSubmitting }}
       title={
         <Title order={4}>{isSuccessful ? "Success!" : "Submitting..."}</Title>
       }
@@ -718,10 +708,10 @@ function UserAvatar() {
 
   const displayUserAvatarComponent = (
     <Stack>
-      {displaySubmitSuccessNotificationModal}
+      {submitSuccessModal}
       {profilePopover}
-      {displayThemeModal}
-      {displayUserInfoModal}
+      {appearanceModal}
+      {userInfoModal}
     </Stack>
   );
 

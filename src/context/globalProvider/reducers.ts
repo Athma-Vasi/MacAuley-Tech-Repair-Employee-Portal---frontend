@@ -35,7 +35,8 @@ const globalReducersMap = new Map<
         globalReducer_setPrefersReducedMotion,
     ],
     [globalAction.setPrimaryColor, globalReducer_setPrimaryColor],
-    [globalAction.setPrimaryShade, globalReducer_setPrimaryShade],
+    [globalAction.setPrimaryShadeDark, globalReducer_setPrimaryShadeDark],
+    [globalAction.setPrimaryShadeLight, globalReducer_setPrimaryShadeLight],
     [
         globalAction.setRespectReducedMotion,
         globalReducer_setRespectReducedMotion,
@@ -218,7 +219,7 @@ function globalReducer_setPrimaryColor(
     };
 }
 
-function globalReducer_setPrimaryShade(
+function globalReducer_setPrimaryShadeDark(
     state: GlobalState,
     dispatch: GlobalDispatch,
 ): GlobalState {
@@ -226,7 +227,26 @@ function globalReducer_setPrimaryShade(
         ...state,
         themeObject: {
             ...state.themeObject,
-            primaryShade: dispatch.payload,
+            primaryShade: {
+                ...state.themeObject.primaryShade,
+                dark: dispatch.payload,
+            },
+        },
+    };
+}
+
+function globalReducer_setPrimaryShadeLight(
+    state: GlobalState,
+    dispatch: GlobalDispatch,
+): GlobalState {
+    return {
+        ...state,
+        themeObject: {
+            ...state.themeObject,
+            primaryShade: {
+                ...state.themeObject.primaryShade,
+                light: dispatch.payload,
+            },
         },
     };
 }

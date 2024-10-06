@@ -11,6 +11,7 @@ import type {
   JobPosition,
   Province,
   RequestStatus,
+  RoleResourceRoutePaths,
   StatesUS,
   StoreLocation,
   Urgency,
@@ -648,6 +649,12 @@ const INPUT_MAX_WIDTH = 410;
 
 const FETCH_REQUEST_TIMEOUT = 5000;
 
+const USER_RESOURCE_ROUTE_PATHS: RoleResourceRoutePaths = {
+  admin: "/user",
+  employee: "/user",
+  manager: "/user",
+};
+
 export {
   ALLOWED_FILE_ENCODINGS,
   ALLOWED_FILE_EXTENSIONS,
@@ -673,6 +680,7 @@ export {
   STORE_LOCATION_DATA,
   TEXT_OVERFLOW,
   URGENCY_DATA,
+  USER_RESOURCE_ROUTE_PATHS,
 };
 
 export type { ColorsSwatches };

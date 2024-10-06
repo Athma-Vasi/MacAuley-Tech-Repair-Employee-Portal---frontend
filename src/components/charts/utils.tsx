@@ -1,4 +1,4 @@
-import { Flex, Group, Text } from "@mantine/core";
+import { Group, Stack, Text } from "@mantine/core";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
@@ -69,41 +69,32 @@ function ChartsAndGraphsControlsStacker({
   );
 
   const displayBottomSection = (
-    <Flex
-      align="center"
-      justify="space-between"
-      w="100%"
-      wrap="wrap"
-    >
-      <Text
-        aria-live="polite"
-        color={isInputDisabled ? grayColorShade : ""}
-        style={value === "" ? {} : {
-          border: borderColor,
-          borderRadius: 4,
-          padding: "0.5rem 0.75rem",
-        }}
-      >
-        {splitWordIntoUpperCasedSentence(splitCamelCase(value.toString()))}{" "}
-        {symbol}
-      </Text>
-      <Group>{input}</Group>
-    </Flex>
+    <Stack>
+      <Group position="apart">
+        <Text
+          aria-live="polite"
+          color={isInputDisabled ? grayColorShade : ""}
+          style={value === "" ? {} : {
+            border: borderColor,
+            borderRadius: 4,
+            padding: "0.5rem 0.75rem",
+            width: "fit-content",
+          }}
+        >
+          {splitWordIntoUpperCasedSentence(splitCamelCase(value.toString()))}
+          {" "}
+          {symbol}
+        </Text>
+        <Group pb="xs">{input}</Group>
+      </Group>
+    </Stack>
   );
 
   return (
-    <Flex
-      align="center"
-      justify="space-between"
-      rowGap="xs"
-      style={{ borderBottom: borderColor }}
-      w="100%"
-      wrap="wrap"
-    >
+    <Stack style={{ borderBottom: borderColor }} py="md">
       {displayTopSection}
-
       {displayBottomSection}
-    </Flex>
+    </Stack>
   );
 }
 

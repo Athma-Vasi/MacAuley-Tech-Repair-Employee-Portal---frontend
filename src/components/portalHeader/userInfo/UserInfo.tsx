@@ -1,4 +1,4 @@
-import { Grid, Group, Image, Stack, Text } from "@mantine/core";
+import { Grid, Group, Image, Stack, Text, Title } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../../constants/data";
@@ -70,13 +70,12 @@ function UserInfo({ closeUserInfoModal }: UserInfoProps) {
       const displayPageName = (
         <Group
           w="100%"
-          position="center"
+          position="left"
           align="baseline"
           key={`profile-review-${index.toString()}`}
+          py="sm"
         >
-          <Text size="lg" weight={500} style={{ marginTop: 16 }}>
-            {splitCamelCase(pageName)}
-          </Text>
+          <Title order={4}>{splitCamelCase(pageName)}</Title>
         </Group>
       );
 

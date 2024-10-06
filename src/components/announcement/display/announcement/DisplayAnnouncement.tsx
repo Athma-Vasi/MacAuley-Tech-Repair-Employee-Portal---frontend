@@ -534,7 +534,15 @@ function DisplayAnnouncement() {
     )
     : null;
 
-  const displaySubmitSuccessNotificationModal = (
+  const errorNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeErrorModal]}
+      opened={openedErrorModal}
+      notificationProps={{ isLoading: isError, text: errorMessage }}
+    />
+  );
+
+  const submitSuccessModal = (
     <NotificationModal
       onCloseCallbacks={[
         closeSubmitFormModal,
@@ -557,7 +565,8 @@ function DisplayAnnouncement() {
 
   const displayAnnouncementComponent = (
     <Flex direction="column" w="100%" bg={backgroundColor}>
-      {displaySubmitSuccessNotificationModal}
+      {errorNotificationModal}
+      {submitSuccessModal}
       {displayRatingModal}
       {displayStatisticsModal}
       {articleTitle}

@@ -8,9 +8,11 @@ type GlobalAction = {
     setDefaultGradient: "setDefaultGradient";
     setFontFamily: "setFontFamily";
     setHeight: "setHeight";
+    setPageInError: "setPageInError";
     setPrefersReducedMotion: "setPrefersReducedMotion";
     setPrimaryColor: "setPrimaryColor";
-    setPrimaryShade: "setPrimaryShade";
+    setPrimaryShadeLight: "setPrimaryShadeLight";
+    setPrimaryShadeDark: "setPrimaryShadeDark";
     setRespectReducedMotion: "setRespectReducedMotion";
     setWidth: "setWidth";
     setWindowSize: "setWindowSize";
@@ -26,9 +28,11 @@ const globalAction: GlobalAction = {
     setDefaultGradient: "setDefaultGradient",
     setFontFamily: "setFontFamily",
     setHeight: "setHeight",
+    setPageInError: "setPageInError",
     setPrefersReducedMotion: "setPrefersReducedMotion",
     setPrimaryColor: "setPrimaryColor",
-    setPrimaryShade: "setPrimaryShade",
+    setPrimaryShadeLight: "setPrimaryShadeLight",
+    setPrimaryShadeDark: "setPrimaryShadeDark",
     setRespectReducedMotion: "setRespectReducedMotion",
     setWidth: "setWidth",
     setWindowSize: "setWindowSize",
