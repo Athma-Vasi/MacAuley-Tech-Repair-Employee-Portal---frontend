@@ -13,7 +13,11 @@ import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from "../../../../constants/data";
+import {
+  COLORS_SWATCHES,
+  FETCH_REQUEST_TIMEOUT,
+} from "../../../../constants/data";
+import { authAction } from "../../../../context/authProvider";
 import { globalAction } from "../../../../context/globalProvider/actions";
 import { useAuth, useGlobalState } from "../../../../hooks";
 import {
@@ -41,6 +45,8 @@ function DisplayAnnouncement() {
     initialDisplayAnnouncementState,
   );
   const {
+    errorMessage,
+    isError,
     isSubmitting,
     isSuccessful,
     rating,
@@ -56,15 +62,17 @@ function DisplayAnnouncement() {
     },
     globalDispatch,
   } = useGlobalState();
+
   const {
     authState: {
       accessToken,
       userDocument,
       decodedToken: { userInfo: { userId, roles, username } },
     },
+    authDispatch,
   } = useAuth();
 
-  const navigate = useNavigate();
+  const navigateFn = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   const [
@@ -79,11 +87,11 @@ function DisplayAnnouncement() {
 
   const [
     openedSubmitFormModal,
-    {
-      open: openSubmitFormModal,
-      close: closeSubmitFormModal,
-    },
+    { open: openSubmitFormModal, close: closeSubmitFormModal },
   ] = useDisclosure(false);
+
+  const [openedErrorModal, { open: openErrorModal, close: closeErrorModal }] =
+    useDisclosure(false);
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
@@ -96,7 +104,7 @@ function DisplayAnnouncement() {
     isComponentMountedRef.current = true;
     const isComponentMounted = isComponentMountedRef.current;
 
-    async function submitRating() {
+    async function handleRatingFormSubmit() {
       if (!announcementDocument) {
         return;
       }
@@ -114,50 +122,97 @@ function DisplayAnnouncement() {
         },
       };
 
-      const ratingSubmitResult = await fetchRequestPATCHSafe({
-        closeSubmitFormModal,
-        fetchAbortController,
-        isComponentMounted,
-        openSubmitFormModal,
-        parentDispatch: displayAnnouncementDispatch as React.Dispatch<any>,
-        requestBody: JSON.stringify(body),
-        roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
-        roles,
-        setIsSubmittingAction: displayAnnouncementAction.setIsSubmitting,
-        setSubmittingMessageAction: displayAnnouncementAction.setSubmitMessage,
-        submitMessage:
-          `Your rating to ${announcementDocument.title} is on its way!`,
-        triggerFormSubmitAction:
-          displayAnnouncementAction.setTriggerRatingSubmit,
-        accessToken,
-      });
-
-      if (ratingSubmitResult.err) {
-        showBoundary(ratingSubmitResult.val.data);
-      }
-
-      const newAnnouncementDocument = ratingSubmitResult.val
-        .data as AnnouncementDocument | undefined;
-
-      if (newAnnouncementDocument) {
-        globalDispatch({
-          action: globalAction.setAnnouncementDocument,
-          payload: newAnnouncementDocument,
+      try {
+        const ratingSubmitResult = await fetchRequestPATCHSafe({
+          accessToken,
+          authAction,
+          authDispatch,
+          closeSubmitFormModal,
+          fetchAbortController,
+          isComponentMounted,
+          navigateFn,
+          openSubmitFormModal,
+          parentDispatch: displayAnnouncementDispatch as React.Dispatch<any>,
+          requestBody: JSON.stringify(body),
+          roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
+          roles,
+          setIsSubmittingAction: displayAnnouncementAction.setIsSubmitting,
+          setSubmittingMessageAction:
+            displayAnnouncementAction.setSubmitMessage,
+          submitMessage:
+            `Your rating to ${announcementDocument.title} is on its way!`,
+          triggerFormSubmitAction:
+            displayAnnouncementAction.setTriggerRatingSubmit,
         });
-      }
 
-      closeRatingModal();
+        if (ratingSubmitResult.err) {
+          showBoundary(ratingSubmitResult.val.data);
+          return;
+        }
+
+        const unwrappedResult = ratingSubmitResult.safeUnwrap();
+
+        if (unwrappedResult.kind === "error") {
+          displayAnnouncementDispatch({
+            action: displayAnnouncementAction.setIsError,
+            payload: true,
+          });
+          displayAnnouncementDispatch({
+            action: displayAnnouncementAction.setErrorMessage,
+            payload: unwrappedResult.message ?? "Unknown error occurred",
+          });
+
+          openErrorModal();
+          return;
+        }
+
+        const serverResponse = unwrappedResult.data;
+        if (serverResponse === undefined) {
+          displayAnnouncementDispatch({
+            action: displayAnnouncementAction.setIsError,
+            payload: true,
+          });
+          displayAnnouncementDispatch({
+            action: displayAnnouncementAction.setErrorMessage,
+            payload: "Network error",
+          });
+
+          openErrorModal();
+          return;
+        }
+
+        const newAnnouncementDocument = ratingSubmitResult.val
+          .data as AnnouncementDocument | undefined;
+
+        if (newAnnouncementDocument) {
+          globalDispatch({
+            action: globalAction.setAnnouncementDocument,
+            payload: newAnnouncementDocument,
+          });
+        }
+
+        closeRatingModal();
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController?.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
+      }
     }
 
     if (triggerRatingSubmit) {
-      submitRating();
+      handleRatingFormSubmit();
     }
 
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
+
     return () => {
-      fetchAbortController.abort();
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
       isComponentMountedRef.current = false;
     };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerRatingSubmit]);
 
@@ -484,7 +539,7 @@ function DisplayAnnouncement() {
       onCloseCallbacks={[
         closeSubmitFormModal,
         () => {
-          navigate(
+          navigateFn(
             `/home/actions/announcementDocument/display/${announcementDocument?.title}`,
           );
         },

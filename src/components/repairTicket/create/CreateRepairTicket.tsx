@@ -4,11 +4,11 @@ import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
 import { Container, Stack } from "@mantine/core";
+import { FETCH_REQUEST_TIMEOUT } from "../../../constants/data";
 import { authAction } from "../../../context/authProvider";
 import { useAuth } from "../../../hooks";
 import {
   fetchRequestGETSafe,
-  fetchRequestGETTokensSafe,
   fetchRequestPOSTSafe,
   logState,
 } from "../../../utils";
@@ -93,7 +93,6 @@ function CreateRepairTicket() {
   const {
     accessToken,
     decodedToken: { userInfo: { userId, username, roles }, sessionId },
-    refreshToken,
   } = authState;
 
   const [
@@ -111,7 +110,9 @@ function CreateRepairTicket() {
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
-    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current?.abort(
+      "Previous fetch request cancelled",
+    );
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
@@ -122,91 +123,79 @@ function CreateRepairTicket() {
       const query =
         `${queryString}&page=${currentPage}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`;
 
-      const customerSearchResult = await fetchRequestGETSafe<
-        CustomerDocument,
-        CreateRepairTicketAction["setIsLoading"],
-        CreateRepairTicketAction["setCustomerSearchResults"],
-        CreateRepairTicketAction["setTotalDocuments"],
-        CreateRepairTicketAction["setTotalPages"],
-        CreateRepairTicketAction["setLoadingMessage"],
-        CreateRepairTicketAction["setTriggerCustomerSearchSubmit"]
-      >({
-        accessToken,
-        authAction,
-        authDispatch,
-        closeSubmitFormModal,
-        parentDispatch: createRepairTicketDispatch,
-        fetchAbortController,
-        isComponentMounted,
-        loadingMessage: "Searching for customer ...",
-        roleResourceRoutePaths: CUSTOMER_RESOURCE_ROUTE_PATHS,
-        setIsLoadingAction: createRepairTicketAction.setIsLoading,
-        setResourceDataAction:
-          createRepairTicketAction.setCustomerSearchResults,
-        setTotalDocumentsAction: createRepairTicketAction.setTotalDocuments,
-        setTotalPagesAction: createRepairTicketAction.setTotalPages,
-        queryString: query,
-        navigateFn,
-        openSubmitFormModal,
-        roles,
-        triggerFormSubmitAction:
-          createRepairTicketAction.setTriggerCustomerSearchSubmit,
-        setLoadingMessageAction: createRepairTicketAction.setLoadingMessage,
-      });
-
-      if (customerSearchResult.err) {
-        showBoundary(customerSearchResult.val.data);
-        return;
-      }
-
-      const unwrappedResult = customerSearchResult.safeUnwrap();
-
-      if (unwrappedResult.kind === "error") {
-        createRepairTicketDispatch({
-          action: createRepairTicketAction.setIsError,
-          payload: true,
-        });
-        createRepairTicketDispatch({
-          action: createRepairTicketAction.setErrorMessage,
-          payload: unwrappedResult.message ?? "Unknown error occurred",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      const serverResponse = unwrappedResult.data;
-      if (serverResponse === undefined) {
-        createRepairTicketDispatch({
-          action: createRepairTicketAction.setIsError,
-          payload: true,
-        });
-        createRepairTicketDispatch({
-          action: createRepairTicketAction.setErrorMessage,
-          payload: "Network error",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      if (serverResponse.isTokenExpired) {
-        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+      try {
+        const customerSearchResult = await fetchRequestGETSafe<
+          CustomerDocument,
+          CreateRepairTicketAction["setIsLoading"],
+          CreateRepairTicketAction["setCustomerSearchResults"],
+          CreateRepairTicketAction["setTotalDocuments"],
+          CreateRepairTicketAction["setTotalPages"],
+          CreateRepairTicketAction["setLoadingMessage"],
+          CreateRepairTicketAction["setTriggerCustomerSearchSubmit"]
+        >({
           accessToken,
           authAction,
           authDispatch,
-          customUrl: "http://localhost:5500/auth/refresh",
+          closeSubmitFormModal,
+          parentDispatch: createRepairTicketDispatch,
           fetchAbortController,
           isComponentMounted,
-          refreshToken,
+          loadingMessage: "Searching for customer ...",
+          roleResourceRoutePaths: CUSTOMER_RESOURCE_ROUTE_PATHS,
+          setIsLoadingAction: createRepairTicketAction.setIsLoading,
+          setLoadingMessageAction: createRepairTicketAction.setLoadingMessage,
+          setResourceDataAction:
+            createRepairTicketAction.setCustomerSearchResults,
+          setTotalDocumentsAction: createRepairTicketAction.setTotalDocuments,
+          setTotalPagesAction: createRepairTicketAction.setTotalPages,
+          queryString: query,
+          navigateFn,
+          openSubmitFormModal,
+          roles,
+          triggerFormSubmitAction:
+            createRepairTicketAction.setTriggerCustomerSearchSubmit,
         });
 
-        if (tokensRefreshResult.err) {
-          showBoundary(tokensRefreshResult.val.data);
+        if (customerSearchResult.err) {
+          showBoundary(customerSearchResult.val.data);
           return;
         }
 
-        await handleCustomerSearchFormSubmit();
+        const unwrappedResult = customerSearchResult.safeUnwrap();
+
+        if (unwrappedResult.kind === "error") {
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setIsError,
+            payload: true,
+          });
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setErrorMessage,
+            payload: unwrappedResult.message ?? "Unknown error occurred",
+          });
+
+          openErrorModal();
+          return;
+        }
+
+        const serverResponse = unwrappedResult.data;
+        if (serverResponse === undefined) {
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setIsError,
+            payload: true,
+          });
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setErrorMessage,
+            payload: "Network error",
+          });
+
+          openErrorModal();
+          return;
+        }
+      } catch (error: unknown) {
+        if (!fetchAbortController.signal.aborted) {
+          showBoundary(error);
+          return;
+        }
       }
     }
 
@@ -215,13 +204,15 @@ function CreateRepairTicket() {
     }
 
     return () => {
-      fetchAbortController.abort();
+      fetchAbortController.abort("Component unmounted");
       isComponentMountedRef.current = false;
     };
   }, [triggerCustomerSearchSubmit]);
 
   useEffect(() => {
-    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current?.abort(
+      "Previous fetch request cancelled",
+    );
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
@@ -249,79 +240,66 @@ function CreateRepairTicket() {
         repairPriority,
         // rest are fields updated as repair note progresses
       };
-
-      const formSubmitResult = await fetchRequestPOSTSafe({
-        accessToken,
-        authAction,
-        authDispatch,
-        closeSubmitFormModal,
-        dispatch: createRepairTicketDispatch,
-        fetchAbortController,
-        isComponentMounted,
-        isSubmittingAction: createRepairTicketAction.setIsSubmitting,
-        isSuccessfulAction: createRepairTicketAction.setIsSuccessful,
-        navigateFn,
-        openSubmitFormModal,
-        roleResourceRoutePaths: CREATE_REPAIR_TICKET_ROLE_PATHS,
-        roles,
-        schema: repairTicketSchema,
-        triggerFormSubmitAction:
-          createRepairTicketAction.setTriggerRepairFormSubmit,
-      });
-
-      if (formSubmitResult.err) {
-        showBoundary(formSubmitResult.val.data);
-        return;
-      }
-
-      const unwrappedResult = formSubmitResult.safeUnwrap();
-
-      if (unwrappedResult.kind === "error") {
-        createRepairTicketDispatch({
-          action: createRepairTicketAction.setIsError,
-          payload: true,
-        });
-        createRepairTicketDispatch({
-          action: createRepairTicketAction.setErrorMessage,
-          payload: unwrappedResult.message ?? "Unknown error occurred",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      const serverResponse = unwrappedResult.data;
-      if (serverResponse === undefined) {
-        createRepairTicketDispatch({
-          action: createRepairTicketAction.setIsError,
-          payload: true,
-        });
-        createRepairTicketDispatch({
-          action: createRepairTicketAction.setErrorMessage,
-          payload: "Network error",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      if (serverResponse.isTokenExpired) {
-        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+      try {
+        const formSubmitResult = await fetchRequestPOSTSafe({
           accessToken,
           authAction,
           authDispatch,
-          customUrl: "http://localhost:5500/auth/refresh",
+          closeSubmitFormModal,
+          dispatch: createRepairTicketDispatch,
           fetchAbortController,
           isComponentMounted,
-          refreshToken,
+          isSubmittingAction: createRepairTicketAction.setIsSubmitting,
+          isSuccessfulAction: createRepairTicketAction.setIsSuccessful,
+          navigateFn,
+          openSubmitFormModal,
+          requestBody: JSON.stringify({ schema: repairTicketSchema }),
+          roleResourceRoutePaths: CREATE_REPAIR_TICKET_ROLE_PATHS,
+          roles,
+          triggerFormSubmitAction:
+            createRepairTicketAction.setTriggerRepairFormSubmit,
         });
 
-        if (tokensRefreshResult.err) {
-          showBoundary(tokensRefreshResult.val.data);
+        if (formSubmitResult.err) {
+          showBoundary(formSubmitResult.val.data);
           return;
         }
 
-        await handleRepairTicketFormSubmit();
+        const unwrappedResult = formSubmitResult.safeUnwrap();
+
+        if (unwrappedResult.kind === "error") {
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setIsError,
+            payload: true,
+          });
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setErrorMessage,
+            payload: unwrappedResult.message ?? "Unknown error occurred",
+          });
+
+          openErrorModal();
+          return;
+        }
+
+        const serverResponse = unwrappedResult.data;
+        if (serverResponse === undefined) {
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setIsError,
+            payload: true,
+          });
+          createRepairTicketDispatch({
+            action: createRepairTicketAction.setErrorMessage,
+            payload: "Network error",
+          });
+
+          openErrorModal();
+          return;
+        }
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
       }
     }
 
@@ -329,8 +307,13 @@ function CreateRepairTicket() {
       handleRepairTicketFormSubmit();
     }
 
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
+
     return () => {
-      fetchAbortController.abort();
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
       isComponentMountedRef.current = false;
     };
   }, [triggerRepairFormSubmit]);

@@ -1,11 +1,13 @@
 import type { DisplayAnnouncementState } from "./types";
 
 const initialDisplayAnnouncementState: DisplayAnnouncementState = {
-  triggerRatingSubmit: false,
+  errorMessage: "",
+  isError: false,
   isSubmitting: false,
-  submitMessage: "",
   isSuccessful: false,
   rating: 0,
+  submitMessage: "",
+  triggerRatingSubmit: false,
 };
 
 export { initialDisplayAnnouncementState };

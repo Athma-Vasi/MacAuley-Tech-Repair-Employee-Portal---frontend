@@ -4,16 +4,11 @@ import { useErrorBoundary } from "react-error-boundary";
 
 import { useDisclosure } from "@mantine/hooks";
 import { Link, useNavigate } from "react-router-dom";
-import { COLORS_SWATCHES } from "../../constants/data";
+import { COLORS_SWATCHES, FETCH_REQUEST_TIMEOUT } from "../../constants/data";
 import { authAction } from "../../context/authProvider";
 import { useAuth, useGlobalState } from "../../hooks";
 import type { UserSchema } from "../../types";
-import {
-  fetchRequestGETTokensSafe,
-  fetchRequestPOSTSafe,
-  logState,
-  returnThemeColors,
-} from "../../utils";
+import { fetchRequestPOSTSafe, logState, returnThemeColors } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
 import { NotificationModal } from "../notificationModal";
@@ -80,7 +75,6 @@ function Register() {
       userInfo: { userId, username: authUsername, roles },
       sessionId,
     },
-    refreshToken,
   } = authState;
 
   const { showBoundary } = useErrorBoundary();
@@ -99,12 +93,12 @@ function Register() {
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
-    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current?.abort("Previous request cancelled");
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
     isComponentMountedRef.current = true;
-    let isComponentMounted = isComponentMountedRef.current;
+    const isComponentMounted = isComponentMountedRef.current;
 
     async function handleRegisterFormSubmit() {
       const userSchema: UserSchema = {
@@ -148,76 +142,64 @@ function Register() {
         username,
       };
 
-      const registerResult = await fetchRequestPOSTSafe({
-        accessToken,
-        authAction,
-        authDispatch,
-        closeSubmitFormModal,
-        dispatch: registerDispatch,
-        fetchAbortController,
-        isComponentMounted,
-        isSubmittingAction: registerAction.setIsSubmitting,
-        isSuccessfulAction: registerAction.setIsSuccessful,
-        navigateFn,
-        openSubmitFormModal,
-        roles: ["Employee"],
-        schema: userSchema,
-        triggerFormSubmitAction: registerAction.setTriggerFormSubmit,
-      });
-
-      if (registerResult.err) {
-        showBoundary(registerResult.val.data);
-        return;
-      }
-
-      const unwrappedResult = registerResult.safeUnwrap();
-
-      if (unwrappedResult.kind === "error") {
-        registerDispatch({
-          action: registerAction.setIsError,
-          payload: true,
-        });
-        registerDispatch({
-          action: registerAction.setErrorMessage,
-          payload: unwrappedResult.message ?? "Unknown error occurred",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      const serverResponse = unwrappedResult.data;
-      if (serverResponse === undefined) {
-        registerDispatch({
-          action: registerAction.setIsError,
-          payload: true,
-        });
-        registerDispatch({
-          action: registerAction.setErrorMessage,
-          payload: "Network error",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      if (serverResponse.isTokenExpired) {
-        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+      try {
+        const registerResult = await fetchRequestPOSTSafe({
           accessToken,
           authAction,
           authDispatch,
-          customUrl: "http://localhost:5500/auth/refresh",
+          closeSubmitFormModal,
+          dispatch: registerDispatch,
           fetchAbortController,
           isComponentMounted,
-          refreshToken,
+          isSubmittingAction: registerAction.setIsSubmitting,
+          isSuccessfulAction: registerAction.setIsSuccessful,
+          navigateFn,
+          openSubmitFormModal,
+          requestBody: JSON.stringify({ schema: userSchema }),
+          roles: ["Employee"],
+          triggerFormSubmitAction: registerAction.setTriggerFormSubmit,
         });
 
-        if (tokensRefreshResult.err) {
-          showBoundary(tokensRefreshResult.val.data);
+        if (registerResult.err) {
+          showBoundary(registerResult.val.data);
           return;
         }
 
-        await handleRegisterFormSubmit();
+        const unwrappedResult = registerResult.safeUnwrap();
+
+        if (unwrappedResult.kind === "error") {
+          registerDispatch({
+            action: registerAction.setIsError,
+            payload: true,
+          });
+          registerDispatch({
+            action: registerAction.setErrorMessage,
+            payload: unwrappedResult.message ?? "Unknown error occurred",
+          });
+
+          openErrorModal();
+          return;
+        }
+
+        const serverResponse = unwrappedResult.data;
+        if (serverResponse === undefined) {
+          registerDispatch({
+            action: registerAction.setIsError,
+            payload: true,
+          });
+          registerDispatch({
+            action: registerAction.setErrorMessage,
+            payload: "Network error",
+          });
+
+          openErrorModal();
+          return;
+        }
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
       }
     }
 
@@ -225,9 +207,14 @@ function Register() {
       handleRegisterFormSubmit();
     }
 
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
+
     return () => {
-      isComponentMounted = false;
-      fetchAbortController?.abort();
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
+      isComponentMountedRef.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);

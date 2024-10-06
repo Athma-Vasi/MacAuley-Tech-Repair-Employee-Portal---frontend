@@ -1,17 +1,21 @@
 type DisplayAnnouncementAction = {
-    setTriggerRatingSubmit: "setTriggerRatingSubmit";
+    setErrorMessage: "setErrorMessage";
+    setIsError: "setIsError";
     setIsSubmitting: "setIsSubmitting";
-    setSubmitMessage: "setSubmitMessage";
     setIsSuccessful: "setIsSuccessful";
     setRating: "setRating";
+    setSubmitMessage: "setSubmitMessage";
+    setTriggerRatingSubmit: "setTriggerRatingSubmit";
 };
 
 const displayAnnouncementAction: DisplayAnnouncementAction = {
-    setTriggerRatingSubmit: "setTriggerRatingSubmit",
+    setErrorMessage: "setErrorMessage",
+    setIsError: "setIsError",
     setIsSubmitting: "setIsSubmitting",
-    setSubmitMessage: "setSubmitMessage",
     setIsSuccessful: "setIsSuccessful",
     setRating: "setRating",
+    setSubmitMessage: "setSubmitMessage",
+    setTriggerRatingSubmit: "setTriggerRatingSubmit",
 };
 
 export { displayAnnouncementAction };

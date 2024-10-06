@@ -12,7 +12,7 @@ import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { Link, useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from "../../constants/data";
+import { COLORS_SWATCHES, FETCH_REQUEST_TIMEOUT } from "../../constants/data";
 import { authAction } from "../../context/authProvider";
 import { useGlobalState } from "../../hooks";
 import { useAuth } from "../../hooks/useAuth";
@@ -80,12 +80,12 @@ function Login() {
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
-    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current?.abort("Previous request cancelled");
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
     isComponentMountedRef.current = true;
-    let isComponentMounted = isComponentMountedRef.current;
+    const isComponentMounted = isComponentMountedRef.current;
 
     async function loginFormSubmit() {
       const schema = { username, password };
@@ -102,136 +102,112 @@ function Login() {
         signal: fetchAbortController.signal,
       };
 
-      const responseResult = await fetchSafe(url, requestInit);
+      try {
+        const responseResult = await fetchSafe(url, requestInit);
 
-      if (!isComponentMounted) {
-        return;
+        if (!isComponentMounted) {
+          return;
+        }
+
+        if (responseResult.err) {
+          showBoundary(responseResult.val.data);
+          return;
+        }
+
+        const responseUnwrapped = responseResult.safeUnwrap().data;
+
+        if (responseUnwrapped === undefined) {
+          showBoundary(new Error("No data returned from server"));
+          return;
+        }
+
+        const jsonResult = await responseToJSONSafe<
+          HttpServerResponse<CustomerDocument>
+        >(
+          responseUnwrapped,
+        );
+
+        if (!isComponentMounted) {
+          return;
+        }
+
+        if (jsonResult.err) {
+          showBoundary(jsonResult.val.data);
+          return;
+        }
+
+        const serverResponse = jsonResult.safeUnwrap().data;
+
+        if (serverResponse === undefined) {
+          showBoundary(new Error("No data returned from server"));
+          return;
+        }
+
+        const { accessToken } = serverResponse;
+
+        const decodedTokenResult = await decodeJWTSafe(accessToken);
+        if (decodedTokenResult.err) {
+          showBoundary(decodedTokenResult.val.data);
+          return;
+        }
+
+        const decodedToken = decodedTokenResult.safeUnwrap().data;
+        if (decodedToken === undefined) {
+          showBoundary(new Error("Invalid token"));
+          return;
+        }
+
+        authDispatch({
+          action: authAction.setAccessToken,
+          payload: accessToken,
+        });
+        authDispatch({
+          action: authAction.setDecodedToken,
+          payload: decodedToken,
+        });
+        authDispatch({
+          action: authAction.setIsLoggedIn,
+          payload: true,
+        });
+        authDispatch({
+          action: authAction.setUserDocument,
+          payload: serverResponse.data[0],
+        });
+
+        loginDispatch({
+          action: loginAction.setIsSubmitting,
+          payload: false,
+        });
+        loginDispatch({
+          action: loginAction.setIsSuccessful,
+          payload: true,
+        });
+        loginDispatch({
+          action: loginAction.setTriggerFormSubmit,
+          payload: false,
+        });
+
+        navigate("/home");
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController?.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
       }
-
-      if (responseResult.err) {
-        showBoundary(responseResult.val.data);
-        return;
-      }
-
-      const responseUnwrapped = responseResult.safeUnwrap().data;
-
-      if (responseUnwrapped === undefined) {
-        showBoundary(new Error("No data returned from server"));
-        return;
-      }
-
-      const jsonResult = await responseToJSONSafe<
-        HttpServerResponse<CustomerDocument>
-      >(
-        responseUnwrapped,
-      );
-
-      if (!isComponentMounted) {
-        return;
-      }
-
-      if (jsonResult.err) {
-        showBoundary(jsonResult.val.data);
-        return;
-      }
-
-      const serverResponse = jsonResult.safeUnwrap().data;
-
-      if (serverResponse === undefined) {
-        showBoundary(new Error("No data returned from server"));
-        return;
-      }
-
-      // const loginResult = await fetchRequestPOSTSafe({
-      //   closeSubmitFormModal,
-      //   customUrl: "http://localhost:5500/auth/login",
-      //   dispatch: loginDispatch,
-      //   fetchAbortController,
-      //   isComponentMounted,
-      //   isSubmittingAction: loginAction.setIsSubmitting,
-      //   isSuccessfulAction: loginAction.setIsSuccessful,
-      //   openSubmitFormModal,
-      //   roles: ["Employee"], // public route, no roles required
-      //   schema,
-      //   triggerFormSubmitAction: loginAction.setTriggerFormSubmit,
-      // });
-
-      // if (loginResult.err) {
-      //   showBoundary(loginResult.val.data);
-      //   return;
-      // }
-
-      // const safeBox = loginResult.safeUnwrap();
-
-      // if (safeBox.kind === "error") {
-      //   showBoundary(new Error("Error logging in"));
-      //   return;
-      // }
-
-      // const serverResponse = safeBox.data;
-      // if (serverResponse === undefined) {
-      //   showBoundary(new Error("Network error"));
-      //   return;
-      // }
-
-      const { accessToken } = serverResponse;
-
-      const decodedTokenResult = await decodeJWTSafe(accessToken);
-      if (decodedTokenResult.err) {
-        showBoundary(decodedTokenResult.val.data);
-        return;
-      }
-
-      const decodedToken = decodedTokenResult.safeUnwrap().data;
-      if (decodedToken === undefined) {
-        showBoundary(new Error("Invalid token"));
-        return;
-      }
-
-      authDispatch({
-        action: authAction.setAccessToken,
-        payload: accessToken,
-      });
-      authDispatch({
-        action: authAction.setDecodedToken,
-        payload: decodedToken,
-      });
-      authDispatch({
-        action: authAction.setIsLoggedIn,
-        payload: true,
-      });
-      authDispatch({
-        action: authAction.setRefreshToken,
-        payload: serverResponse.refreshToken,
-      });
-      authDispatch({
-        action: authAction.setUserDocument,
-        payload: serverResponse.data[0],
-      });
-
-      loginDispatch({
-        action: loginAction.setIsSubmitting,
-        payload: false,
-      });
-      loginDispatch({
-        action: loginAction.setIsSuccessful,
-        payload: true,
-      });
-      loginDispatch({
-        action: loginAction.setTriggerFormSubmit,
-        payload: false,
-      });
-
-      navigate("/home");
     }
 
     if (triggerFormSubmit) {
       loginFormSubmit();
     }
 
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
+
     return () => {
-      isComponentMounted = false;
-      fetchAbortController.abort();
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
+      isComponentMountedRef.current = false;
     };
   }, [triggerFormSubmit]);
 

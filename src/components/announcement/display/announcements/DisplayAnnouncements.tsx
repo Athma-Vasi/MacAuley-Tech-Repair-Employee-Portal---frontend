@@ -11,15 +11,14 @@ import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
 import { useDisclosure } from "@mantine/hooks";
-import { COLORS_SWATCHES } from "../../../../constants/data";
+import {
+  COLORS_SWATCHES,
+  FETCH_REQUEST_TIMEOUT,
+} from "../../../../constants/data";
 import { authAction } from "../../../../context/authProvider";
 import { globalAction } from "../../../../context/globalProvider/actions";
 import { useAuth, useGlobalState } from "../../../../hooks";
-import {
-  fetchRequestGETSafe,
-  fetchRequestGETTokensSafe,
-  returnThemeColors,
-} from "../../../../utils";
+import { fetchRequestGETSafe, returnThemeColors } from "../../../../utils";
 import AccessibleImage from "../../../accessibleInputs/AccessibleImage";
 import AccessiblePagination from "../../../accessibleInputs/AccessiblePagination";
 import DisplayResourceHeader from "../../../displayResourceHeader/DisplayResourceHeader";
@@ -55,7 +54,6 @@ function DisplayAnnouncements() {
     authState: {
       accessToken,
       decodedToken: { sessionId, userInfo: { roles, userId, username } },
-      refreshToken,
     },
     authDispatch,
   } = useAuth();
@@ -75,7 +73,7 @@ function DisplayAnnouncements() {
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
-    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current?.abort("Previous request cancelled");
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
@@ -86,87 +84,82 @@ function DisplayAnnouncements() {
       const queryString =
         `&page=${currentPage}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`;
 
-      const fetchAnnouncementsResult = await fetchRequestGETSafe({
-        accessToken,
-        authAction,
-        authDispatch,
-        closeSubmitFormModal: closeLoadingModal,
-        fetchAbortController,
-        isComponentMounted,
-        loadingMessage: "Fetching announcements from server...",
-        navigateFn,
-        openSubmitFormModal: openLoadingModal,
-        parentDispatch: displayAnnouncementsDispatch as React.Dispatch<unknown>,
-        queryString,
-        roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
-        roles,
-        setIsLoadingAction: displayAnnouncementsAction.setIsLoading,
-        setLoadingMessageAction: displayAnnouncementsAction.setLoadingMessage,
-        setResourceDataAction: displayAnnouncementsAction.setResponseData,
-        setTotalDocumentsAction: displayAnnouncementsAction.setTotalDocuments,
-        setTotalPagesAction: displayAnnouncementsAction.setPages,
-      });
-
-      if (fetchAnnouncementsResult.err) {
-        showBoundary(fetchAnnouncementsResult.val.data);
-        return;
-      }
-
-      const unwrappedResult = fetchAnnouncementsResult.safeUnwrap();
-
-      if (unwrappedResult.kind === "error") {
-        displayAnnouncementsDispatch({
-          action: displayAnnouncementsAction.setIsError,
-          payload: true,
-        });
-        displayAnnouncementsDispatch({
-          action: displayAnnouncementsAction.setErrorMessage,
-          payload: unwrappedResult.message ?? "Unknown error occurred",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      const serverResponse = unwrappedResult.data;
-      if (serverResponse === undefined) {
-        displayAnnouncementsDispatch({
-          action: displayAnnouncementsAction.setIsError,
-          payload: true,
-        });
-        displayAnnouncementsDispatch({
-          action: displayAnnouncementsAction.setErrorMessage,
-          payload: "Network error",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      if (serverResponse.isTokenExpired) {
-        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+      try {
+        const fetchAnnouncementsResult = await fetchRequestGETSafe({
           accessToken,
           authAction,
           authDispatch,
-          customUrl: "http://localhost:5500/auth/refresh",
+          closeSubmitFormModal: closeLoadingModal,
           fetchAbortController,
           isComponentMounted,
-          refreshToken,
+          loadingMessage: "Fetching announcements from server...",
+          navigateFn,
+          openSubmitFormModal: openLoadingModal,
+          parentDispatch: displayAnnouncementsDispatch as React.Dispatch<
+            unknown
+          >,
+          queryString,
+          roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
+          roles,
+          setIsLoadingAction: displayAnnouncementsAction.setIsLoading,
+          setLoadingMessageAction: displayAnnouncementsAction.setLoadingMessage,
+          setResourceDataAction: displayAnnouncementsAction.setResponseData,
+          setTotalDocumentsAction: displayAnnouncementsAction.setTotalDocuments,
+          setTotalPagesAction: displayAnnouncementsAction.setPages,
         });
 
-        if (tokensRefreshResult.err) {
-          showBoundary(tokensRefreshResult.val.data);
+        if (fetchAnnouncementsResult.err) {
+          showBoundary(fetchAnnouncementsResult.val.data);
           return;
         }
 
-        await handleFetchAnnouncementsFormSubmit();
+        const unwrappedResult = fetchAnnouncementsResult.safeUnwrap();
+
+        if (unwrappedResult.kind === "error") {
+          displayAnnouncementsDispatch({
+            action: displayAnnouncementsAction.setIsError,
+            payload: true,
+          });
+          displayAnnouncementsDispatch({
+            action: displayAnnouncementsAction.setErrorMessage,
+            payload: unwrappedResult.message ?? "Unknown error occurred",
+          });
+
+          openErrorModal();
+          return;
+        }
+
+        const serverResponse = unwrappedResult.data;
+        if (serverResponse === undefined) {
+          displayAnnouncementsDispatch({
+            action: displayAnnouncementsAction.setIsError,
+            payload: true,
+          });
+          displayAnnouncementsDispatch({
+            action: displayAnnouncementsAction.setErrorMessage,
+            payload: "Network error",
+          });
+
+          openErrorModal();
+          return;
+        }
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
       }
     }
 
     handleFetchAnnouncementsFormSubmit();
 
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
+
     return () => {
-      fetchAbortController.abort();
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
       isComponentMountedRef.current = false;
     };
   }, []);

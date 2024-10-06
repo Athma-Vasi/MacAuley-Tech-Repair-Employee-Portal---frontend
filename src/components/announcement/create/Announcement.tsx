@@ -4,11 +4,11 @@ import { useErrorBoundary } from "react-error-boundary";
 
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
+import { FETCH_REQUEST_TIMEOUT } from "../../../constants/data";
 import { authAction } from "../../../context/authProvider";
 import { useAuth } from "../../../hooks";
 import type { StepperPage } from "../../../types";
 import {
-  fetchRequestGETTokensSafe,
   fetchRequestPOSTSafe,
   logState,
   returnTimeToRead,
@@ -50,13 +50,11 @@ function Announcement() {
   } = announcementState;
 
   const {
-    authState: {
-      accessToken,
-      decodedToken: { sessionId, userInfo: { userId, username, roles } },
-      refreshToken,
-    },
+    authState,
     authDispatch,
   } = useAuth();
+  const { accessToken, decodedToken } = authState;
+  const { sessionId, userInfo: { userId, username, roles } } = decodedToken;
 
   const navigateFn = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -73,7 +71,7 @@ function Announcement() {
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
-    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current?.abort("Previous request cancelled");
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
@@ -108,77 +106,65 @@ function Announcement() {
         author,
       };
 
-      const announcementResult = await fetchRequestPOSTSafe({
-        accessToken,
-        authAction,
-        authDispatch,
-        closeSubmitFormModal,
-        dispatch: announcementDispatch,
-        fetchAbortController,
-        isComponentMounted,
-        isSubmittingAction: announcementAction.setIsSubmitting,
-        isSuccessfulAction: announcementAction.setIsSuccessful,
-        navigateFn,
-        openSubmitFormModal,
-        roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
-        roles,
-        schema: announcementSchema,
-        triggerFormSubmitAction: announcementAction.setTriggerFormSubmit,
-      });
-
-      if (announcementResult.err) {
-        showBoundary(announcementResult.val.data);
-        return;
-      }
-
-      const unwrappedResult = announcementResult.safeUnwrap();
-
-      if (unwrappedResult.kind === "error") {
-        announcementDispatch({
-          action: announcementAction.setIsError,
-          payload: true,
-        });
-        announcementDispatch({
-          action: announcementAction.setErrorMessage,
-          payload: unwrappedResult.message ?? "Unknown error occurred",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      const serverResponse = unwrappedResult.data;
-      if (serverResponse === undefined) {
-        announcementDispatch({
-          action: announcementAction.setIsError,
-          payload: true,
-        });
-        announcementDispatch({
-          action: announcementAction.setErrorMessage,
-          payload: "Network error",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      if (serverResponse.isTokenExpired) {
-        const tokensRefreshResult = await fetchRequestGETTokensSafe({
+      try {
+        const announcementResult = await fetchRequestPOSTSafe({
           accessToken,
           authAction,
           authDispatch,
-          customUrl: "http://localhost:5500/auth/refresh",
+          closeSubmitFormModal,
+          dispatch: announcementDispatch,
           fetchAbortController,
           isComponentMounted,
-          refreshToken,
+          isSubmittingAction: announcementAction.setIsSubmitting,
+          isSuccessfulAction: announcementAction.setIsSuccessful,
+          navigateFn,
+          openSubmitFormModal,
+          requestBody: JSON.stringify({ schema: announcementSchema }),
+          roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
+          roles,
+          triggerFormSubmitAction: announcementAction.setTriggerFormSubmit,
         });
 
-        if (tokensRefreshResult.err) {
-          showBoundary(tokensRefreshResult.val.data);
+        if (announcementResult.err) {
+          showBoundary(announcementResult.val.data);
           return;
         }
 
-        await handleAnnouncementFormSubmit();
+        const unwrappedResult = announcementResult.safeUnwrap();
+
+        if (unwrappedResult.kind === "error") {
+          announcementDispatch({
+            action: announcementAction.setIsError,
+            payload: true,
+          });
+          announcementDispatch({
+            action: announcementAction.setErrorMessage,
+            payload: unwrappedResult.message ?? "Unknown error occurred",
+          });
+
+          openErrorModal();
+          return;
+        }
+
+        const serverResponse = unwrappedResult.data;
+        if (serverResponse === undefined) {
+          announcementDispatch({
+            action: announcementAction.setIsError,
+            payload: true,
+          });
+          announcementDispatch({
+            action: announcementAction.setErrorMessage,
+            payload: "Network error",
+          });
+
+          openErrorModal();
+          return;
+        }
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController?.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
       }
     }
 
@@ -186,11 +172,15 @@ function Announcement() {
       handleAnnouncementFormSubmit();
     }
 
-    return () => {
-      isComponentMountedRef.current = false;
-      fetchAbortController?.abort();
-    };
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
 
+    return () => {
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
+      isComponentMountedRef.current = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 

@@ -54,14 +54,13 @@ function UserAvatar() {
   );
 
   const {
-    authState: { accessToken, isLoggedIn, userDocument, refreshToken },
+    authState: { accessToken, isLoggedIn, userDocument },
     authDispatch,
   } = useAuth();
 
   console.group("UserAvatar: authState");
   console.log("accessToken", accessToken);
   console.log("isLoggedIn", isLoggedIn);
-  console.log("refreshToken", refreshToken);
   console.log("userDocument", userDocument);
   console.groupEnd();
 

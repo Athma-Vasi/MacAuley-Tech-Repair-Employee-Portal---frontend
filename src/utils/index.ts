@@ -6,13 +6,11 @@ import type { NavigateFunction } from "react-router-dom";
 import { Err, Ok } from "ts-results";
 import { type ColorsSwatches, PROPERTY_DESCRIPTOR } from "../constants/data";
 import type { AuthAction } from "../context/authProvider";
-import type { AuthDispatch } from "../context/authProvider/types";
+import type { AuthDispatch, AuthState } from "../context/authProvider/types";
 import type { ThemeObject } from "../context/globalProvider/types";
 import type {
-  Country,
   DecodedToken,
   HttpServerResponse,
-  PostalCode,
   QueryResponseData,
   RoleResourceRoutePaths,
   SafeBoxResult,
@@ -1037,6 +1035,27 @@ function returnTimeToRead(string: string) {
   return Math.ceil(textLength / wordsPerMinute);
 }
 
+function formatDate({
+  date,
+  formatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    timeZoneName: "short",
+  },
+  locale = "en-US",
+}: {
+  date: string;
+  formatOptions?: Intl.DateTimeFormatOptions;
+  locale?: string;
+}): string {
+  return new Intl.DateTimeFormat(locale, formatOptions).format(
+    new Date(date),
+  );
+}
+
 async function decodeJWTSafe<Decoded extends DecodedToken = DecodedToken>(
   token: string,
 ): Promise<SafeBoxResult<Decoded>> {
@@ -1070,104 +1089,22 @@ async function responseToJSONSafe<Data = unknown>(
   }
 }
 
-async function fetchRequestGETTokensSafe(
-  {
-    accessToken,
-    authAction,
-    authDispatch,
-    customUrl,
-    fetchAbortController,
-    isComponentMounted,
-    refreshToken,
-  }: {
-    accessToken: string;
-    authAction: AuthAction;
-    authDispatch: React.Dispatch<AuthDispatch>;
-    customUrl:
-      | URL
-      | string;
-    /** must be defined outside useEffect */
-    fetchAbortController: AbortController;
-    /** must be defined outside useEffect */
-    isComponentMounted: boolean;
-    refreshToken: string;
-  },
-) {
-  const requestInit: RequestInit = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken} ${refreshToken}`,
+function addTokenDetailsToBody(
+  body: Record<string, unknown>,
+  authState: AuthState,
+): string {
+  const { decodedToken: { sessionId, userInfo: { roles, userId, username } } } =
+    authState;
+  const tokenDetails = {
+    sessionId,
+    userInfo: {
+      roles,
+      userId,
+      username,
     },
-    method: "GET",
-    signal: fetchAbortController.signal,
   };
 
-  try {
-    const responseResult = await fetchSafe(customUrl, requestInit);
-
-    if (responseResult.err) {
-      return new Err({
-        data: responseResult.val.data ??
-          new Error("Network error", {
-            cause: responseResult.val.message ?? "Unknown error",
-          }),
-        kind: "error",
-      });
-    }
-
-    if (!isComponentMounted) {
-      return new Ok({ kind: "error", message: "Component is not mounted" });
-    }
-
-    const responseUnwrapped = responseResult.safeUnwrap().data;
-    if (responseUnwrapped === undefined) {
-      return new Ok({ kind: "error", message: "Response is undefined" });
-    }
-
-    if (!responseUnwrapped.ok) {
-      return new Ok({ kind: "error", message: responseUnwrapped.statusText });
-    }
-
-    const jsonResult = await responseToJSONSafe<HttpServerResponse>(
-      responseUnwrapped,
-    );
-
-    if (jsonResult.err) {
-      return new Err({
-        data: jsonResult.val.data ??
-          new Error("Network error", {
-            cause: jsonResult.val.message ?? "Unknown error",
-          }),
-        kind: "error",
-      });
-    }
-
-    if (!isComponentMounted) {
-      return new Ok({ kind: "error", message: "Component is not mounted" });
-    }
-
-    const serverResponse = jsonResult.safeUnwrap().data;
-    if (serverResponse === undefined) {
-      return new Ok({ kind: "error", message: "JSON data is undefined" });
-    }
-
-    authDispatch({
-      action: authAction.setAccessToken,
-      payload: serverResponse.accessToken,
-    });
-    authDispatch({
-      action: authAction.setRefreshToken,
-      payload: serverResponse.refreshToken,
-    });
-    authDispatch({
-      action: authAction.setIsLoggedIn,
-      payload: true,
-    });
-
-    return new Ok({ data: serverResponse, kind: "success" });
-  } catch (error: unknown) {
-    return new Err({ data: error, kind: "error" });
-  }
+  return JSON.stringify({ ...body, ...tokenDetails });
 }
 
 async function fetchRequestPOSTSafe<
@@ -1198,7 +1135,6 @@ async function fetchRequestPOSTSafe<
     requestBody,
     roleResourceRoutePaths,
     roles,
-    schema,
     triggerFormSubmitAction,
   }: {
     accessToken?: string;
@@ -1219,10 +1155,9 @@ async function fetchRequestPOSTSafe<
     navigateFn: NavigateFunction;
     openSubmitFormModal: () => void;
     queryString?: string;
-    requestBody?: string | FormData;
+    requestBody: string | FormData;
     roleResourceRoutePaths?: RoleResourceRoutePaths;
     roles: UserRoles;
-    schema?: Record<string, unknown>;
     triggerFormSubmitAction: TriggerFormSubmitAction;
   },
 ): Promise<SafeBoxResult<HttpServerResponse<DBRecord>>> {
@@ -1245,11 +1180,8 @@ async function fetchRequestPOSTSafe<
       query: queryString,
     });
 
-  const body = requestBody ??
-    JSON.stringify({ schema: schema ?? {} });
-
   const requestInit: RequestInit = {
-    body,
+    body: requestBody,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
@@ -1313,10 +1245,6 @@ async function fetchRequestPOSTSafe<
         payload: "",
       });
       authDispatch({
-        action: authAction.setRefreshToken,
-        payload: "",
-      });
-      authDispatch({
         action: authAction.setIsLoggedIn,
         payload: false,
       });
@@ -1338,6 +1266,25 @@ async function fetchRequestPOSTSafe<
         kind: "error",
       });
     }
+
+    const decodedTokenResult = await decodeJWTSafe(accessToken);
+    if (decodedTokenResult.err) {
+      return new Err({ data: decodedTokenResult.val.data, kind: "error" });
+    }
+
+    const decodedToken = decodedTokenResult.safeUnwrap().data;
+    if (decodedToken === undefined) {
+      return new Ok({ kind: "error", message: "Decoded token is undefined" });
+    }
+
+    authDispatch({
+      action: authAction.setAccessToken,
+      payload: serverResponse.accessToken,
+    });
+    authDispatch({
+      action: authAction.setDecodedToken,
+      payload: decodedToken,
+    });
 
     dispatch({
       action: isSuccessfulAction,
@@ -1524,10 +1471,6 @@ async function fetchRequestGETSafe<
         payload: "",
       });
       authDispatch({
-        action: authAction.setRefreshToken,
-        payload: "",
-      });
-      authDispatch({
         action: authAction.setIsLoggedIn,
         payload: false,
       });
@@ -1549,6 +1492,25 @@ async function fetchRequestGETSafe<
         kind: "error",
       });
     }
+
+    const decodedTokenResult = await decodeJWTSafe(accessToken);
+    if (decodedTokenResult.err) {
+      return new Err({ data: decodedTokenResult.val.data, kind: "error" });
+    }
+
+    const decodedToken = decodedTokenResult.safeUnwrap().data;
+    if (decodedToken === undefined) {
+      return new Ok({ kind: "error", message: "Decoded token is undefined" });
+    }
+
+    authDispatch({
+      action: authAction.setAccessToken,
+      payload: serverResponse.accessToken,
+    });
+    authDispatch({
+      action: authAction.setDecodedToken,
+      payload: decodedToken,
+    });
 
     parentDispatch({
       action: setResourceDataAction,
@@ -1599,8 +1561,6 @@ async function fetchRequestPATCHSafe<
   SetIsSubmittingAction extends string = string,
   SetSubmittingMessageAction extends string = string,
   SetResourceDataAction extends string = string,
-  SetTotalDocumentsAction extends string = string,
-  SetTotalPagesAction extends string = string,
   TriggerFormSubmitAction extends string = string,
 >({
   accessToken,
@@ -1643,10 +1603,6 @@ async function fetchRequestPATCHSafe<
     | {
       action: SetResourceDataAction;
       payload: Array<DBRecord>;
-    }
-    | {
-      action: SetTotalDocumentsAction | SetTotalPagesAction;
-      payload: number;
     }
   >;
   requestBody: string;
@@ -1740,10 +1696,6 @@ async function fetchRequestPATCHSafe<
         payload: "",
       });
       authDispatch({
-        action: authAction.setRefreshToken,
-        payload: "",
-      });
-      authDispatch({
         action: authAction.setIsLoggedIn,
         payload: false,
       });
@@ -1765,6 +1717,25 @@ async function fetchRequestPATCHSafe<
         kind: "error",
       });
     }
+
+    const decodedTokenResult = await decodeJWTSafe(accessToken);
+    if (decodedTokenResult.err) {
+      return new Err({ data: decodedTokenResult.val.data, kind: "error" });
+    }
+
+    const decodedToken = decodedTokenResult.safeUnwrap().data;
+    if (decodedToken === undefined) {
+      return new Ok({ kind: "error", message: "Decoded token is undefined" });
+    }
+
+    authDispatch({
+      action: authAction.setAccessToken,
+      payload: serverResponse.accessToken,
+    });
+    authDispatch({
+      action: authAction.setDecodedToken,
+      payload: decodedToken,
+    });
 
     if (setResourceDataAction) {
       parentDispatch({
@@ -1800,17 +1771,18 @@ async function fetchRequestPATCHSafe<
 export {
   addCommaSeparator,
   addFieldsToObject,
+  addTokenDetailsToBody,
   capitalizeAll,
   capitalizeJoinWithAnd,
   captureScreenshot,
   decodeJWTSafe,
   fetchRequestGETSafe,
-  fetchRequestGETTokensSafe,
   fetchRequestPATCHSafe,
   fetchRequestPOSTSafe,
   fetchSafe,
   filterFieldsFromObject,
   flattenObjectIterative,
+  formatDate,
   groupBy,
   groupByField,
   groupQueryResponse,

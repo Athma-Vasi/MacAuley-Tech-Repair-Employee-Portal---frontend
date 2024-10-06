@@ -23,6 +23,14 @@ const displayAnnouncementReducersMap = new Map<
     ) => DisplayAnnouncementState
 >([
     [
+        displayAnnouncementAction.setErrorMessage,
+        displayAnnouncementReducer_setErrorMessage,
+    ],
+    [
+        displayAnnouncementAction.setIsError,
+        displayAnnouncementReducer_setIsError,
+    ],
+    [
         displayAnnouncementAction.setIsSubmitting,
         displayAnnouncementReducer_setIsSubmitting,
     ],
@@ -40,6 +48,26 @@ const displayAnnouncementReducersMap = new Map<
     ],
     [displayAnnouncementAction.setRating, displayAnnouncementReducer_setRating],
 ]);
+
+function displayAnnouncementReducer_setErrorMessage(
+    state: DisplayAnnouncementState,
+    dispatch: DisplayAnnouncementDispatch,
+): DisplayAnnouncementState {
+    return {
+        ...state,
+        errorMessage: dispatch.payload as string,
+    };
+}
+
+function displayAnnouncementReducer_setIsError(
+    state: DisplayAnnouncementState,
+    dispatch: DisplayAnnouncementDispatch,
+): DisplayAnnouncementState {
+    return {
+        ...state,
+        isError: dispatch.payload as boolean,
+    };
+}
 
 function displayAnnouncementReducer_setIsSubmitting(
     state: DisplayAnnouncementState,

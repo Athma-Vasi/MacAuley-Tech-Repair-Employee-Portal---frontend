@@ -14,7 +14,6 @@ const authReducersMap = new Map<
     [authAction.setAccessToken, authReducer_setAccessToken],
     [authAction.setDecodedToken, authReducer_setDecodedToken],
     [authAction.setIsLoggedIn, authReducer_setIsLoggedIn],
-    [authAction.setRefreshToken, authReducer_setRefreshToken],
     [authAction.setUserDocument, authReducer_setUserDocument],
 ]);
 
@@ -45,16 +44,6 @@ function authReducer_setIsLoggedIn(
     return {
         ...state,
         isLoggedIn: dispatch.payload as boolean,
-    };
-}
-
-function authReducer_setRefreshToken(
-    state: AuthState,
-    dispatch: AuthDispatch,
-): AuthState {
-    return {
-        ...state,
-        refreshToken: dispatch.payload as string,
     };
 }
 

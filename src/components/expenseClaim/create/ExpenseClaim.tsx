@@ -4,12 +4,11 @@ import { useErrorBoundary } from "react-error-boundary";
 
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
-import { CURRENCY_DATA } from "../../../constants/data";
+import { CURRENCY_DATA, FETCH_REQUEST_TIMEOUT } from "../../../constants/data";
 import { authAction } from "../../../context/authProvider";
 import { useAuth } from "../../../hooks";
 import type { Currency, StepperPage } from "../../../types";
 import {
-  fetchRequestGETTokensSafe,
   fetchRequestPOSTSafe,
   logState,
   removeUndefinedAndNull,
@@ -60,7 +59,6 @@ function ExpenseClaim() {
     authState: {
       accessToken,
       decodedToken: { userInfo: { userId, username, roles }, sessionId },
-      refreshToken,
     },
     authDispatch,
   } = useAuth();
@@ -80,7 +78,7 @@ function ExpenseClaim() {
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
-    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current?.abort("Previous request cancelled");
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
@@ -88,144 +86,132 @@ function ExpenseClaim() {
     const isComponentMounted = isComponentMountedRef.current;
 
     async function handleExpenseClaimFormSubmit() {
-      const fileUploadsResult = await Promise.all(
-        formData.map(async (formDataItem) => {
-          const filesUploadResult = await fetchRequestPOSTSafe({
-            authAction,
-            authDispatch,
-            closeSubmitFormModal,
-            dispatch: expenseClaimDispatch,
-            fetchAbortController,
-            isComponentMounted,
-            isSubmittingAction: expenseClaimAction.setIsSubmitting,
-            isSuccessfulAction: expenseClaimAction.setIsSuccessful,
-            navigateFn,
-            openSubmitFormModal,
-            requestBody: formDataItem,
-            roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
-            roles,
-            triggerFormSubmitAction: expenseClaimAction.setTriggerFormSubmit,
-            accessToken,
-            // TODO: change to actual url
-            customUrl: "http://localhost:3000/api/v1/file-upload",
-          });
+      try {
+        const fileUploadsResult = await Promise.all(
+          formData.map(async (formDataItem) => {
+            const filesUploadResult = await fetchRequestPOSTSafe({
+              authAction,
+              authDispatch,
+              closeSubmitFormModal,
+              dispatch: expenseClaimDispatch,
+              fetchAbortController,
+              isComponentMounted,
+              isSubmittingAction: expenseClaimAction.setIsSubmitting,
+              isSuccessfulAction: expenseClaimAction.setIsSuccessful,
+              navigateFn,
+              openSubmitFormModal,
+              requestBody: formDataItem,
+              roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
+              roles,
+              triggerFormSubmitAction: expenseClaimAction.setTriggerFormSubmit,
+              accessToken,
+              // TODO: change to actual url
+              customUrl: "http://localhost:3000/api/v1/file-upload",
+            });
 
-          return filesUploadResult;
-        }),
-      );
+            return filesUploadResult;
+          }),
+        );
 
-      if (fileUploadsResult.some((result) => result.err)) {
-        showBoundary(new Error("File uploads failed. Please try again."));
-        return;
-      }
-
-      const fileUploadsServerResponse = fileUploadsResult.map((result) =>
-        result.ok ? result.safeUnwrap().data : void 0
-      );
-
-      if (fileUploadsServerResponse.some((result) => result === undefined)) {
-        showBoundary(new Error("File uploads failed. Please try again."));
-        return;
-      }
-
-      const uploadedFilesIdsMaybe = fileUploadsServerResponse.map(
-        (result) => result?.data[0]?._id,
-      );
-
-      if (uploadedFilesIdsMaybe.some((id) => id === undefined)) {
-        showBoundary(new Error("File uploads failed. Please try again."));
-        return;
-      }
-
-      const uploadedFilesIds = uploadedFilesIdsMaybe.map((idMaybe) =>
-        removeUndefinedAndNull(idMaybe)
-      ) as unknown as string[];
-
-      const expenseClaimSchema: ExpenseClaimSchema = {
-        acknowledgement,
-        additionalComments,
-        expenseClaimAmount: Number.parseInt(expenseClaimAmount),
-        expenseClaimCurrency,
-        expenseClaimDate,
-        expenseClaimDescription,
-        expenseClaimKind,
-        requestStatus: "pending",
-        uploadedFilesIds,
-        userId,
-        username,
-      };
-
-      const expenseClaimResult = await fetchRequestPOSTSafe({
-        accessToken,
-        authAction,
-        authDispatch,
-        closeSubmitFormModal,
-        dispatch: expenseClaimDispatch,
-        fetchAbortController,
-        isComponentMounted,
-        isSubmittingAction: expenseClaimAction.setIsSubmitting,
-        isSuccessfulAction: expenseClaimAction.setIsSuccessful,
-        navigateFn,
-        openSubmitFormModal,
-        roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
-        roles,
-        schema: expenseClaimSchema,
-        triggerFormSubmitAction: expenseClaimAction.setTriggerFormSubmit,
-      });
-
-      if (expenseClaimResult.err) {
-        showBoundary(expenseClaimResult.val.data);
-        return;
-      }
-
-      const unwrappedResult = expenseClaimResult.safeUnwrap();
-
-      if (unwrappedResult.kind === "error") {
-        expenseClaimDispatch({
-          action: expenseClaimAction.setIsError,
-          payload: true,
-        });
-        expenseClaimDispatch({
-          action: expenseClaimAction.setErrorMessage,
-          payload: unwrappedResult.message ?? "Unknown error occurred",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      const serverResponse = unwrappedResult.data;
-      if (serverResponse === undefined) {
-        expenseClaimDispatch({
-          action: expenseClaimAction.setIsError,
-          payload: true,
-        });
-        expenseClaimDispatch({
-          action: expenseClaimAction.setErrorMessage,
-          payload: "Network error",
-        });
-
-        openErrorModal();
-        return;
-      }
-
-      if (serverResponse.isTokenExpired) {
-        const tokensRefreshResult = await fetchRequestGETTokensSafe({
-          accessToken,
-          authAction,
-          authDispatch,
-          customUrl: "http://localhost:5500/auth/refresh",
-          fetchAbortController,
-          isComponentMounted,
-          refreshToken,
-        });
-
-        if (tokensRefreshResult.err) {
-          showBoundary(tokensRefreshResult.val.data);
+        if (fileUploadsResult.some((result) => result.err)) {
+          showBoundary(new Error("File uploads failed. Please try again."));
           return;
         }
 
-        await handleExpenseClaimFormSubmit();
+        const fileUploadsServerResponse = fileUploadsResult.map((result) =>
+          result.ok ? result.safeUnwrap().data : void 0
+        );
+
+        if (fileUploadsServerResponse.some((result) => result === undefined)) {
+          showBoundary(new Error("File uploads failed. Please try again."));
+          return;
+        }
+
+        const uploadedFilesIdsMaybe = fileUploadsServerResponse.map(
+          (result) => result?.data[0]?._id,
+        );
+
+        if (uploadedFilesIdsMaybe.some((id) => id === undefined)) {
+          showBoundary(new Error("File uploads failed. Please try again."));
+          return;
+        }
+
+        const uploadedFilesIds = uploadedFilesIdsMaybe.map((idMaybe) =>
+          removeUndefinedAndNull(idMaybe)
+        ) as unknown as string[];
+
+        const expenseClaimSchema: ExpenseClaimSchema = {
+          acknowledgement,
+          additionalComments,
+          expenseClaimAmount: Number.parseInt(expenseClaimAmount),
+          expenseClaimCurrency,
+          expenseClaimDate,
+          expenseClaimDescription,
+          expenseClaimKind,
+          requestStatus: "pending",
+          uploadedFilesIds,
+          userId,
+          username,
+        };
+
+        const expenseClaimResult = await fetchRequestPOSTSafe({
+          accessToken,
+          authAction,
+          authDispatch,
+          closeSubmitFormModal,
+          dispatch: expenseClaimDispatch,
+          fetchAbortController,
+          isComponentMounted,
+          isSubmittingAction: expenseClaimAction.setIsSubmitting,
+          isSuccessfulAction: expenseClaimAction.setIsSuccessful,
+          navigateFn,
+          openSubmitFormModal,
+          requestBody: JSON.stringify({ schema: expenseClaimSchema }),
+          roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
+          roles,
+          triggerFormSubmitAction: expenseClaimAction.setTriggerFormSubmit,
+        });
+
+        if (expenseClaimResult.err) {
+          showBoundary(expenseClaimResult.val.data);
+          return;
+        }
+
+        const unwrappedResult = expenseClaimResult.safeUnwrap();
+
+        if (unwrappedResult.kind === "error") {
+          expenseClaimDispatch({
+            action: expenseClaimAction.setIsError,
+            payload: true,
+          });
+          expenseClaimDispatch({
+            action: expenseClaimAction.setErrorMessage,
+            payload: unwrappedResult.message ?? "Unknown error occurred",
+          });
+
+          openErrorModal();
+          return;
+        }
+
+        const serverResponse = unwrappedResult.data;
+        if (serverResponse === undefined) {
+          expenseClaimDispatch({
+            action: expenseClaimAction.setIsError,
+            payload: true,
+          });
+          expenseClaimDispatch({
+            action: expenseClaimAction.setErrorMessage,
+            payload: "Network error",
+          });
+
+          openErrorModal();
+          return;
+        }
+      } catch (error: unknown) {
+        if (!isComponentMounted || fetchAbortController.signal.aborted) {
+          return;
+        }
+        showBoundary(error);
       }
     }
 
@@ -233,11 +219,15 @@ function ExpenseClaim() {
       handleExpenseClaimFormSubmit();
     }
 
-    return () => {
-      isComponentMountedRef.current = false;
-      fetchAbortController?.abort();
-    };
+    const timerId = setTimeout(() => {
+      fetchAbortController?.abort("Request timed out");
+    }, FETCH_REQUEST_TIMEOUT);
 
+    return () => {
+      clearTimeout(timerId);
+      fetchAbortController?.abort("Component unmounted");
+      isComponentMountedRef.current = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
